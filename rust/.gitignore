@@ -1,0 +1,7 @@
+# Rust build artifacts
+target/
+
+# Build and test output
+build_output.txt
+test_output*.txt
+native_shared_face_components_probe.cpp

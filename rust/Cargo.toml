@@ -1,0 +1,13 @@
+[package]
+name = "csxcad-core"
+version = "0.1.0"
+edition = "2021"
+license = "LGPL-3.0-or-later"
+description = "Rust foundations for CSXCAD"
+build = "build.rs"
+
+[features]
+hdf5 = []
+
+[dependencies]
+fparser = { package = "fparser-rs", path = "../../fparser/rust" }

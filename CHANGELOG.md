@@ -12,6 +12,81 @@ of the [openEMS documentation](https://docs.openems.de/).
 same commit**, creating that section if it is not there — it exists only while
 there are unreleased changes. It becomes the next release entry.
 
+## Unreleased
+
+### Added
+
+- The Rust `csxcad-core` model and XML subset now support absorbing-boundary
+  properties, including expression-backed phase velocity, and lumped-element
+  properties with expression-backed R/C/L values, plus ProbeBox and DumpBox
+  properties with sampling, mode-matching, and dump-configuration data, and
+  expression-backed Excitation properties, ResBox refinement-factor data,
+  DispersiveMaterial XML, Debye and Lorentz material dispersion terms, and
+  discrete-material file metadata. The Rust model also supports User-Defined
+  primitives with coordinate shifts, Cartesian/cylindrical/spherical
+  expressions, containment evaluation, unbounded bounds, and XML round-trips,
+  plus PolyhedronReader imports for standard ASCII/binary STL and PLY files,
+  preserving PLY face lists with zero through three indices like VTK.
+  DiscreteMaterial also supports in-memory voxel-index lookup with native
+  coordinate conversion, transform, scale, background fallback, and optional
+  per-index material values; an optional system-HDF5 FFI loads version-2
+  DiscreteMaterial datasets without a Rust package dependency. Property copies
+  now match native primitive-copy defaults, with a separate method to include
+  cloned primitives. A warning-returning XML import method skips unsupported
+  or malformed parameter entries and property tags, retains invalid recognized
+  properties as `Unknown` when base metadata is valid; it also skips
+  unsupported or invalid primitive nodes and reports properties missing their
+  primitive list and a missing `Properties` node. Compatibility mode matches
+  native integer parsing for visibility, while strict parsing remains the
+  default.
+
+- The Rust `Structure` exposes property-type filters and native-style
+  primitive counts, priority ordering, primitive-owner lookup, and
+  single/batch coordinate-based property selection with optional used marking,
+  plus
+  property-filtered structure bounds, primitive-type enumeration, and
+  bounding-box primitive selection, unused-primitive filtering, primitive-bound
+  mesh-edge insertion, structure clearing with non-reused Rust handles, and
+  structured validation errors for simulation-setup prerequisites and
+  parameter-backed property terms, primitive-bound evaluation, and an ordered
+  geometry validation entry point. The combined validator also parses
+  User-Defined geometry functions and evaluates their coordinate shifts,
+  wire radii, and rotational-polygon angles.
+
+### Changed
+
+- Rust `Structure::primitives_by_type()` now matches the native
+  `GetPrimitivesByType` stub by emitting its diagnostic and returning no
+  primitives.
+
+### Fixed
+
+- Rust `Unknown` properties now default to hidden and an empty property value,
+  matching CSXCAD.
+- Rust ASCII STL imports now handle case-insensitive keywords and do not
+  interpret `vertex` in a solid name as geometry.
+- Rust ASCII STL imports now require complete facet structure and match VTK's
+  tolerance for trailing facet-normal, structural-line, and vertex tokens.
+- Rust binary STL imports now count complete available facet records like VTK,
+  and malformed long ASCII files no longer fall back to binary parsing.
+- Rust PLY imports preserve face lists with zero through three indices emitted
+  by VTK's reader.
+- Rust zero-height cylinders and cylindrical shells now match native
+  point-sized bounds and axis-point containment.
+- Rust polyhedra now match native invalid-face dimensions for repeated vertex
+  indices, overfull edges, facets attached only to a closed vertex, and facets
+  that join disconnected vertex fans, violate facet orientation constraints,
+  or contain fewer than three vertices. Same- and opposite-winding duplicate
+  facets also match native acceptance and containment behavior; disjoint closed
+  components remain independently queryable, while nested or overlapping
+  components use native odd/even containment semantics. Closed shells sharing
+  an edge or face retain only the first shell; vertex-sharing shells match
+  native partial-facet acceptance. Containment ignores rejected facets.
+- Rust XML imports accept the legacy `ChargeBox` and `Discrete-Material`
+  property tags and write their canonical names.
+- Rust XML imports accept both `User-Defined` and `UserDefined` primitive tags
+  while writing the native writer's `User-Defined` form.
+
 ## 0.7.0 — 2026-10-09
 
 ### Added

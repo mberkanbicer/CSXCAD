@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<ContinuousStructure CoordSystem="0">
+    <RectilinearGrid DeltaUnit="0.001" CoordSystem="0">
+        <XLines Qty="2">0,1</XLines>
+        <YLines Qty="2">0,2</YLines>
+        <ZLines Qty="2">0,3</ZLines>
+    </RectilinearGrid>
+    <BackgroundMaterial Epsilon="1" Mue="1" Kappa="0" Sigma="0" />
+    <ParameterSet>
+        <Parameter Type="Const" name="factor" Sweep="1" value="2" />
+        <Parameter Type="Linear" name="radius" Sweep="1" value="1" min="0.5" max="2" step="0.5" />
+    </ParameterSet>
+    <Properties>
+        <Material ID="0" Name="parameterized-material" Isotropy="1">
+            <FillColor R="103" G="198" B="105" a="123" />
+            <EdgeColor R="103" G="198" B="105" a="123" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="radius" Y="1.000000e+00" Z="factor" />
+                </Box>
+            </Primitives>
+            <Property Epsilon="2.500000e+00,1.000000e+00,1.000000e+00" Mue="1.000000e+00,1.000000e+00,1.000000e+00" Kappa="0.000000e+00,0.000000e+00,0.000000e+00" Sigma="0.000000e+00,0.000000e+00,0.000000e+00" Density="0.000000e+00" />
+            <Weight Epsilon="1.000000e+00,1.000000e+00,1.000000e+00" Mue="1.000000e+00,1.000000e+00,1.000000e+00" Kappa="1.000000e+00,1.000000e+00,1.000000e+00" Sigma="1.000000e+00,1.000000e+00,1.000000e+00" Density="1.000000e+00" />
+        </Material>
+    </Properties>
+</ContinuousStructure>
