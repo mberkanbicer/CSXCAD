@@ -1,0 +1,12 @@
+[package]
+name = "csxcad-matlab"
+version = "0.1.0"
+edition = "2021"
+license = "LGPL-3.0-or-later"
+description = "MATLAB/Octave compatibility layer for CSXCAD geometry and material description"
+
+[dependencies]
+csxcad-core = { path = "../rust" }
+
+[lib]
+crate-type = ["cdylib"]

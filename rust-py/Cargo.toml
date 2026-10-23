@@ -1,0 +1,14 @@
+[package]
+name = "csxcad-python"
+version = "0.1.0"
+edition = "2021"
+license = "LGPL-3.0-or-later"
+description = "Python bindings for CSXCAD geometry and material description"
+
+[lib]
+name = "csxcad_py"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }
+csxcad-core = { path = "../rust" }

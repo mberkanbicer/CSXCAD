@@ -19,6 +19,10 @@ pub use crate::polyhedron_reader::PolyhedronReaderError;
 pub struct PropertyId(u64);
 
 impl PropertyId {
+    pub fn from_u64(val: u64) -> Self {
+        Self(val)
+    }
+
     pub fn get(self) -> u64 {
         self.0
     }
