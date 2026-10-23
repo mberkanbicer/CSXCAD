@@ -129,6 +129,28 @@ impl Default for AbsorbingBoundaryProperties {
     }
 }
 
+impl AbsorbingBoundaryProperties {
+    pub fn normal_sign_positive(&self) -> bool {
+        self.normal_sign_positive
+    }
+
+    pub fn set_normal_sign_positive(&mut self, val: bool) {
+        self.normal_sign_positive = val;
+    }
+
+    pub fn boundary_type(&self) -> AbsorbingBoundaryType {
+        self.boundary_type
+    }
+
+    pub fn set_boundary_type(&mut self, val: AbsorbingBoundaryType) {
+        self.boundary_type = val;
+    }
+
+    pub fn phase_velocity(&self, parameters: Option<&ParameterSet>) -> Result<f64, ParameterError> {
+        self.phase_velocity.evaluate(parameters)
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LumpedElementType {
     Parallel,
@@ -707,20 +729,8 @@ impl LumpedElementProperties {
 }
 
 impl AbsorbingBoundaryProperties {
-    pub fn normal_sign_positive(&self) -> bool {
-        self.normal_sign_positive
-    }
-
-    pub fn set_normal_sign_positive(&mut self, positive: bool) {
-        self.normal_sign_positive = positive;
-    }
-
     pub fn phase_velocity_term(&self) -> String {
         self.phase_velocity.value_string()
-    }
-
-    pub fn phase_velocity(&self, parameters: Option<&ParameterSet>) -> Result<f64, ParameterError> {
-        self.phase_velocity.evaluate(parameters)
     }
 
     pub fn set_phase_velocity(&mut self, velocity: f64) {
@@ -730,14 +740,6 @@ impl AbsorbingBoundaryProperties {
 
     pub fn set_phase_velocity_term(&mut self, term: &str) -> Result<(), ParameterError> {
         self.phase_velocity.set_value_string(term)
-    }
-
-    pub fn boundary_type(&self) -> AbsorbingBoundaryType {
-        self.boundary_type
-    }
-
-    pub fn set_boundary_type(&mut self, boundary_type: AbsorbingBoundaryType) {
-        self.boundary_type = boundary_type;
     }
 }
 

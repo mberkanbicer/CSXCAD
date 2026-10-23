@@ -2550,6 +2550,11 @@ impl Primitive {
         self.priority = priority;
     }
 
+    /// Access the primitive shape (Box, Sphere, Cylinder, etc.).
+    pub fn shape(&self) -> &PrimitiveShape {
+        &self.shape
+    }
+
     pub fn is_used(&self) -> bool {
         self.used
     }
