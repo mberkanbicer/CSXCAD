@@ -1384,6 +1384,18 @@ fn read_material_values(
                     value: value.to_owned(),
                 });
             }
+            // Native CSXCAD marks a material anisotropic when a property is
+            // given per direction. Infer that when no explicit `Isotropy`
+            // attribute is present and the components differ.
+            if !is_weight
+                && node.attribute("Isotropy").is_none()
+                && components.len() > 1
+                && components
+                    .windows(2)
+                    .any(|pair| pair[0].trim() != pair[1].trim())
+            {
+                material.set_isotropic(false);
+            }
             for (component, term) in components.into_iter().enumerate() {
                 let applied = if is_weight {
                     material.set_weight_expression(field, component, term.trim())?
@@ -2876,5 +2888,43 @@ mod tests {
                 .unwrap(),
             Some(2.0)
         );
+    }
+}
+
+#[cfg(test)]
+mod anisotropic_parse_tests {
+    use super::*;
+    use crate::material::MaterialField;
+
+    #[test]
+    fn vector_material_attributes_are_anisotropic() {
+        let xml = "<ContinuousStructure><Properties><Material><Property Epsilon=\"2,4,6\" Mue=\"1\" Kappa=\"0\" Sigma=\"0\"/><Primitives/></Material></Properties></ContinuousStructure>";
+        let structure = Structure::from_xml_str(xml).unwrap();
+        let material = structure.property_by_index(0).unwrap().material().unwrap();
+        assert!(!material.is_isotropic());
+        for (component, expected) in [2.0, 4.0, 6.0].iter().enumerate() {
+            assert_eq!(
+                material
+                    .value(MaterialField::Epsilon, component, None)
+                    .unwrap(),
+                Some(*expected)
+            );
+        }
+    }
+
+    #[test]
+    fn equal_vector_components_stay_isotropic() {
+        let xml = "<ContinuousStructure><Properties><Material><Property Epsilon=\"3,3,3\" Mue=\"1\" Kappa=\"0\" Sigma=\"0\"/><Primitives/></Material></Properties></ContinuousStructure>";
+        let structure = Structure::from_xml_str(xml).unwrap();
+        let material = structure.property_by_index(0).unwrap().material().unwrap();
+        assert!(material.is_isotropic());
+    }
+
+    #[test]
+    fn explicit_isotropy_attribute_wins_over_vector_length() {
+        let xml = "<ContinuousStructure><Properties><Material><Property Isotropy=\"1\" Epsilon=\"2,4,6\" Mue=\"1\" Kappa=\"0\" Sigma=\"0\"/><Primitives/></Material></Properties></ContinuousStructure>";
+        let structure = Structure::from_xml_str(xml).unwrap();
+        let material = structure.property_by_index(0).unwrap().material().unwrap();
+        assert!(material.is_isotropic());
     }
 }
