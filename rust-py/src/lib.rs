@@ -10,8 +10,8 @@ use csxcad_core::material::MaterialField;
 use csxcad_core::model::{Primitive, PropertyType, Structure};
 
 /// Helper: extract a Rust type from a Python object using FromPyObject.
-fn extract<'py, T: FromPyObject<'py>>(val: &Bound<'py, PyAny>) -> PyResult<T> {
-    val.extract::<T>()
+fn extract<'a, 'py, T: FromPyObject<'a, 'py>>(val: &'a Bound<'py, PyAny>) -> PyResult<T> {
+    val.extract::<T>().map_err(Into::into)
 }
 
 fn extract_str<'py>(val: &Bound<'py, PyAny>) -> PyResult<String> {
