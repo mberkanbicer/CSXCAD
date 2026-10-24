@@ -4039,9 +4039,11 @@ impl Structure {
             .collect()
     }
 
-    pub fn primitives_by_type(&self, _primitive_type: PrimitiveType) -> Vec<&Primitive> {
-        eprintln!("GetPrimitivesByType: Error, not yet implemented!");
-        Vec::new()
+    pub fn primitives_by_type(&self, primitive_type: PrimitiveType) -> Vec<&Primitive> {
+        self.all_primitives(false, PropertyType::Any)
+            .into_iter()
+            .filter(|primitive| primitive.primitive_type() == primitive_type)
+            .collect()
     }
 
     pub fn primitives_by_bounds(
@@ -4127,8 +4129,8 @@ impl Structure {
 #[cfg(test)]
 mod tests {
     use super::{
-        BoxPrimitive, ModelError, Primitive, PrimitiveType, Property, PropertyColor, PropertyType,
-        Structure, StructureValidationError,
+        BoxPrimitive, ModelError, Primitive, PrimitiveShape, PrimitiveType, Property,
+        PropertyColor, PropertyType, Structure, StructureValidationError,
     };
     use crate::grid::CoordinateSystem;
     use crate::material::MaterialField;
@@ -5117,7 +5119,13 @@ mod tests {
             .add_primitive(metal, Primitive::sphere([0.0; 3], 1.0))
             .unwrap();
 
-        assert!(structure.primitives_by_type(PrimitiveType::Box).is_empty());
+        let boxes = structure.primitives_by_type(PrimitiveType::Box);
+        assert_eq!(boxes.len(), 1);
+        assert!(matches!(boxes[0].shape(), PrimitiveShape::Box(_)));
+
+        let spheres = structure.primitives_by_type(PrimitiveType::Sphere);
+        assert_eq!(spheres.len(), 1);
+        assert!(matches!(spheres[0].shape(), PrimitiveShape::Sphere(_)));
     }
 
     #[test]
