@@ -252,6 +252,10 @@ pub struct ExcitationProperties {
     delay: ParameterScalar,
     weight_file: String,
     weight_origin: [f64; 3],
+    /// Loaded mode profile of `weight_file`, mirroring the native
+    /// `m_WeightFileData` cache so that a copied property keeps its data.
+    #[cfg(feature = "hdf5")]
+    weight_data: Option<crate::ModeData>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -289,6 +293,8 @@ impl Default for ExcitationProperties {
             delay: ParameterScalar::new(0.0),
             weight_file: String::new(),
             weight_origin: [0.0; 3],
+            #[cfg(feature = "hdf5")]
+            weight_data: None,
         }
     }
 }
@@ -377,16 +383,108 @@ impl ExcitationProperties {
             .map(ParameterScalar::value_string)
     }
 
+    /// Weight function expression as stored (native `GetString()`: empty for a
+    /// plain number, the expression text otherwise).
+    pub fn weighting_expression(&self, component: usize) -> Option<String> {
+        self.weighting
+            .get(component)
+            .and_then(ParameterScalar::expression)
+            .map(str::to_owned)
+    }
+
     pub fn set_weighting_term(
         &mut self,
         component: usize,
         term: &str,
     ) -> Result<bool, ParameterError> {
-        let Some(value) = self.weighting.get_mut(component) else {
+        if self.weighting.get(component).is_none() {
             return Ok(false);
-        };
+        }
+        // native SetWeightFunction: a weight function replaces any weight file
+        self.weight_file.clear();
+        #[cfg(feature = "hdf5")]
+        {
+            self.weight_data = None;
+        }
+        let value = self.weighting.get_mut(component).expect("checked above");
+        if term.is_empty() {
+            // native: an empty function means a zero weight
+            value.set_value(0.0);
+            return Ok(true);
+        }
         value.set_value_string(term)?;
         Ok(true)
+    }
+
+    /// Evaluate the weighted excitation for one component at `coordinates`
+    /// (native `CSPropExcitation::GetWeightedExcitation`).
+    pub fn weighted_excitation(
+        &mut self,
+        component: usize,
+        parameters: Option<&ParameterSet>,
+        coordinates: [f64; 3],
+        coordinate_system: CoordinateSystem,
+    ) -> Result<f64, ParameterError> {
+        if component >= 3 {
+            return Ok(0.0);
+        }
+
+        // native: convert the input to Cartesian first, then apply the weight origin
+        let mut local = coordinates;
+        if coordinate_system == CoordinateSystem::Cylindrical {
+            let [rho, alpha, z] = coordinates;
+            local = [rho * alpha.cos(), rho * alpha.sin(), z];
+        }
+        for (axis, origin) in self.weight_origin.iter().enumerate() {
+            local[axis] -= origin;
+        }
+
+        let amplitude = self.excitation[component].evaluate(parameters)?;
+
+        let weight = if !self.weight_file.is_empty() {
+            #[cfg(feature = "hdf5")]
+            {
+                if self.weight_data.is_none() {
+                    self.weight_data = crate::ModeData::read_hdf5(&self.weight_file).ok();
+                }
+                let Some(data) = self.weight_data.as_ref() else {
+                    return Ok(0.0);
+                };
+                // exactly one non-zero propagation direction is required
+                let mut direction = None;
+                let mut count = 0;
+                for axis in 0..3 {
+                    if self.propagation_direction[axis].evaluate(parameters)? != 0.0 {
+                        direction = Some(axis);
+                        count += 1;
+                    }
+                }
+                let Some(direction) = direction else {
+                    return Ok(0.0);
+                };
+                if count != 1 {
+                    return Ok(0.0);
+                }
+                if direction == component {
+                    0.0
+                } else {
+                    let first = (direction + 1) % 3;
+                    let second = (direction + 2) % 3;
+                    let fields = data.interpolate(local[first], local[second]);
+                    fields[usize::from(component == second)]
+                }
+            }
+            #[cfg(not(feature = "hdf5"))]
+            {
+                return Ok(0.0);
+            }
+        } else {
+            let coordinate_parameters =
+                coordinate_parameters(local, CoordinateSystem::Cartesian);
+            self.weighting[component].evaluate(Some(&coordinate_parameters))?
+        };
+
+        Ok(weight * amplitude)
     }
 
     pub fn weighting(
@@ -447,6 +545,10 @@ impl ExcitationProperties {
 
     pub fn set_weight_file(&mut self, path: impl Into<String>) {
         self.weight_file = path.into();
+        #[cfg(feature = "hdf5")]
+        {
+            self.weight_data = None;
+        }
     }
 
     pub fn weight_origin(&self) -> [f64; 3] {
@@ -1782,6 +1884,65 @@ fn coordinate_parameters(
     }
     // Native: bModified stays true from construction; no native code calls SetModified()
     parameters
+}
+
+#[cfg(test)]
+mod excitation_weight_tests {
+    use super::{CoordinateSystem, ExcitationProperties};
+
+    #[test]
+    fn weight_function_is_evaluated_at_the_shifted_coordinates() {
+        let mut excitation = ExcitationProperties::default();
+        excitation.set_excitation_term(0, "2").unwrap();
+        excitation.set_weighting_term(0, "x+y").unwrap();
+        let value = excitation
+            .weighted_excitation(0, None, [3.0, 4.0, 0.0], CoordinateSystem::Cartesian)
+            .unwrap();
+        assert_eq!(value, 14.0);
+    }
+
+    #[test]
+    fn weight_origin_shifts_the_evaluation_point() {
+        let mut excitation = ExcitationProperties::default();
+        excitation.set_excitation_term(0, "1").unwrap();
+        excitation.set_weighting_term(0, "x").unwrap();
+        excitation.set_weight_origin([1.0, 0.0, 0.0]);
+        let value = excitation
+            .weighted_excitation(0, None, [3.0, 4.0, 0.0], CoordinateSystem::Cartesian)
+            .unwrap();
+        assert_eq!(value, 2.0);
+    }
+
+    #[test]
+    fn cylindrical_coordinates_are_converted_before_the_weight_is_evaluated() {
+        let mut excitation = ExcitationProperties::default();
+        excitation.set_excitation_term(0, "1").unwrap();
+        excitation.set_weighting_term(0, "rho").unwrap();
+        let value = excitation
+            .weighted_excitation(0, None, [2.0, 0.0, 5.0], CoordinateSystem::Cylindrical)
+            .unwrap();
+        assert_eq!(value, 2.0);
+    }
+
+    #[test]
+    fn an_empty_weight_function_means_a_zero_weight() {
+        let mut excitation = ExcitationProperties::default();
+        excitation.set_excitation_term(0, "1").unwrap();
+        excitation.set_weighting_term(0, "").unwrap();
+        let value = excitation
+            .weighted_excitation(0, None, [1.0, 1.0, 1.0], CoordinateSystem::Cartesian)
+            .unwrap();
+        assert_eq!(value, 0.0);
+    }
+
+    #[test]
+    fn setting_a_weight_function_drops_a_previous_weight_file() {
+        let mut excitation = ExcitationProperties::default();
+        excitation.set_weight_file("mode.h5");
+        assert_eq!(excitation.weight_file(), "mode.h5");
+        excitation.set_weighting_term(0, "1").unwrap();
+        assert_eq!(excitation.weight_file(), "");
+    }
 }
 
 #[cfg(test)]

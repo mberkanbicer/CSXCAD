@@ -11,4 +11,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = { version = "0.30", features = ["extension-module"] }
-csxcad-core = { path = "../rust" }
+csxcad-core = { path = "../rust", features = ["hdf5"] }

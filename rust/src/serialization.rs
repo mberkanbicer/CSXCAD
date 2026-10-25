@@ -929,14 +929,15 @@ fn read_property(
     let mut property = Property::new(node.attribute("Name").unwrap_or(""), kind);
     read_property_base(node, &mut property, native_compatibility)?;
     if let Some(material) = property.material_mut() {
+        let explicit_isotropy = node.attribute("Isotropy").is_some();
         if let Some(isotropy) = node.attribute("Isotropy") {
             material.set_isotropic(parse_bool(isotropy, "Isotropy")?);
         }
         if let Some(values) = node.child("Property") {
-            read_material_values(values, material, false)?;
+            read_material_values(values, material, false, explicit_isotropy)?;
         }
         if let Some(weights) = node.child("Weight") {
-            read_material_values(weights, material, true)?;
+            read_material_values(weights, material, true, explicit_isotropy)?;
         }
     }
     if let Some(debye) = property.debye_material_mut() {
@@ -1380,6 +1381,7 @@ fn read_material_values(
     node: &XmlNode,
     material: &mut MaterialProperties,
     is_weight: bool,
+    explicit_isotropy: bool,
 ) -> Result<(), StructureXmlError> {
     for (field, name) in material_fields() {
         if let Some(value) = node.attribute(name) {
@@ -1394,6 +1396,7 @@ fn read_material_values(
             // given per direction. Infer that when no explicit `Isotropy`
             // attribute is present and the components differ.
             if !is_weight
+                && !explicit_isotropy
                 && node.attribute("Isotropy").is_none()
                 && components.len() > 1
                 && components
@@ -2928,6 +2931,25 @@ mod anisotropic_parse_tests {
                 Some(*expected)
             );
         }
+    }
+
+    #[test]
+    fn isotropy_on_the_material_element_wins_over_the_vector_components() {
+        // native CSXCAD writes Isotropy on <Material> and the values on the
+        // <Property> child, where an isotropic material repeats its value
+        let xml = "<ContinuousStructure><Properties><Material Name=\"m\" Isotropy=\"1\"><Primitives/><Property Epsilon=\"2.5,1,1\" Mue=\"1,1,1\" Kappa=\"0,0,0\" Sigma=\"0,0,0\"/></Material></Properties></ContinuousStructure>";
+        let structure = Structure::from_xml_str(xml).unwrap();
+        let material = structure.property_by_index(0).unwrap().material().unwrap();
+        assert!(material.is_isotropic());
+        assert_eq!(
+            material.value(MaterialField::Epsilon, 0, None).unwrap(),
+            Some(2.5)
+        );
+        // an isotropic material resolves every component to its single value
+        assert_eq!(
+            material.value(MaterialField::Epsilon, 1, None).unwrap(),
+            Some(2.5)
+        );
     }
 
     #[test]

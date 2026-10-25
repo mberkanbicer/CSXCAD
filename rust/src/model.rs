@@ -88,6 +88,11 @@ impl PropertyTypeMask {
         self.0
     }
 
+    /// Build a mask from the native `CSProperties::PropertyType` bit values.
+    pub const fn from_bits(bits: u16) -> Self {
+        Self(bits)
+    }
+
     fn matches(self, property_type: PropertyType) -> bool {
         self.0 & property_type as u16 != 0
     }
@@ -524,6 +529,18 @@ impl PointPrimitive {
         Ok(true)
     }
 
+    /// Position of one coordinate axis (native `GetCoord(axis)`).
+    pub fn coordinate(
+        &self,
+        axis: usize,
+        parameters: Option<&ParameterSet>,
+    ) -> Result<Option<f64>, ParameterError> {
+        self.coordinates
+            .get(axis)
+            .map(|coordinate| coordinate.evaluate(parameters))
+            .transpose()
+    }
+
     pub(crate) fn evaluated_coordinates(
         &self,
         parameters: Option<&ParameterSet>,
@@ -927,6 +944,20 @@ impl CylinderPrimitive {
         Ok(true)
     }
 
+    /// Axis coordinate by native `GetCoord(index)` ordering (start 0..2, stop 3..5).
+    pub fn coordinate(
+        &self,
+        index: usize,
+        parameters: Option<&ParameterSet>,
+    ) -> Result<Option<f64>, ParameterError> {
+        if index >= 6 {
+            return Ok(None);
+        }
+        self.axis[index % 2][index / 2]
+            .evaluate(parameters)
+            .map(Some)
+    }
+
     pub(crate) fn coordinate_xml_term(&self, index: usize) -> Option<String> {
         if index >= 6 {
             return None;
@@ -1160,6 +1191,22 @@ impl CurvePrimitive {
 
     pub(crate) fn wire_radius_xml_term(&self) -> Option<String> {
         self.wire_radius.as_ref().map(ParameterScalar::value_string)
+    }
+
+    /// Evaluated point of the curve (native `GetPoint(idx)`).
+    pub fn point(
+        &self,
+        point: usize,
+        parameters: Option<&ParameterSet>,
+    ) -> Result<Option<[f64; 3]>, ParameterError> {
+        let Some(coordinates) = self.points.get(point) else {
+            return Ok(None);
+        };
+        Ok(Some([
+            coordinates[0].evaluate(parameters)?,
+            coordinates[1].evaluate(parameters)?,
+            coordinates[2].evaluate(parameters)?,
+        ]))
     }
 
     pub(crate) fn point_xml_terms(&self, point: usize) -> Option<[String; 3]> {
@@ -1504,6 +1551,21 @@ impl PolygonPrimitive {
         self.vertices
             .get(vertex)
             .map(|vertex| vertex.clone().map(|coordinate| coordinate.value_string()))
+    }
+
+    /// Evaluated polygon vertex (native `GetCoord(2*n)`/`GetCoord(2*n+1)`).
+    pub fn vertex(
+        &self,
+        vertex: usize,
+        parameters: Option<&ParameterSet>,
+    ) -> Result<Option<[f64; 2]>, ParameterError> {
+        let Some(coordinates) = self.vertices.get(vertex) else {
+            return Ok(None);
+        };
+        Ok(Some([
+            coordinates[0].evaluate(parameters)?,
+            coordinates[1].evaluate(parameters)?,
+        ]))
     }
 
     fn evaluated_vertices(
@@ -2559,6 +2621,10 @@ impl Primitive {
         &self.shape
     }
 
+    pub fn shape_mut(&mut self) -> &mut PrimitiveShape {
+        &mut self.shape
+    }
+
     pub fn is_used(&self) -> bool {
         self.used
     }
@@ -3558,11 +3624,19 @@ impl Property {
         self.primitives.get(index)
     }
 
+    pub fn primitive_mut(&mut self, index: usize) -> Option<&mut Primitive> {
+        self.primitives.get_mut(index)
+    }
+
     pub fn primitive_count(&self) -> usize {
         self.primitives.len()
     }
 
-    fn add_primitive(&mut self, mut primitive: Primitive) {
+    /// Append a primitive to this property (native `CSProperties::AddPrimitive`).
+    ///
+    /// A detached property (no id yet) keeps the primitive with an unassigned
+    /// id; `Structure::add_property` assigns the ids when the property is added.
+    pub fn add_primitive(&mut self, mut primitive: Primitive) {
         primitive.property = self.id;
         primitive.mesh_type = self.coordinate_input_type;
         self.primitives.push(primitive);
@@ -3773,6 +3847,21 @@ impl Structure {
         self.properties
             .iter_mut()
             .find(|property| property.id == Some(id))
+    }
+
+    /// Mutable property plus the structure parameter set it resolves against.
+    ///
+    /// Splitting the borrow here is what lets the Python layer evaluate
+    /// parameter expressions of an attached property without cloning the set.
+    pub fn property_with_parameters_mut(
+        &mut self,
+        id: PropertyId,
+    ) -> Option<(&mut Property, &ParameterSet)> {
+        let property = self
+            .properties
+            .iter_mut()
+            .find(|property| property.id == Some(id))?;
+        Some((property, &self.parameters))
     }
 
     pub fn property_by_index(&self, index: usize) -> Option<&Property> {
@@ -4134,6 +4223,58 @@ mod tests {
     };
     use crate::grid::CoordinateSystem;
     use crate::material::MaterialField;
+
+    #[test]
+    fn primitive_coordinate_getters_mirror_the_native_indexing() {
+        use super::{CurvePrimitive, CylinderPrimitive, PointPrimitive, PolygonPrimitive};
+
+        let point = PointPrimitive::new([1.0, 2.0, 3.0]);
+        assert_eq!(point.coordinate(1, None).unwrap(), Some(2.0));
+        assert_eq!(point.coordinate(3, None).unwrap(), None);
+
+        let mut cylinder = CylinderPrimitive::new([0.0, 0.0, 0.0], [0.0, 0.0, 1.0], 0.5);
+        assert_eq!(cylinder.coordinate(5, None).unwrap(), Some(1.0));
+        assert!(cylinder.set_coordinate(4, 2.0));
+        assert_eq!(cylinder.coordinate(4, None).unwrap(), Some(2.0));
+        assert_eq!(cylinder.coordinate(6, None).unwrap(), None);
+
+        let mut curve = CurvePrimitive::new(None);
+        curve.add_point([0.0, 1.0, 2.0]);
+        curve.add_point([3.0, 4.0, 5.0]);
+        assert_eq!(curve.point(0, None).unwrap(), Some([0.0, 1.0, 2.0]));
+        assert_eq!(curve.point(1, None).unwrap(), Some([3.0, 4.0, 5.0]));
+        assert_eq!(curve.point(2, None).unwrap(), None);
+
+        let mut polygon = PolygonPrimitive::new(0.0);
+        polygon.add_vertex([1.0, 2.0]);
+        assert_eq!(polygon.vertex(0, None).unwrap(), Some([1.0, 2.0]));
+        assert_eq!(polygon.vertex(1, None).unwrap(), None);
+    }
+
+    #[test]
+    fn detached_property_owns_and_edits_its_primitives() {
+        let mut property = Property::new("metal", PropertyType::Metal);
+        property.add_primitive(Primitive::box_primitive([0.0; 3], [1.0; 3]));
+        assert_eq!(property.primitive_count(), 1);
+        assert!(property.primitive_mut(0).is_some());
+        assert!(property.primitive_mut(1).is_none());
+        property.primitive_mut(0).unwrap().set_used(true);
+        assert!(property.primitive(0).unwrap().is_used());
+    }
+
+    #[test]
+    fn property_type_masks_match_the_native_bit_values() {
+        use super::PropertyTypeMask;
+        assert_eq!(PropertyTypeMask::from_bits(0xffff).bits(), 0xffff);
+        assert_eq!(
+            PropertyTypeMask::from_bits(PropertyType::Metal as u16).bits(),
+            0x0004
+        );
+        assert_eq!(
+            PropertyTypeMask::from_bits(PropertyType::AbsorbingBoundary as u16).bits(),
+            0x8000
+        );
+    }
 
     #[test]
     fn structure_owns_properties_and_assigns_stable_handles_and_indices() {

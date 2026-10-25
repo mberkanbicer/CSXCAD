@@ -258,6 +258,130 @@ impl DiscreteMaterialGrid {
     }
 }
 
+/// Sampled 2-D mode profile for excitations and probes.
+///
+/// Mirrors the native `CSModeData`: the HDF5 file holds the 1-D axes `/x` and
+/// `/y` plus the 2-D transverse components `/Vx` and `/Vy` (shape `nx x ny`,
+/// row-major) and a scalar root attribute `Version` (>= 1.0).
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct ModeData {
+    x: Vec<f64>,
+    y: Vec<f64>,
+    vx: Vec<f64>,
+    vy: Vec<f64>,
+}
+
+impl ModeData {
+    pub fn is_loaded(&self) -> bool {
+        !self.vx.is_empty()
+    }
+
+    pub fn read_hdf5(path: impl AsRef<Path>) -> Result<Self, DiscreteMaterialLoadError> {
+        let _guard = HDF5_ACCESS
+            .get_or_init(|| Mutex::new(()))
+            .lock()
+            .map_err(|_| DiscreteMaterialLoadError::Hdf5("access lock is poisoned".to_owned()))?;
+        let filename_text = path
+            .as_ref()
+            .to_str()
+            .ok_or(DiscreteMaterialLoadError::PathNotUnicode)?;
+        let filename =
+            CString::new(filename_text).map_err(|_| DiscreteMaterialLoadError::PathContainsNul)?;
+
+        if unsafe { H5open() } < 0 {
+            return Err(DiscreteMaterialLoadError::Hdf5(
+                "failed to initialize the HDF5 library".to_owned(),
+            ));
+        }
+        let file = Handle::open(
+            unsafe { H5Fopen(filename.as_ptr(), H5F_ACC_RDONLY, H5P_DEFAULT) },
+            H5Fclose,
+            format!("failed to open file {filename_text:?}"),
+        )?;
+        let native_double = unsafe { H5T_NATIVE_DOUBLE_g };
+
+        let root_name = c_string("/")?;
+        let root = Handle::open(
+            unsafe { H5Gopen2(file.id, root_name.as_ptr(), H5P_DEFAULT) },
+            H5Gclose,
+            "failed to open the HDF5 root group",
+        )?;
+        let version = read_scalar_attribute::<f64>(root.id, "/", "Version", native_double)?
+            .unwrap_or(0.0);
+        if !version.is_finite() || version < 1.0 {
+            return Err(DiscreteMaterialLoadError::UnsupportedVersion(version));
+        }
+
+        let (x, x_dimensions) = read_dataset::<f64>(file.id, "/x", native_double)?;
+        let (y, y_dimensions) = read_dataset::<f64>(file.id, "/y", native_double)?;
+        for (path, dimensions) in [("/x", &x_dimensions), ("/y", &y_dimensions)] {
+            if dimensions.len() != 1 {
+                return Err(DiscreteMaterialLoadError::InvalidDatasetRank {
+                    path: path.to_owned(),
+                    expected: 1,
+                    actual: dimensions.len(),
+                });
+            }
+        }
+        if x.len() < 2 || y.len() < 2 {
+            return Err(DiscreteMaterialLoadError::Hdf5(
+                "mode axes need at least two points".to_owned(),
+            ));
+        }
+
+        let (vx, vx_dimensions) = read_dataset::<f64>(file.id, "/Vx", native_double)?;
+        let (vy, vy_dimensions) = read_dataset::<f64>(file.id, "/Vy", native_double)?;
+        let expected = [x.len(), y.len()];
+        for (path, dimensions) in [("/Vx", &vx_dimensions), ("/Vy", &vy_dimensions)] {
+            if dimensions != &expected {
+                return Err(DiscreteMaterialLoadError::Hdf5(format!(
+                    "dataset {path} has shape {dimensions:?}, expected {expected:?}"
+                )));
+            }
+        }
+
+        Ok(Self { x, y, vx, vy })
+    }
+
+    /// Bilinear interpolation at `(x, y)`, clamped to the grid extent.
+    pub fn interpolate(&self, x: f64, y: f64) -> [f64; 2] {
+        if !self.is_loaded() {
+            return [0.0, 0.0];
+        }
+        let x = x.clamp(self.x[0], self.x[self.x.len() - 1]);
+        let y = y.clamp(self.y[0], self.y[self.y.len() - 1]);
+        let nx = self.x.len();
+        let ny = self.y.len();
+
+        let i = left_index(&self.x, x).min(nx - 2);
+        let j = left_index(&self.y, y).min(ny - 2);
+
+        let (x1, x2) = (self.x[i], self.x[i + 1]);
+        let (y1, y2) = (self.y[j], self.y[j + 1]);
+        let d = 1.0 / ((x2 - x1) * (y2 - y1));
+
+        let interpolate = |values: &[f64]| {
+            let f11 = values[i * ny + j];
+            let f21 = values[(i + 1) * ny + j];
+            let f12 = values[i * ny + j + 1];
+            let f22 = values[(i + 1) * ny + j + 1];
+            d * (f11 * (x2 - x) * (y2 - y)
+                + f21 * (x - x1) * (y2 - y)
+                + f12 * (x2 - x) * (y - y1)
+                + f22 * (x - x1) * (y - y1))
+        };
+
+        [interpolate(&self.vx), interpolate(&self.vy)]
+    }
+}
+
+fn left_index(axis: &[f64], value: f64) -> usize {
+    match axis.binary_search_by(|probe| probe.partial_cmp(&value).unwrap_or(std::cmp::Ordering::Equal)) {
+        Ok(index) => index.saturating_sub(1),
+        Err(index) => index.saturating_sub(1),
+    }
+}
+
 fn c_string(value: &str) -> Result<CString, DiscreteMaterialLoadError> {
     CString::new(value).map_err(|_| DiscreteMaterialLoadError::PathContainsNul)
 }
@@ -539,5 +663,45 @@ mod tests {
             super::DiscreteMaterialGrid::read_hdf5(std::path::Path::new("invalid\0path.h5"))
                 .unwrap_err();
         assert_eq!(error, super::DiscreteMaterialLoadError::PathContainsNul);
+    }
+}
+
+#[cfg(test)]
+mod mode_data_tests {
+    use super::ModeData;
+
+    fn sample() -> ModeData {
+        // x = [0, 1, 2], y = [0, 1]; values are row-major A[i * ny + j]
+        ModeData {
+            x: vec![0.0, 1.0, 2.0],
+            y: vec![0.0, 1.0],
+            vx: vec![0.0, 0.0, 1.0, 1.0, 2.0, 2.0],
+            vy: vec![0.0, 10.0, 0.0, 10.0, 0.0, 10.0],
+        }
+    }
+
+    #[test]
+    fn interpolates_bilinearly_inside_the_grid() {
+        let data = sample();
+        let [vx, vy] = data.interpolate(0.5, 0.25);
+        assert!((vx - 0.5).abs() < 1e-12);
+        assert!((vy - 2.5).abs() < 1e-12);
+        let [vx, vy] = data.interpolate(1.5, 0.75);
+        assert!((vx - 1.5).abs() < 1e-12);
+        assert!((vy - 7.5).abs() < 1e-12);
+    }
+
+    #[test]
+    fn clamps_coordinates_outside_the_grid() {
+        let data = sample();
+        assert_eq!(data.interpolate(-5.0, -5.0), [0.0, 0.0]);
+        assert_eq!(data.interpolate(5.0, 5.0), [2.0, 10.0]);
+    }
+
+    #[test]
+    fn empty_data_returns_zero() {
+        let data = ModeData::default();
+        assert!(!data.is_loaded());
+        assert_eq!(data.interpolate(1.0, 1.0), [0.0, 0.0]);
     }
 }

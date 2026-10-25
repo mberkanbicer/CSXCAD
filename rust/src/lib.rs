@@ -12,4 +12,4 @@ pub use serialization::{StructureXmlError, StructureXmlWarning};
 #[cfg(feature = "hdf5")]
 mod hdf5;
 #[cfg(feature = "hdf5")]
-pub use hdf5::DiscreteMaterialLoadError;
+pub use hdf5::{DiscreteMaterialLoadError, ModeData};
