@@ -961,6 +961,7 @@ fn read_property(
                     &format!("EpsilonDelta_{suffix}"),
                     (pole == 0).then_some("EpsilonDelta"),
                     "EpsilonDelta",
+                    "0.0",
                     |component, term| debye.set_epsilon_delta_expression(pole, component, term),
                 )?;
                 read_debye_vector(
@@ -968,6 +969,7 @@ fn read_property(
                     &format!("EpsilonRelaxTime_{suffix}"),
                     (pole == 0).then_some("EpsilonRelaxTime"),
                     "EpsilonRelaxTime",
+                    "0.0",
                     |component, term| {
                         debye.set_epsilon_relax_time_expression(pole, component, term)
                     },
@@ -979,6 +981,7 @@ fn read_property(
                     &format!("EpsilonDelta_{suffix}"),
                     (pole == 0).then_some("EpsilonDelta"),
                     "Weight.EpsilonDelta",
+                    "1.0",
                     |component, term| {
                         debye.set_epsilon_delta_weight_expression(pole, component, term)
                     },
@@ -988,6 +991,7 @@ fn read_property(
                     &format!("EpsilonRelaxTime_{suffix}"),
                     (pole == 0).then_some("EpsilonRelaxTime"),
                     "Weight.EpsilonRelaxTime",
+                    "1.0",
                     |component, term| {
                         debye.set_epsilon_relax_time_weight_expression(pole, component, term)
                     },
@@ -1020,6 +1024,7 @@ fn read_property(
                         &name,
                         legacy_name,
                         parameter.xml_name(),
+                        "0.0",
                         |component, term| {
                             lorentz.set_value_expression(parameter, pole, component, term)
                         },
@@ -1031,6 +1036,7 @@ fn read_property(
                         &name,
                         legacy_name,
                         &format!("Weight.{}", parameter.xml_name()),
+                        "1.0",
                         |component, term| {
                             lorentz.set_weight_expression(parameter, pole, component, term)
                         },
@@ -1426,6 +1432,7 @@ fn read_debye_vector(
     name: &str,
     legacy_name: Option<&str>,
     field: &str,
+    default_term: &str,
     mut set_term: impl FnMut(usize, &str) -> Result<bool, crate::parameter::ParameterError>,
 ) -> Result<(), StructureXmlError> {
     let Some(value) = node
@@ -1440,6 +1447,17 @@ fn read_debye_vector(
             field: format!("{field} vector"),
             value: value.to_owned(),
         });
+    }
+    // Native `ReadVectorTerm` fills all three components with the default and
+    // then overwrites the components that were given. A single value is
+    // therefore an isotropic component, not a component-0-only value.
+    for component in 0..3 {
+        if !set_term(component, default_term)? {
+            return Err(StructureXmlError::InvalidValue {
+                field: field.to_owned(),
+                value: default_term.to_owned(),
+            });
+        }
     }
     for (component, term) in components.into_iter().enumerate() {
         if !set_term(component, term.trim())? {
