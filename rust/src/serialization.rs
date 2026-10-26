@@ -539,6 +539,22 @@ fn write_property(property: &Property) -> Result<XmlNode, StructureXmlError> {
                     .join(","),
             );
         }
+        if !dump_box.fd_samples().is_empty() {
+            let mut samples = XmlNode::new("FD_Samples");
+            samples.text = dump_box
+                .fd_samples()
+                .iter()
+                .map(ToString::to_string)
+                .collect::<Vec<_>>()
+                .join(",");
+            node.children.push(samples);
+        }
+        if dump_box.oversampling() >= 0 {
+            node.set_attribute("OverSampling", dump_box.oversampling().to_string());
+        }
+        if !dump_box.sar_method().is_empty() {
+            node.set_attribute("SAR_Method", dump_box.sar_method().to_string());
+        }
     }
     if let Some(excitation) = property.excitation() {
         node.set_attribute("Number", (excitation.number() as i32).to_string());
@@ -1250,6 +1266,30 @@ fn read_property(
                 })?;
                 dump_box.set_sub_sampling(direction, factor);
             }
+        }
+        if let Some(value) = node.attribute("Frequency") {
+            let samples = value
+                .split(',')
+                .filter(|component| !component.trim().is_empty())
+                .map(|component| parse_number(component.trim(), "DumpBox.Frequency"))
+                .collect::<Result<Vec<_>, _>>()?;
+            dump_box.set_fd_samples(samples);
+        }
+        if let Some(samples) = node.child("FD_Samples") {
+            let text = samples.text.trim();
+            if !text.is_empty() {
+                let values = text
+                    .split(',')
+                    .map(|value| parse_number(value.trim(), "DumpBox.FD_Samples"))
+                    .collect::<Result<Vec<_>, _>>()?;
+                dump_box.set_fd_samples(values);
+            }
+        }
+        if let Some(value) = node.attribute("OverSampling") {
+            dump_box.set_oversampling(parse_integer(value, "DumpBox.OverSampling")?);
+        }
+        if let Some(value) = node.attribute("SAR_Method") {
+            dump_box.set_sar_method(value.to_owned());
         }
         if let Some(value) = node.attribute("OptResolution") {
             let resolutions = value

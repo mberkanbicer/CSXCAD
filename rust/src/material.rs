@@ -222,6 +222,12 @@ pub struct DumpBoxProperties {
     sub_sampling: [u32; 3],
     optimal_resolution_enabled: bool,
     optimal_resolution: [f64; 3],
+    /// Frequency samples of a frequency-domain dump (`Frequency` attribute).
+    fd_samples: Vec<f64>,
+    /// Per-box oversampling override; negative means "use the global value".
+    oversampling: i32,
+    /// Averaging method of a SAR dump (`SAR_Method` attribute).
+    sar_method: String,
 }
 
 impl Default for DumpBoxProperties {
@@ -235,6 +241,9 @@ impl Default for DumpBoxProperties {
             sub_sampling: [1; 3],
             optimal_resolution_enabled: false,
             optimal_resolution: [1.0; 3],
+            fd_samples: Vec::new(),
+            oversampling: -1,
+            sar_method: String::new(),
         }
     }
 }
@@ -255,7 +264,7 @@ pub struct ExcitationProperties {
     /// Loaded mode profile of `weight_file`, mirroring the native
     /// `m_WeightFileData` cache so that a copied property keeps its data.
     #[cfg(feature = "hdf5")]
-    weight_data: Option<crate::ModeData>,
+    weight_data: std::cell::RefCell<Option<crate::ModeData>>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -294,7 +303,7 @@ impl Default for ExcitationProperties {
             weight_file: String::new(),
             weight_origin: [0.0; 3],
             #[cfg(feature = "hdf5")]
-            weight_data: None,
+            weight_data: std::cell::RefCell::new(None),
         }
     }
 }
@@ -404,7 +413,7 @@ impl ExcitationProperties {
         self.weight_file.clear();
         #[cfg(feature = "hdf5")]
         {
-            self.weight_data = None;
+            *self.weight_data.borrow_mut() = None;
         }
         let value = self.weighting.get_mut(component).expect("checked above");
         if term.is_empty() {
@@ -418,8 +427,14 @@ impl ExcitationProperties {
 
     /// Evaluate the weighted excitation for one component at `coordinates`
     /// (native `CSPropExcitation::GetWeightedExcitation`).
-    pub fn weighted_excitation(
-        &mut self,
+    /// Evaluate only the spatial weight of an excitation (native
+    /// `GetWeightedExcitation` without the excitation amplitude).
+    ///
+    /// `coordinates` are in the unit the weight function and the weight origin
+    /// are authored in (drawing units for the operator, metres for the file
+    /// interface).
+    pub fn weighted_excitation_weight(
+        &self,
         component: usize,
         parameters: Option<&ParameterSet>,
         coordinates: [f64; 3],
@@ -428,7 +443,6 @@ impl ExcitationProperties {
         if component >= 3 {
             return Ok(0.0);
         }
-
         // native: convert the input to Cartesian first, then apply the weight origin
         let mut local = coordinates;
         if coordinate_system == CoordinateSystem::Cylindrical {
@@ -439,15 +453,15 @@ impl ExcitationProperties {
             local[axis] -= origin;
         }
 
-        let amplitude = self.excitation[component].evaluate(parameters)?;
-
         let weight = if !self.weight_file.is_empty() {
             #[cfg(feature = "hdf5")]
             {
-                if self.weight_data.is_none() {
-                    self.weight_data = crate::ModeData::read_hdf5(&self.weight_file).ok();
+                if self.weight_data.borrow().is_none() {
+                    let loaded = crate::ModeData::read_hdf5(&self.weight_file).ok();
+                    *self.weight_data.borrow_mut() = loaded;
                 }
-                let Some(data) = self.weight_data.as_ref() else {
+                let cached = self.weight_data.borrow();
+                let Some(data) = cached.as_ref() else {
                     return Ok(0.0);
                 };
                 // exactly one non-zero propagation direction is required
@@ -484,6 +498,24 @@ impl ExcitationProperties {
             self.weighting[component].evaluate(Some(&coordinate_parameters))?
         };
 
+        Ok(weight)
+    }
+
+    /// Full weighted excitation amplitude (native `GetWeightedExcitation`).
+    pub fn weighted_excitation(
+        &mut self,
+        component: usize,
+        parameters: Option<&ParameterSet>,
+        coordinates: [f64; 3],
+        coordinate_system: CoordinateSystem,
+    ) -> Result<f64, ParameterError> {
+        let amplitude = self.excitation[component].evaluate(parameters)?;
+        let weight = self.weighted_excitation_weight(
+            component,
+            parameters,
+            coordinates,
+            coordinate_system,
+        )?;
         Ok(weight * amplitude)
     }
 
@@ -547,7 +579,7 @@ impl ExcitationProperties {
         self.weight_file = path.into();
         #[cfg(feature = "hdf5")]
         {
-            self.weight_data = None;
+            *self.weight_data.borrow_mut() = None;
         }
     }
 
@@ -627,6 +659,33 @@ impl DumpBoxProperties {
 
     pub fn optimal_resolution(&self) -> [f64; 3] {
         self.optimal_resolution
+    }
+
+    /// Frequency samples of a frequency-domain dump.
+    pub fn fd_samples(&self) -> &[f64] {
+        &self.fd_samples
+    }
+
+    pub fn set_fd_samples(&mut self, samples: Vec<f64>) {
+        self.fd_samples = samples;
+    }
+
+    /// Per-box oversampling override, `-1` when the global value applies.
+    pub fn oversampling(&self) -> i32 {
+        self.oversampling
+    }
+
+    pub fn set_oversampling(&mut self, value: i32) {
+        self.oversampling = value;
+    }
+
+    /// Averaging method of a SAR dump (empty for the default).
+    pub fn sar_method(&self) -> &str {
+        &self.sar_method
+    }
+
+    pub fn set_sar_method(&mut self, method: impl Into<String>) {
+        self.sar_method = method.into();
     }
 
     pub fn set_optimal_resolution(&mut self, direction: usize, value: f64) -> bool {
