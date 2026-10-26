@@ -1835,6 +1835,20 @@ impl MaterialProperties {
         Ok(true)
     }
 
+    /// Material density evaluated at `coordinates`
+    /// (native `CSPropMaterial::GetDensityWeighted`).
+    pub fn weighted_density(
+        &self,
+        values: Option<&ParameterSet>,
+        coordinates: [f64; 3],
+        coordinate_system: CoordinateSystem,
+    ) -> Result<f64, ParameterError> {
+        let density = self.density.evaluate(values)?;
+        let coordinate_parameters = coordinate_parameters(coordinates, coordinate_system);
+        let weight = self.density_weight.evaluate(Some(&coordinate_parameters))?;
+        Ok(density * weight)
+    }
+
     pub fn weighted_value(
         &self,
         field: MaterialField,
@@ -1886,18 +1900,6 @@ impl MaterialProperties {
         expression: &str,
     ) -> Result<(), ParameterError> {
         self.density_weight.set_value_string(expression)
-    }
-
-    pub fn weighted_density(
-        &self,
-        values: Option<&ParameterSet>,
-        coordinates: [f64; 3],
-        coordinate_system: CoordinateSystem,
-    ) -> Result<f64, ParameterError> {
-        let density = self.density.evaluate(values)?;
-        let coordinate_parameters = coordinate_parameters(coordinates, coordinate_system);
-        let weight = self.density_weight.evaluate(Some(&coordinate_parameters))?;
-        Ok(density * weight)
     }
 
     fn component(&self, component: usize) -> Option<usize> {
