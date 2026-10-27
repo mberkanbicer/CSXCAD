@@ -7,6 +7,14 @@
 //!
 //! Panics are caught at the FFI boundary with `std::panic::catch_unwind` so they
 //! never unwind into C. Failures return 0 / false / null as appropriate.
+//!
+//! This crate *is* the C ABI boundary: every entry point takes raw pointers that
+//! are owned by the C caller, so the pointer contract (non-null, allocated by
+//! `csxcad_new`/`csxcad_from_xml_string`, freed exactly once) is part of the C
+//! API rather than something a Rust wrapper can enforce. The clippy lint that
+//! wants those functions marked `unsafe` is therefore allowed crate-wide; the
+//! contract is documented per function and tested by `contract_tests.rs`.
+#![allow(clippy::not_unsafe_ptr_arg_deref)]
 
 use std::ffi::{CStr, CString};
 use std::os::raw::{c_char, c_double, c_int, c_uint, c_void};
@@ -80,12 +88,7 @@ fn coordinate_system_from_code(code: c_int) -> Option<CoordinateSystem> {
 }
 
 /// Add a primitive to a property, returning the new PrimitiveId as u64 (0 on failure).
-fn add_primitive<F>(
-    ptr: *mut c_void,
-    property_id: u64,
-    priority: c_int,
-    make: F,
-) -> u64
+fn add_primitive<F>(ptr: *mut c_void, property_id: u64, priority: c_int, make: F) -> u64
 where
     F: FnOnce() -> Primitive + std::panic::UnwindSafe,
 {
@@ -96,7 +99,7 @@ where
         let id = structure
             .add_primitive(PropertyId::from_u64(property_id), primitive)
             .ok()?;
-        Some(id.get() as u64)
+        Some(id.get())
     });
     match result {
         Some(Some(id)) => id,
@@ -107,7 +110,6 @@ where
 // ---------------------------------------------------------------------------
 // C ABI
 // ---------------------------------------------------------------------------
-
 /// Create a new empty CSXCAD Structure. Returns an opaque pointer to the caller.
 #[no_mangle]
 pub extern "C" fn csxcad_new() -> *mut c_void {
@@ -166,12 +168,14 @@ pub extern "C" fn csxcad_add_property(
     type_code: c_uint,
 ) -> u64 {
     let result = catch_unwind(|| {
-        let name = unsafe { CStr::from_ptr(name) }.to_string_lossy().into_owned();
+        let name = unsafe { CStr::from_ptr(name) }
+            .to_string_lossy()
+            .into_owned();
         let property_type = property_type_from_code(type_code)?;
         let structure = structure_mut(ptr)?;
         let property = Property::new(name, property_type);
         let id = structure.add_property(property);
-        Some(id.get() as u64)
+        Some(id.get())
     });
     match result {
         Some(Some(id)) => id,
@@ -183,13 +187,15 @@ pub extern "C" fn csxcad_add_property(
 #[no_mangle]
 pub extern "C" fn csxcad_find_property(ptr: *mut c_void, name: *const c_char) -> u64 {
     let result = catch_unwind(|| {
-        let name = unsafe { CStr::from_ptr(name) }.to_string_lossy().into_owned();
+        let name = unsafe { CStr::from_ptr(name) }
+            .to_string_lossy()
+            .into_owned();
         let structure = structure_mut(ptr)?;
         let id = structure
             .properties_by_name(&name)
             .next()
             .and_then(|property| property.id())
-            .map(|id| id.get() as u64)
+            .map(|id| id.get())
             .unwrap_or(0);
         Some(id)
     });
@@ -261,12 +267,9 @@ pub extern "C" fn csxcad_add_box(
     stop_y: c_double,
     stop_z: c_double,
 ) -> u64 {
-    add_primitive(
-        ptr,
-        property_id,
-        priority,
-        move || Primitive::box_primitive([start_x, start_y, start_z], [stop_x, stop_y, stop_z]),
-    )
+    add_primitive(ptr, property_id, priority, move || {
+        Primitive::box_primitive([start_x, start_y, start_z], [stop_x, stop_y, stop_z])
+    })
 }
 
 /// Add a sphere primitive to a property. Returns the new PrimitiveId as u64, or 0 on failure.
@@ -280,12 +283,9 @@ pub extern "C" fn csxcad_add_sphere(
     center_z: c_double,
     radius: c_double,
 ) -> u64 {
-    add_primitive(
-        ptr,
-        property_id,
-        priority,
-        move || Primitive::sphere([center_x, center_y, center_z], radius),
-    )
+    add_primitive(ptr, property_id, priority, move || {
+        Primitive::sphere([center_x, center_y, center_z], radius)
+    })
 }
 
 /// Add a point primitive to a property. Returns the new PrimitiveId as u64, or 0 on failure.
@@ -298,7 +298,9 @@ pub extern "C" fn csxcad_add_point(
     y: c_double,
     z: c_double,
 ) -> u64 {
-    add_primitive(ptr, property_id, priority, move || Primitive::point([x, y, z]))
+    add_primitive(ptr, property_id, priority, move || {
+        Primitive::point([x, y, z])
+    })
 }
 
 /// Add a cylinder primitive to a property. Returns the new PrimitiveId as u64, or 0 on failure.
@@ -315,18 +317,13 @@ pub extern "C" fn csxcad_add_cylinder(
     stop_z: c_double,
     radius: c_double,
 ) -> u64 {
-    add_primitive(
-        ptr,
-        property_id,
-        priority,
-        move || {
-            Primitive::cylinder(
-                [start_x, start_y, start_z],
-                [stop_x, stop_y, stop_z],
-                radius,
-            )
-        },
-    )
+    add_primitive(ptr, property_id, priority, move || {
+        Primitive::cylinder(
+            [start_x, start_y, start_z],
+            [stop_x, stop_y, stop_z],
+            radius,
+        )
+    })
 }
 
 /// Serialize the Structure to an XML string.
@@ -352,7 +349,9 @@ pub extern "C" fn csxcad_to_xml_string(ptr: *mut c_void) -> *mut c_char {
 #[no_mangle]
 pub extern "C" fn csxcad_from_xml_string(xml: *const c_char) -> *mut c_void {
     let result = catch_unwind(|| {
-        let xml_str = unsafe { CStr::from_ptr(xml) }.to_string_lossy().into_owned();
+        let xml_str = unsafe { CStr::from_ptr(xml) }
+            .to_string_lossy()
+            .into_owned();
         let structure = Structure::from_xml_str(&xml_str).ok()?;
         Some(Box::into_raw(Box::new(structure)) as *mut c_void)
     });
@@ -429,3 +428,6 @@ fn _error_type_exports() {
     fn _assert_xml_error<T: std::error::Error + Send + Sync>() {}
     _assert_xml_error::<StructureXmlError>();
 }
+
+#[cfg(test)]
+mod contract_tests;

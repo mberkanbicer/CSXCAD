@@ -42,3 +42,32 @@ def GetMultiDirs(dirs):
     if dirs in ('xz', 'rz'):
         return [0, 2]
     raise ValueError(f'Invalid direction combination `{dirs}`')
+
+
+# ---------------------------------------------------------------------------
+# Wrapper factory per CSObject::ObjectKind.
+#
+# Native source: ``CSXCAD/python/CSXCAD/Utilities.pyx:63-74``. The native
+# wrappers register a factory per object kind on import, keyed by
+# ``int(kind)``, and ``WrapperFromAddress`` returns ``None`` when no factory has
+# been registered for that kind (``Utilities.pyx:72-74``).
+#
+# The Rust port has no C++ address space: every wrapper is resolved from the
+# owning structure plus a stable native id (``ContinuousStructure._wrap_property``
+# and ``CSPrimitives._wrap``), so no module registers a factory. The two
+# functions are kept because they are part of the native public surface; they
+# behave exactly like the native pair for callers that do register a factory.
+_WRAPPER_FACTORIES = {}
+
+
+def RegisterWrapperFactory(kind, factory):
+    """Register the wrapper factory for one ``CSObject::ObjectKind``."""
+    _WRAPPER_FACTORIES[int(kind)] = factory
+
+
+def WrapperFromAddress(addr, kind):
+    """Wrapper for the native object at ``addr`` of the given object kind."""
+    factory = _WRAPPER_FACTORIES.get(int(kind), None)
+    if factory is None:
+        return None
+    return factory(addr)

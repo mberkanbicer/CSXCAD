@@ -1,0 +1,3416 @@
+{
+  "inventory_version": 1,
+  "generator": "CSXCAD/rust-matlab/tests/native_mfiles/native_mfile_inventory.py",
+  "rules": {
+    "declaration": "line starting with 'function' (MATLAB signature grammar)",
+    "public": "first declaration of a public M-file, name == file name",
+    "private": "first declaration of a file in matlab/private",
+    "local": "any later declaration in the same file"
+  },
+  "counts": {
+    "files": 70,
+    "public_files": 58,
+    "private_files": 12,
+    "declarations": 114
+  },
+  "sources": [
+    {
+      "file": "matlab/AddBox.m",
+      "kind": "public",
+      "bytes": 1360,
+      "sha256": "dc6faf149844ef0aeffe2101dff25634e26e5df5a01239aeb617c4e8b692783f",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddConductingSheet.m",
+      "kind": "public",
+      "bytes": 1542,
+      "sha256": "4413f03c924062deb94d51c4397cf19b1c127483b20f61875ce064c62f0164aa",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddCurve.m",
+      "kind": "public",
+      "bytes": 1319,
+      "sha256": "cbd53e0c626a344d53eab2ca565171442dffc450cb33c9be8d506fb63590a99f",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddCylinder.m",
+      "kind": "public",
+      "bytes": 1131,
+      "sha256": "d2ceda7e41de86876c903374cf831e7a3038d6a477f5ec0ac4afa93bcf7ee788",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddCylindricalShell.m",
+      "kind": "public",
+      "bytes": 1417,
+      "sha256": "b6105380ae77f549d9b50a3c9effc898ad3f6fb19e83c392f44dc9c5115559cd",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddDebyeMaterial.m",
+      "kind": "public",
+      "bytes": 1029,
+      "sha256": "1a1daa838e3bcde32342fb21c43b9e7735319a382d4d03f028bde4a44729a9ff",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddDiscMaterial.m",
+      "kind": "public",
+      "bytes": 2626,
+      "sha256": "6f2bcc8c74eb0eaeacbf9e8da5af325d5ed87fb0af1dce70e187c0b55401fc52",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddDjordjevicSarkarMaterial.m",
+      "kind": "public",
+      "bytes": 5287,
+      "sha256": "b360ee15f79f0cb3ec6525a2384abc07fc066d374a9021e19ea2d59c75636f96",
+      "declarations": 5
+    },
+    {
+      "file": "matlab/AddDump.m",
+      "kind": "public",
+      "bytes": 3937,
+      "sha256": "8db72144e791614cecf753aca6e21599042d73ca130aa613a959ef2b271b7bca",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddExcitation.m",
+      "kind": "public",
+      "bytes": 1157,
+      "sha256": "1efcdaaae2e7ba3cc4a4ff3f041d0c563a9f07eba483b1783a6eab6dd88d750f",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddLinPoly.m",
+      "kind": "public",
+      "bytes": 1582,
+      "sha256": "d1b901d56cbc8653e5e3c9912b50b896937903bed9dfe14408bf42138f49d85b",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddLorentzMaterial.m",
+      "kind": "public",
+      "bytes": 2958,
+      "sha256": "2ce7d03d99d01349ab4c715e92c38ea7ec755afacdc999811add7a80ca70c386",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddLumpedElement.m",
+      "kind": "public",
+      "bytes": 1760,
+      "sha256": "453acabbad89ca78cb8bdb5793efaede8594824fa8dd1b07348e3ef8c31f2e16",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddMaterial.m",
+      "kind": "public",
+      "bytes": 959,
+      "sha256": "385350f25c999ce48a44cdb067b4660a16cf58f9de9126d8f61eebbc95f3c9ed",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddMetal.m",
+      "kind": "public",
+      "bytes": 796,
+      "sha256": "b5e95b2612cb0637e21327e84470c195246a3667a35a1590a71b4a0698a269aa",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddPlaneWaveExcite.m",
+      "kind": "public",
+      "bytes": 1422,
+      "sha256": "cd416336ec567470d7a00db377741030ddb87140b4c31e9a365d226dd9d6d5bf",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddPoint.m",
+      "kind": "public",
+      "bytes": 365,
+      "sha256": "1a198717724856002f5de1141b052ba7d59859e35cda4edc950aee6f85f2e8bd",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddPolygon.m",
+      "kind": "public",
+      "bytes": 1505,
+      "sha256": "d57f218397bfb4dbc043870dc92f72b4b9ac39a5d0be8ce1a078442a6d67ba17",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddPolyhedron.m",
+      "kind": "public",
+      "bytes": 1687,
+      "sha256": "508f957d9dbd6498abae990a6815acb246a620c47dcdc8eb58c36b6f84392fef",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddProbe.m",
+      "kind": "public",
+      "bytes": 3886,
+      "sha256": "de7e8fa71cf02241f10eb016af69bdd76c683f724e9bba173a5a1139cbf2a0ab",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddPropAttribute.m",
+      "kind": "public",
+      "bytes": 627,
+      "sha256": "00d83f13d61cada7ef92d0e65d5423deeea81f2d31b3293f8b2c7aac0a35e0af",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddRotPoly.m",
+      "kind": "public",
+      "bytes": 1723,
+      "sha256": "0ede88ca11ff04a4e8fed8d47000e62c1da633f8d9c631f148f30225cd7a3358",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddSphere.m",
+      "kind": "public",
+      "bytes": 939,
+      "sha256": "f090d94ce86e40288fe8f2dca3cc97c6fc0c811586df5383f476c0df633b6704",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddSphericalShell.m",
+      "kind": "public",
+      "bytes": 1218,
+      "sha256": "3d544676c30ee7b091b8ab03b69bd30925ac0cb39ab02b12ecd37012df94044a",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AddWire.m",
+      "kind": "public",
+      "bytes": 1415,
+      "sha256": "b654f54dbc6eb04df33a5e5bc6d3b32bcef09ed218996df3992bd6aac9f2f1f9",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AnalyseMesh.m",
+      "kind": "public",
+      "bytes": 1132,
+      "sha256": "b8c89fc04e36536bb21010cafdd4cea452674316187fea373f5a6eed9c42bed8",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/AutoSmoothMeshLines.m",
+      "kind": "public",
+      "bytes": 5126,
+      "sha256": "a27fc03f292047214c535ccfe635395b266c8e8ab2e8a4c9be431886c7dddeeb",
+      "declarations": 2
+    },
+    {
+      "file": "matlab/CSXGeomPlot.m",
+      "kind": "public",
+      "bytes": 1485,
+      "sha256": "ddb27879aeb037289ad28dfbd10d59216fc21785263f1dfc683f78cbbd89914c",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/CalcDebyeMaterial.m",
+      "kind": "public",
+      "bytes": 820,
+      "sha256": "f7093e84daaeb00d2a19b0c461198a0485faca0c86f31e0da71ba60ca139dd0f",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/CalcDjordjevicSarkarApprox.m",
+      "kind": "public",
+      "bytes": 12760,
+      "sha256": "67943fde438164eeda2de3e72306a111b46f948c95dc73d15198b5ec269932c2",
+      "declarations": 5
+    },
+    {
+      "file": "matlab/CalcDrudeMaterial.m",
+      "kind": "public",
+      "bytes": 1269,
+      "sha256": "9cd773f25836dfbdde9b68bc8fb3161ac51b8b132ce08503ed102ed049591f81",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/CalcLorentzMaterial.m",
+      "kind": "public",
+      "bytes": 1996,
+      "sha256": "bcd5a8eee370e448891f48001900b65355cd14e51f1ab8674636163730821ecd",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/CheckMesh.m",
+      "kind": "public",
+      "bytes": 2208,
+      "sha256": "dd8661c3e3ce75b776d8e76dc665156169d4bd2003c2b29123ece4592fa46723",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/Convert_VF_DiscMaterial.m",
+      "kind": "public",
+      "bytes": 7644,
+      "sha256": "984ec7d4bd619ea90a39c2332c28d8056ce6af42aa989fddab5b7af3dc9fd19d",
+      "declarations": 2
+    },
+    {
+      "file": "matlab/CreateDiscMaterial.m",
+      "kind": "public",
+      "bytes": 2757,
+      "sha256": "0dade7c9cfd82b5eb9964e07d99384ccfcb8abe64546d12d8bba8f2956487779",
+      "declarations": 2
+    },
+    {
+      "file": "matlab/DefineRectGrid.m",
+      "kind": "public",
+      "bytes": 1552,
+      "sha256": "09dc4e8f2c7c51560aa2d166396f11af563bf326ffb774e6f7867fbbdc18c230",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/DetectEdges.m",
+      "kind": "public",
+      "bytes": 11331,
+      "sha256": "14a64b8b94a285b7271adbab36c6be4141a9a4b668194915e7f8fa01d7258245",
+      "declarations": 2
+    },
+    {
+      "file": "matlab/DirChar2Int.m",
+      "kind": "public",
+      "bytes": 971,
+      "sha256": "1b1a771c5e74adc8a89b5ec532889356292450a26d06d9e942c8713d1fc2f49f",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/ImportPLY.m",
+      "kind": "public",
+      "bytes": 853,
+      "sha256": "6ad0ba5c65ab2068f144abe86db7ce9b750c977f4b4ccb3c88694b70894b254e",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/ImportSTL.m",
+      "kind": "public",
+      "bytes": 853,
+      "sha256": "e7255603ff3826801dd049c3e29a7f768f38cabd8365f08e826f22256cd39ef3",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/InitCSX.m",
+      "kind": "public",
+      "bytes": 819,
+      "sha256": "d644f41fe31cb44c367940f05bab74e596ecc3234381a922d762ec08333cc5ee",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/RecursiveSmoothMesh.m",
+      "kind": "public",
+      "bytes": 6272,
+      "sha256": "95180b796fa11ba0201378b0f384fff6b8ccaa1d34bf2223dd4ebf020abd30f3",
+      "declarations": 2
+    },
+    {
+      "file": "matlab/SetBackgroundMaterial.m",
+      "kind": "public",
+      "bytes": 714,
+      "sha256": "24901d5a4ee7e0602116b25bce1f0f2b1e2fed7fb726c90b5c01cb4a1788acea",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/SetExcitationWeight.m",
+      "kind": "public",
+      "bytes": 2333,
+      "sha256": "006b1136fdc2a8f3023f8960cb7211141b0ffffa36edd4473592b700a40c6a20",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/SetExcitationWeightFile.m",
+      "kind": "public",
+      "bytes": 1906,
+      "sha256": "ee494a66f5c23d4951180f27c16e76d4bc5b95093436a5271c27dc40ef62f143",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/SetMaterialProperty.m",
+      "kind": "public",
+      "bytes": 1210,
+      "sha256": "118ee3375fc17022eea220b181156afde41ac27218b6d049b53e2f2ba4ada400",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/SetMaterialWeight.m",
+      "kind": "public",
+      "bytes": 1147,
+      "sha256": "692416009f07432c9f5f138954fa0a16460deee0a6bb55ff884cc9321ce05583",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/SmoothMesh.m",
+      "kind": "public",
+      "bytes": 2512,
+      "sha256": "2ce3e6fc6d2f73bc9e44ad92ae831f274e2f9539d3fa5557e3b86a5c061a2dfe",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/SmoothMeshLines.m",
+      "kind": "public",
+      "bytes": 3135,
+      "sha256": "21bc5b676f15f210820648522aa92e0f05a63947f5402cab8d662b9f5d6a2c68",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/SmoothMeshLines2.m",
+      "kind": "public",
+      "bytes": 10211,
+      "sha256": "1cca1d498249143bce19f8c1c85bb3694f6ebaec17cda5d70d6bd9e373fc378b",
+      "declarations": 6
+    },
+    {
+      "file": "matlab/WriteCSX.m",
+      "kind": "public",
+      "bytes": 775,
+      "sha256": "312242f62f160051d32d586102c5b1f7da345d1f16699ad4cc86c81225bae818",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/export_empire.m",
+      "kind": "public",
+      "bytes": 12006,
+      "sha256": "8d9c459267c67c550eed3be3a9f25dedcb0ed30bf7ed70bf730475cabec44c21",
+      "declarations": 12
+    },
+    {
+      "file": "matlab/export_excellon.m",
+      "kind": "public",
+      "bytes": 4661,
+      "sha256": "eca632864ba543bf4cbd311b75576e08ac2232d2bbc50a8dbb8575afc1ff6873",
+      "declarations": 4
+    },
+    {
+      "file": "matlab/export_gerber.m",
+      "kind": "public",
+      "bytes": 7242,
+      "sha256": "913a4fba62390a18c57a91a8fcd2f89b42ae5a397f6af9cf2aca9c37c1978de0",
+      "declarations": 7
+    },
+    {
+      "file": "matlab/export_povray.m",
+      "kind": "public",
+      "bytes": 10113,
+      "sha256": "c907b5fab5df5b87e811761abf3c98928bc0d2d17e224968376e52fcbc783da7",
+      "declarations": 7
+    },
+    {
+      "file": "matlab/isOctave.m",
+      "kind": "public",
+      "bytes": 1186,
+      "sha256": "a9f62fb5c21ea76b664692d54323d0f9076b884fca19584c0c1a72805c65f03f",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/searchBinary.m",
+      "kind": "public",
+      "bytes": 1282,
+      "sha256": "4e9d62b608bfa32fac15682d5996bffc83dd19970d5423c2f1dbfb06b67e5e20",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/struct_2_xml.m",
+      "kind": "public",
+      "bytes": 1631,
+      "sha256": "1021d204ec86af319307fffda2501aea07e58cdcd37674d0df95f2be1f4afc86",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/Add2Property.m",
+      "kind": "private",
+      "bytes": 902,
+      "sha256": "a80b50b1438f984045c565c4ea19b4489457f4d4a7c22111d81951f39b6a3b37",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/AddPrimitiveArgs.m",
+      "kind": "private",
+      "bytes": 668,
+      "sha256": "c12de7e4a1918e2be71cde54cf634788603c803b3fd65c4c8f4e565e1bc458dc",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/AddProperty.m",
+      "kind": "private",
+      "bytes": 939,
+      "sha256": "dfe0e0c05471baf1a823cde397e35ec7f8e1f326ed73c6009ecaad33151b25cd",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/CheckSymmtricLines.m",
+      "kind": "private",
+      "bytes": 762,
+      "sha256": "c1c444c18036ad0d15f90e90595275513290048f9bb502b477e6ad22e8a09b4b",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/FindProperty.m",
+      "kind": "private",
+      "bytes": 371,
+      "sha256": "37bf6c508bb50f28a48a138e076b56a91c4d0606e15ba3fe447d28147611b66e",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/GetPropertyPosition.m",
+      "kind": "private",
+      "bytes": 1087,
+      "sha256": "7676560542842a3aa17b7785ece8732f8852d5c957f1957ef634c32686074ea5",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/GetPropertyType.m",
+      "kind": "private",
+      "bytes": 807,
+      "sha256": "58b23910df99bd38059961ebc61f1017555bbbb1e666ff72aea4c0eada291966",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/SetPropertyArgs.m",
+      "kind": "private",
+      "bytes": 497,
+      "sha256": "5c9aa1a50328cea7c57b0604e87cabd5629cfb003eedb0dfd13536bc1406dfe8",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/SmoothRange.m",
+      "kind": "private",
+      "bytes": 1547,
+      "sha256": "51d35bde0e4f19e1de9c9a36b4e02d77d24ba929451d227ae98558b07a1f4389",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/octave_struct2xml_2.m",
+      "kind": "private",
+      "bytes": 1261,
+      "sha256": "3851f2af91824d296844c92d1a8d49689055416d6d879c02f756021d65de62ab",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/struct_2_xmlNode.m",
+      "kind": "private",
+      "bytes": 2103,
+      "sha256": "6885ac1adaecda225dcda82617662c153db3ee7df695a9c7ccfc5c9c8f1e90a6",
+      "declarations": 1
+    },
+    {
+      "file": "matlab/private/vector2str.m",
+      "kind": "private",
+      "bytes": 821,
+      "sha256": "95551c7f020c899fc17762d9607b1da14c948845eb95f3e6ed69326691c10972",
+      "declarations": 1
+    }
+  ],
+  "public": [
+    {
+      "name": "AddBox",
+      "file": "matlab/AddBox.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "start",
+        "stop",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddConductingSheet",
+      "file": "matlab/AddConductingSheet.m",
+      "args": [
+        "CSX",
+        "name",
+        "conductivity",
+        "thickness"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddCurve",
+      "file": "matlab/AddCurve.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "points",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddCylinder",
+      "file": "matlab/AddCylinder.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "start",
+        "stop",
+        "rad",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddCylindricalShell",
+      "file": "matlab/AddCylindricalShell.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "start",
+        "stop",
+        "rad",
+        "shell_width",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddDebyeMaterial",
+      "file": "matlab/AddDebyeMaterial.m",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddDiscMaterial",
+      "file": "matlab/AddDiscMaterial.m",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddDjordjevicSarkarMaterial",
+      "file": "matlab/AddDjordjevicSarkarMaterial.m",
+      "args": [
+        "CSX",
+        "matName",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "isNonNegScalar",
+        "isPositiveScalar",
+        "isIntegerScalar",
+        "isScalar"
+      ]
+    },
+    {
+      "name": "AddDump",
+      "file": "matlab/AddDump.m",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddExcitation",
+      "file": "matlab/AddExcitation.m",
+      "args": [
+        "CSX",
+        "name",
+        "type",
+        "excite",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddLinPoly",
+      "file": "matlab/AddLinPoly.m",
+      "args": [
+        "CSX",
+        "materialname",
+        "prio",
+        "normDir",
+        "elevation",
+        "points",
+        "Length",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddLorentzMaterial",
+      "file": "matlab/AddLorentzMaterial.m",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddLumpedElement",
+      "file": "matlab/AddLumpedElement.m",
+      "args": [
+        "CSX",
+        "name",
+        "direction",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddMaterial",
+      "file": "matlab/AddMaterial.m",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddMetal",
+      "file": "matlab/AddMetal.m",
+      "args": [
+        "CSX",
+        "name"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddPlaneWaveExcite",
+      "file": "matlab/AddPlaneWaveExcite.m",
+      "args": [
+        "CSX",
+        "name",
+        "k_dir",
+        "E_dir",
+        "f0",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddPoint",
+      "file": "matlab/AddPoint.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "pos",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddPolygon",
+      "file": "matlab/AddPolygon.m",
+      "args": [
+        "CSX",
+        "materialname",
+        "prio",
+        "normDir",
+        "elevation",
+        "points",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddPolyhedron",
+      "file": "matlab/AddPolyhedron.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "vertices",
+        "faces",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddProbe",
+      "file": "matlab/AddProbe.m",
+      "args": [
+        "CSX",
+        "name",
+        "type",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddPropAttribute",
+      "file": "matlab/AddPropAttribute.m",
+      "args": [
+        "CSX",
+        "name",
+        "att_name",
+        "att_value"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddRotPoly",
+      "file": "matlab/AddRotPoly.m",
+      "args": [
+        "CSX",
+        "materialname",
+        "prio",
+        "normDir",
+        "points",
+        "RotAxisDir",
+        "angle",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddSphere",
+      "file": "matlab/AddSphere.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "center",
+        "rad",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddSphericalShell",
+      "file": "matlab/AddSphericalShell.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "center",
+        "rad",
+        "shell_width",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddWire",
+      "file": "matlab/AddWire.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "points",
+        "wire_rad",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AnalyseMesh",
+      "file": "matlab/AnalyseMesh.m",
+      "args": [
+        "lines"
+      ],
+      "returns": [
+        "results"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AutoSmoothMeshLines",
+      "file": "matlab/AutoSmoothMeshLines.m",
+      "args": [
+        "lines",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "lines",
+        "quality"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "eval_mesh"
+      ]
+    },
+    {
+      "name": "CSXGeomPlot",
+      "file": "matlab/CSXGeomPlot.m",
+      "args": [
+        "CSX_filename",
+        "args_string"
+      ],
+      "returns": [],
+      "delivery": "m-file",
+      "requires": [
+        "binary:AppCSXCAD"
+      ],
+      "local_functions": []
+    },
+    {
+      "name": "CalcDebyeMaterial",
+      "file": "matlab/CalcDebyeMaterial.m",
+      "args": [
+        "f",
+        "eps_r",
+        "kappa",
+        "eps_Delta",
+        "t_relax"
+      ],
+      "returns": [
+        "eps_debye"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "CalcDjordjevicSarkarApprox",
+      "file": "matlab/CalcDjordjevicSarkarApprox.m",
+      "args": [
+        "varargin"
+      ],
+      "returns": [
+        "paramDebye",
+        "paramSarkar"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "isNonNegScalar",
+        "isPositiveScalar",
+        "isIntegerScalar",
+        "isScalar"
+      ]
+    },
+    {
+      "name": "CalcDrudeMaterial",
+      "file": "matlab/CalcDrudeMaterial.m",
+      "args": [
+        "f",
+        "eps_r",
+        "kappa",
+        "plasmaFreq",
+        "t_relax"
+      ],
+      "returns": [
+        "eps_drude"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "CalcLorentzMaterial",
+      "file": "matlab/CalcLorentzMaterial.m",
+      "args": [
+        "f",
+        "eps_r",
+        "kappa",
+        "plasmaFreq",
+        "LorPoleFreq",
+        "t_relax"
+      ],
+      "returns": [
+        "eps_lorentz"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "CheckMesh",
+      "file": "matlab/CheckMesh.m",
+      "args": [
+        "lines",
+        "min_res",
+        "max_res",
+        "ratio",
+        "be_quiet"
+      ],
+      "returns": [
+        "EC",
+        "pos",
+        "E_type"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "Convert_VF_DiscMaterial",
+      "file": "matlab/Convert_VF_DiscMaterial.m",
+      "args": [
+        "raw_filesuffix",
+        "mat_db_file",
+        "out_filename",
+        "varargin"
+      ],
+      "returns": [],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "GetColeData"
+      ]
+    },
+    {
+      "name": "CreateDiscMaterial",
+      "file": "matlab/CreateDiscMaterial.m",
+      "args": [
+        "filename",
+        "data",
+        "mat_db",
+        "mesh"
+      ],
+      "returns": [],
+      "delivery": "m-file",
+      "requires": [
+        "octave-package:HDF5 (h5create)"
+      ],
+      "local_functions": [
+        "strjoin"
+      ]
+    },
+    {
+      "name": "DefineRectGrid",
+      "file": "matlab/DefineRectGrid.m",
+      "args": [
+        "CSX",
+        "deltaUnit",
+        "mesh"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "DetectEdges",
+      "file": "matlab/DetectEdges.m",
+      "args": [
+        "CSX",
+        "mesh",
+        "varargin"
+      ],
+      "returns": [
+        "mesh"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "AddEdge"
+      ]
+    },
+    {
+      "name": "DirChar2Int",
+      "file": "matlab/DirChar2Int.m",
+      "args": [
+        "dir_char"
+      ],
+      "returns": [
+        "n"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "ImportPLY",
+      "file": "matlab/ImportPLY.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "filename",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "ImportSTL",
+      "file": "matlab/ImportSTL.m",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "filename",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "InitCSX",
+      "file": "matlab/InitCSX.m",
+      "args": [
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "RecursiveSmoothMesh",
+      "file": "matlab/RecursiveSmoothMesh.m",
+      "args": [
+        "fixedMeshPoints",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "resultMeshPoints"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "recursiveMeshSearch"
+      ]
+    },
+    {
+      "name": "SetBackgroundMaterial",
+      "file": "matlab/SetBackgroundMaterial.m",
+      "args": [
+        "CSX",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "SetExcitationWeight",
+      "file": "matlab/SetExcitationWeight.m",
+      "args": [
+        "CSX",
+        "name",
+        "weight",
+        "origin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "SetExcitationWeightFile",
+      "file": "matlab/SetExcitationWeightFile.m",
+      "args": [
+        "CSX",
+        "name",
+        "fileName",
+        "propDir",
+        "origin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "SetMaterialProperty",
+      "file": "matlab/SetMaterialProperty.m",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "SetMaterialWeight",
+      "file": "matlab/SetMaterialWeight.m",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "SmoothMesh",
+      "file": "matlab/SmoothMesh.m",
+      "args": [
+        "mesh",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "mesh"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "SmoothMeshLines",
+      "file": "matlab/SmoothMeshLines.m",
+      "args": [
+        "lines",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "lines"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "SmoothMeshLines2",
+      "file": "matlab/SmoothMeshLines2.m",
+      "args": [
+        "lines",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "lines"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "calc_gaps",
+        "plot_lines",
+        "calc_start_res",
+        "calc_stop_res",
+        "SmoothRange"
+      ]
+    },
+    {
+      "name": "WriteCSX",
+      "file": "matlab/WriteCSX.m",
+      "args": [
+        "filename",
+        "CSX"
+      ],
+      "returns": [],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "export_empire",
+      "file": "matlab/export_empire.m",
+      "args": [
+        "CSX",
+        "FDTD",
+        "filename",
+        "options"
+      ],
+      "returns": [],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "gym_vect",
+        "gym_vector",
+        "primitive_box",
+        "primitive_cylinder",
+        "primitive_wire",
+        "primitive_polygon",
+        "process_primitives",
+        "export_empire_layer",
+        "export_empire_meshlines",
+        "convert_BC",
+        "export_empire_settings"
+      ]
+    },
+    {
+      "name": "export_excellon",
+      "file": "matlab/export_excellon.m",
+      "args": [
+        "CSX",
+        "filename",
+        "options"
+      ],
+      "returns": [],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "coord",
+        "primitive_cylinder",
+        "process_primitives"
+      ]
+    },
+    {
+      "name": "export_gerber",
+      "file": "matlab/export_gerber.m",
+      "args": [
+        "CSX",
+        "filename",
+        "options"
+      ],
+      "returns": [],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "gerber_coord",
+        "primitive_box",
+        "primitive_cylinder",
+        "primitive_polygon",
+        "GetCoordSystem",
+        "process_primitives"
+      ]
+    },
+    {
+      "name": "export_povray",
+      "file": "matlab/export_povray.m",
+      "args": [
+        "CSX",
+        "filename",
+        "options"
+      ],
+      "returns": [],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": [
+        "pov_vect",
+        "primitive_box",
+        "primitive_cylinder",
+        "primitive_wire",
+        "primitive_polygon",
+        "process_primitives"
+      ]
+    },
+    {
+      "name": "isOctave",
+      "file": "matlab/isOctave.m",
+      "args": [],
+      "returns": [
+        "isOct",
+        "ver"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "searchBinary",
+      "file": "matlab/searchBinary.m",
+      "args": [
+        "name",
+        "searchpath",
+        "err_fail"
+      ],
+      "returns": [
+        "binary_location"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "struct_2_xml",
+      "file": "matlab/struct_2_xml.m",
+      "args": [
+        "filename",
+        "xml_struct",
+        "rootName"
+      ],
+      "returns": [],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    }
+  ],
+  "private": [
+    {
+      "name": "Add2Property",
+      "file": "matlab/private/Add2Property.m",
+      "args": [
+        "CSX",
+        "propName",
+        "newPrim",
+        "primName"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddPrimitiveArgs",
+      "file": "matlab/private/AddPrimitiveArgs.m",
+      "args": [
+        "primitive",
+        "varargin"
+      ],
+      "returns": [
+        "primitive"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "AddProperty",
+      "file": "matlab/private/AddProperty.m",
+      "args": [
+        "CSX",
+        "type",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX",
+        "pos"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "CheckSymmtricLines",
+      "file": "matlab/private/CheckSymmtricLines.m",
+      "args": [
+        "lines"
+      ],
+      "returns": [
+        "result"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "FindProperty",
+      "file": "matlab/private/FindProperty.m",
+      "args": [
+        "CSX",
+        "name"
+      ],
+      "returns": [
+        "type",
+        "pos"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "GetPropertyPosition",
+      "file": "matlab/private/GetPropertyPosition.m",
+      "args": [
+        "CSX",
+        "type",
+        "name"
+      ],
+      "returns": [
+        "pos"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "GetPropertyType",
+      "file": "matlab/private/GetPropertyType.m",
+      "args": [
+        "CSX",
+        "name"
+      ],
+      "returns": [
+        "type_name"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "SetPropertyArgs",
+      "file": "matlab/private/SetPropertyArgs.m",
+      "args": [
+        "CSX",
+        "type",
+        "name",
+        "property",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "SmoothRange",
+      "file": "matlab/private/SmoothRange.m",
+      "args": [
+        "start",
+        "stop",
+        "start_res",
+        "stop_res",
+        "max_res",
+        "ratio"
+      ],
+      "returns": [
+        "lines"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "octave_struct2xml_2",
+      "file": "matlab/private/octave_struct2xml_2.m",
+      "args": [
+        "in",
+        "rootName",
+        "indent"
+      ],
+      "returns": [
+        "out"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "struct_2_xmlNode",
+      "file": "matlab/private/struct_2_xmlNode.m",
+      "args": [
+        "docNode",
+        "docElem",
+        "mat_struct"
+      ],
+      "returns": [
+        "docElem"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    },
+    {
+      "name": "vector2str",
+      "file": "matlab/private/vector2str.m",
+      "args": [
+        "vec",
+        "acc"
+      ],
+      "returns": [
+        "str"
+      ],
+      "delivery": "m-file",
+      "requires": [],
+      "local_functions": []
+    }
+  ],
+  "declarations": [
+    {
+      "name": "AddBox",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "start",
+        "stop",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddBox.m",
+      "public": true
+    },
+    {
+      "name": "AddConductingSheet",
+      "args": [
+        "CSX",
+        "name",
+        "conductivity",
+        "thickness"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddConductingSheet.m",
+      "public": true
+    },
+    {
+      "name": "AddCurve",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "points",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddCurve.m",
+      "public": true
+    },
+    {
+      "name": "AddCylinder",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "start",
+        "stop",
+        "rad",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddCylinder.m",
+      "public": true
+    },
+    {
+      "name": "AddCylindricalShell",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "start",
+        "stop",
+        "rad",
+        "shell_width",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddCylindricalShell.m",
+      "public": true
+    },
+    {
+      "name": "AddDebyeMaterial",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddDebyeMaterial.m",
+      "public": true
+    },
+    {
+      "name": "AddDiscMaterial",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddDiscMaterial.m",
+      "public": true
+    },
+    {
+      "name": "AddDjordjevicSarkarMaterial",
+      "args": [
+        "CSX",
+        "matName",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddDjordjevicSarkarMaterial.m",
+      "public": true
+    },
+    {
+      "name": "isNonNegScalar",
+      "args": [
+        "x"
+      ],
+      "returns": [
+        "val"
+      ],
+      "line": 118,
+      "local": true,
+      "file": "matlab/AddDjordjevicSarkarMaterial.m",
+      "public": false
+    },
+    {
+      "name": "isPositiveScalar",
+      "args": [
+        "x"
+      ],
+      "returns": [
+        "val"
+      ],
+      "line": 122,
+      "local": true,
+      "file": "matlab/AddDjordjevicSarkarMaterial.m",
+      "public": false
+    },
+    {
+      "name": "isIntegerScalar",
+      "args": [
+        "x"
+      ],
+      "returns": [
+        "val"
+      ],
+      "line": 126,
+      "local": true,
+      "file": "matlab/AddDjordjevicSarkarMaterial.m",
+      "public": false
+    },
+    {
+      "name": "isScalar",
+      "args": [
+        "x"
+      ],
+      "returns": [
+        "val"
+      ],
+      "line": 130,
+      "local": true,
+      "file": "matlab/AddDjordjevicSarkarMaterial.m",
+      "public": false
+    },
+    {
+      "name": "AddDump",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddDump.m",
+      "public": true
+    },
+    {
+      "name": "AddExcitation",
+      "args": [
+        "CSX",
+        "name",
+        "type",
+        "excite",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddExcitation.m",
+      "public": true
+    },
+    {
+      "name": "AddLinPoly",
+      "args": [
+        "CSX",
+        "materialname",
+        "prio",
+        "normDir",
+        "elevation",
+        "points",
+        "Length",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddLinPoly.m",
+      "public": true
+    },
+    {
+      "name": "AddLorentzMaterial",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddLorentzMaterial.m",
+      "public": true
+    },
+    {
+      "name": "AddLumpedElement",
+      "args": [
+        "CSX",
+        "name",
+        "direction",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddLumpedElement.m",
+      "public": true
+    },
+    {
+      "name": "AddMaterial",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddMaterial.m",
+      "public": true
+    },
+    {
+      "name": "AddMetal",
+      "args": [
+        "CSX",
+        "name"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddMetal.m",
+      "public": true
+    },
+    {
+      "name": "AddPlaneWaveExcite",
+      "args": [
+        "CSX",
+        "name",
+        "k_dir",
+        "E_dir",
+        "f0",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddPlaneWaveExcite.m",
+      "public": true
+    },
+    {
+      "name": "AddPoint",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "pos",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddPoint.m",
+      "public": true
+    },
+    {
+      "name": "AddPolygon",
+      "args": [
+        "CSX",
+        "materialname",
+        "prio",
+        "normDir",
+        "elevation",
+        "points",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddPolygon.m",
+      "public": true
+    },
+    {
+      "name": "AddPolyhedron",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "vertices",
+        "faces",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddPolyhedron.m",
+      "public": true
+    },
+    {
+      "name": "AddProbe",
+      "args": [
+        "CSX",
+        "name",
+        "type",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddProbe.m",
+      "public": true
+    },
+    {
+      "name": "AddPropAttribute",
+      "args": [
+        "CSX",
+        "name",
+        "att_name",
+        "att_value"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddPropAttribute.m",
+      "public": true
+    },
+    {
+      "name": "AddRotPoly",
+      "args": [
+        "CSX",
+        "materialname",
+        "prio",
+        "normDir",
+        "points",
+        "RotAxisDir",
+        "angle",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddRotPoly.m",
+      "public": true
+    },
+    {
+      "name": "AddSphere",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "center",
+        "rad",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddSphere.m",
+      "public": true
+    },
+    {
+      "name": "AddSphericalShell",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "center",
+        "rad",
+        "shell_width",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddSphericalShell.m",
+      "public": true
+    },
+    {
+      "name": "AddWire",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "points",
+        "wire_rad",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AddWire.m",
+      "public": true
+    },
+    {
+      "name": "AnalyseMesh",
+      "args": [
+        "lines"
+      ],
+      "returns": [
+        "results"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AnalyseMesh.m",
+      "public": true
+    },
+    {
+      "name": "AutoSmoothMeshLines",
+      "args": [
+        "lines",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "lines",
+        "quality"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/AutoSmoothMeshLines.m",
+      "public": true
+    },
+    {
+      "name": "eval_mesh",
+      "args": [
+        "lines",
+        "max_res",
+        "ratio",
+        "requires_homogen",
+        "requires_symmetric",
+        "allowed_min_res",
+        "silent"
+      ],
+      "returns": [
+        "quality"
+      ],
+      "line": 120,
+      "local": true,
+      "file": "matlab/AutoSmoothMeshLines.m",
+      "public": false
+    },
+    {
+      "name": "CSXGeomPlot",
+      "args": [
+        "CSX_filename",
+        "args_string"
+      ],
+      "returns": [],
+      "line": 1,
+      "local": false,
+      "file": "matlab/CSXGeomPlot.m",
+      "public": true
+    },
+    {
+      "name": "CalcDebyeMaterial",
+      "args": [
+        "f",
+        "eps_r",
+        "kappa",
+        "eps_Delta",
+        "t_relax"
+      ],
+      "returns": [
+        "eps_debye"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/CalcDebyeMaterial.m",
+      "public": true
+    },
+    {
+      "name": "CalcDjordjevicSarkarApprox",
+      "args": [
+        "varargin"
+      ],
+      "returns": [
+        "paramDebye",
+        "paramSarkar"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/CalcDjordjevicSarkarApprox.m",
+      "public": true
+    },
+    {
+      "name": "isNonNegScalar",
+      "args": [
+        "x"
+      ],
+      "returns": [
+        "val"
+      ],
+      "line": 321,
+      "local": true,
+      "file": "matlab/CalcDjordjevicSarkarApprox.m",
+      "public": false
+    },
+    {
+      "name": "isPositiveScalar",
+      "args": [
+        "x"
+      ],
+      "returns": [
+        "val"
+      ],
+      "line": 325,
+      "local": true,
+      "file": "matlab/CalcDjordjevicSarkarApprox.m",
+      "public": false
+    },
+    {
+      "name": "isIntegerScalar",
+      "args": [
+        "x"
+      ],
+      "returns": [
+        "val"
+      ],
+      "line": 329,
+      "local": true,
+      "file": "matlab/CalcDjordjevicSarkarApprox.m",
+      "public": false
+    },
+    {
+      "name": "isScalar",
+      "args": [
+        "x"
+      ],
+      "returns": [
+        "val"
+      ],
+      "line": 333,
+      "local": true,
+      "file": "matlab/CalcDjordjevicSarkarApprox.m",
+      "public": false
+    },
+    {
+      "name": "CalcDrudeMaterial",
+      "args": [
+        "f",
+        "eps_r",
+        "kappa",
+        "plasmaFreq",
+        "t_relax"
+      ],
+      "returns": [
+        "eps_drude"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/CalcDrudeMaterial.m",
+      "public": true
+    },
+    {
+      "name": "CalcLorentzMaterial",
+      "args": [
+        "f",
+        "eps_r",
+        "kappa",
+        "plasmaFreq",
+        "LorPoleFreq",
+        "t_relax"
+      ],
+      "returns": [
+        "eps_lorentz"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/CalcLorentzMaterial.m",
+      "public": true
+    },
+    {
+      "name": "CheckMesh",
+      "args": [
+        "lines",
+        "min_res",
+        "max_res",
+        "ratio",
+        "be_quiet"
+      ],
+      "returns": [
+        "EC",
+        "pos",
+        "E_type"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/CheckMesh.m",
+      "public": true
+    },
+    {
+      "name": "Convert_VF_DiscMaterial",
+      "args": [
+        "raw_filesuffix",
+        "mat_db_file",
+        "out_filename",
+        "varargin"
+      ],
+      "returns": [],
+      "line": 1,
+      "local": false,
+      "file": "matlab/Convert_VF_DiscMaterial.m",
+      "public": true
+    },
+    {
+      "name": "GetColeData",
+      "args": [
+        "mat_db",
+        "mat_name"
+      ],
+      "returns": [
+        "mat_para"
+      ],
+      "line": 225,
+      "local": true,
+      "file": "matlab/Convert_VF_DiscMaterial.m",
+      "public": false
+    },
+    {
+      "name": "CreateDiscMaterial",
+      "args": [
+        "filename",
+        "data",
+        "mat_db",
+        "mesh"
+      ],
+      "returns": [],
+      "line": 1,
+      "local": false,
+      "file": "matlab/CreateDiscMaterial.m",
+      "public": true
+    },
+    {
+      "name": "strjoin",
+      "args": [
+        "names",
+        "delimitier"
+      ],
+      "returns": [
+        "out"
+      ],
+      "line": 79,
+      "local": true,
+      "file": "matlab/CreateDiscMaterial.m",
+      "public": false
+    },
+    {
+      "name": "DefineRectGrid",
+      "args": [
+        "CSX",
+        "deltaUnit",
+        "mesh"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/DefineRectGrid.m",
+      "public": true
+    },
+    {
+      "name": "DetectEdges",
+      "args": [
+        "CSX",
+        "mesh",
+        "varargin"
+      ],
+      "returns": [
+        "mesh"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/DetectEdges.m",
+      "public": true
+    },
+    {
+      "name": "AddEdge",
+      "args": [
+        "edges",
+        "csx_prim",
+        "x",
+        "y",
+        "z",
+        "CoordSystem",
+        "debug"
+      ],
+      "returns": [
+        "edges"
+      ],
+      "line": 238,
+      "local": true,
+      "file": "matlab/DetectEdges.m",
+      "public": false
+    },
+    {
+      "name": "DirChar2Int",
+      "args": [
+        "dir_char"
+      ],
+      "returns": [
+        "n"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/DirChar2Int.m",
+      "public": true
+    },
+    {
+      "name": "ImportPLY",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "filename",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/ImportPLY.m",
+      "public": true
+    },
+    {
+      "name": "ImportSTL",
+      "args": [
+        "CSX",
+        "propName",
+        "prio",
+        "filename",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/ImportSTL.m",
+      "public": true
+    },
+    {
+      "name": "InitCSX",
+      "args": [
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/InitCSX.m",
+      "public": true
+    },
+    {
+      "name": "RecursiveSmoothMesh",
+      "args": [
+        "fixedMeshPoints",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "resultMeshPoints"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/RecursiveSmoothMesh.m",
+      "public": true
+    },
+    {
+      "name": "recursiveMeshSearch",
+      "args": [
+        "lastMeshPoint",
+        "lastSpace",
+        "fixedMeshPoints",
+        "max_res",
+        "ratio"
+      ],
+      "returns": [
+        "meshPoints",
+        "success"
+      ],
+      "line": 132,
+      "local": true,
+      "file": "matlab/RecursiveSmoothMesh.m",
+      "public": false
+    },
+    {
+      "name": "SetBackgroundMaterial",
+      "args": [
+        "CSX",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/SetBackgroundMaterial.m",
+      "public": true
+    },
+    {
+      "name": "SetExcitationWeight",
+      "args": [
+        "CSX",
+        "name",
+        "weight",
+        "origin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/SetExcitationWeight.m",
+      "public": true
+    },
+    {
+      "name": "SetExcitationWeightFile",
+      "args": [
+        "CSX",
+        "name",
+        "fileName",
+        "propDir",
+        "origin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/SetExcitationWeightFile.m",
+      "public": true
+    },
+    {
+      "name": "SetMaterialProperty",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/SetMaterialProperty.m",
+      "public": true
+    },
+    {
+      "name": "SetMaterialWeight",
+      "args": [
+        "CSX",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/SetMaterialWeight.m",
+      "public": true
+    },
+    {
+      "name": "SmoothMesh",
+      "args": [
+        "mesh",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "mesh"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/SmoothMesh.m",
+      "public": true
+    },
+    {
+      "name": "SmoothMeshLines",
+      "args": [
+        "lines",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "lines"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/SmoothMeshLines.m",
+      "public": true
+    },
+    {
+      "name": "SmoothMeshLines2",
+      "args": [
+        "lines",
+        "max_res",
+        "ratio",
+        "varargin"
+      ],
+      "returns": [
+        "lines"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/SmoothMeshLines2.m",
+      "public": true
+    },
+    {
+      "name": "calc_gaps",
+      "args": [
+        "lines",
+        "old_gap",
+        "max_res"
+      ],
+      "returns": [
+        "gap"
+      ],
+      "line": 115,
+      "local": true,
+      "file": "matlab/SmoothMeshLines2.m",
+      "public": false
+    },
+    {
+      "name": "plot_lines",
+      "args": [],
+      "returns": [],
+      "line": 145,
+      "local": true,
+      "file": "matlab/SmoothMeshLines2.m",
+      "public": false
+    },
+    {
+      "name": "calc_start_res",
+      "args": [
+        "pos",
+        "lines",
+        "old_gap"
+      ],
+      "returns": [
+        "res"
+      ],
+      "line": 160,
+      "local": true,
+      "file": "matlab/SmoothMeshLines2.m",
+      "public": false
+    },
+    {
+      "name": "calc_stop_res",
+      "args": [
+        "pos",
+        "lines",
+        "old_gap"
+      ],
+      "returns": [
+        "res"
+      ],
+      "line": 177,
+      "local": true,
+      "file": "matlab/SmoothMeshLines2.m",
+      "public": false
+    },
+    {
+      "name": "SmoothRange",
+      "args": [
+        "start",
+        "stop",
+        "start_res",
+        "stop_res",
+        "max_res",
+        "ratio"
+      ],
+      "returns": [
+        "lines"
+      ],
+      "line": 194,
+      "local": true,
+      "file": "matlab/SmoothMeshLines2.m",
+      "public": false
+    },
+    {
+      "name": "WriteCSX",
+      "args": [
+        "filename",
+        "CSX"
+      ],
+      "returns": [],
+      "line": 1,
+      "local": false,
+      "file": "matlab/WriteCSX.m",
+      "public": true
+    },
+    {
+      "name": "export_empire",
+      "args": [
+        "CSX",
+        "FDTD",
+        "filename",
+        "options"
+      ],
+      "returns": [],
+      "line": 1,
+      "local": false,
+      "file": "matlab/export_empire.m",
+      "public": true
+    },
+    {
+      "name": "gym_vect",
+      "args": [
+        "start",
+        "stop"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 48,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "gym_vector",
+      "args": [
+        "v"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 50,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "primitive_box",
+      "args": [
+        "fid",
+        "CSX_box",
+        "layertype"
+      ],
+      "returns": [],
+      "line": 56,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "primitive_cylinder",
+      "args": [
+        "fid",
+        "CSX_cylinder",
+        "layertype"
+      ],
+      "returns": [],
+      "line": 73,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "primitive_wire",
+      "args": [
+        "CSX_wire",
+        "options"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 104,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "primitive_polygon",
+      "args": [
+        "fid",
+        "CSX_polygon",
+        "layertype"
+      ],
+      "returns": [],
+      "line": 115,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "process_primitives",
+      "args": [
+        "fid",
+        "prop",
+        "options"
+      ],
+      "returns": [],
+      "line": 154,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "export_empire_layer",
+      "args": [
+        "fid",
+        "name",
+        "layertext"
+      ],
+      "returns": [],
+      "line": 251,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "export_empire_meshlines",
+      "args": [
+        "fid",
+        "CSX"
+      ],
+      "returns": [],
+      "line": 258,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "convert_BC",
+      "args": [
+        "openEMS_BC"
+      ],
+      "returns": [
+        "empire_BC"
+      ],
+      "line": 267,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "export_empire_settings",
+      "args": [
+        "fid",
+        "CSX",
+        "FDTD"
+      ],
+      "returns": [],
+      "line": 290,
+      "local": true,
+      "file": "matlab/export_empire.m",
+      "public": false
+    },
+    {
+      "name": "export_excellon",
+      "args": [
+        "CSX",
+        "filename",
+        "options"
+      ],
+      "returns": [],
+      "line": 1,
+      "local": false,
+      "file": "matlab/export_excellon.m",
+      "public": true
+    },
+    {
+      "name": "coord",
+      "args": [
+        "v"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 89,
+      "local": true,
+      "file": "matlab/export_excellon.m",
+      "public": false
+    },
+    {
+      "name": "primitive_cylinder",
+      "args": [
+        "CSX_cylinder",
+        "drawingunit"
+      ],
+      "returns": [
+        "tool",
+        "drill"
+      ],
+      "line": 97,
+      "local": true,
+      "file": "matlab/export_excellon.m",
+      "public": false
+    },
+    {
+      "name": "process_primitives",
+      "args": [
+        "prop",
+        "options"
+      ],
+      "returns": [
+        "tools",
+        "drill"
+      ],
+      "line": 112,
+      "local": true,
+      "file": "matlab/export_excellon.m",
+      "public": false
+    },
+    {
+      "name": "export_gerber",
+      "args": [
+        "CSX",
+        "filename",
+        "options"
+      ],
+      "returns": [],
+      "line": 1,
+      "local": false,
+      "file": "matlab/export_gerber.m",
+      "public": true
+    },
+    {
+      "name": "gerber_coord",
+      "args": [
+        "v",
+        "CoordSystem"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 68,
+      "local": true,
+      "file": "matlab/export_gerber.m",
+      "public": false
+    },
+    {
+      "name": "primitive_box",
+      "args": [
+        "fid",
+        "CSX_box",
+        "CoordSystem"
+      ],
+      "returns": [],
+      "line": 88,
+      "local": true,
+      "file": "matlab/export_gerber.m",
+      "public": false
+    },
+    {
+      "name": "primitive_cylinder",
+      "args": [
+        "fid",
+        "CSX_cylinder",
+        "CoordSystem"
+      ],
+      "returns": [],
+      "line": 124,
+      "local": true,
+      "file": "matlab/export_gerber.m",
+      "public": false
+    },
+    {
+      "name": "primitive_polygon",
+      "args": [
+        "fid",
+        "CSX_polygon",
+        "CoordSystem"
+      ],
+      "returns": [],
+      "line": 140,
+      "local": true,
+      "file": "matlab/export_gerber.m",
+      "public": false
+    },
+    {
+      "name": "GetCoordSystem",
+      "args": [
+        "prim"
+      ],
+      "returns": [
+        "primCoordSystem"
+      ],
+      "line": 155,
+      "local": true,
+      "file": "matlab/export_gerber.m",
+      "public": false
+    },
+    {
+      "name": "process_primitives",
+      "args": [
+        "fid",
+        "prop",
+        "options"
+      ],
+      "returns": [],
+      "line": 163,
+      "local": true,
+      "file": "matlab/export_gerber.m",
+      "public": false
+    },
+    {
+      "name": "export_povray",
+      "args": [
+        "CSX",
+        "filename",
+        "options"
+      ],
+      "returns": [],
+      "line": 1,
+      "local": false,
+      "file": "matlab/export_povray.m",
+      "public": true
+    },
+    {
+      "name": "pov_vect",
+      "args": [
+        "vec"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 133,
+      "local": true,
+      "file": "matlab/export_povray.m",
+      "public": false
+    },
+    {
+      "name": "primitive_box",
+      "args": [
+        "CSX_box",
+        "options"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 141,
+      "local": true,
+      "file": "matlab/export_povray.m",
+      "public": false
+    },
+    {
+      "name": "primitive_cylinder",
+      "args": [
+        "CSX_cylinder",
+        "options"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 155,
+      "local": true,
+      "file": "matlab/export_povray.m",
+      "public": false
+    },
+    {
+      "name": "primitive_wire",
+      "args": [
+        "CSX_wire",
+        "options"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 162,
+      "local": true,
+      "file": "matlab/export_povray.m",
+      "public": false
+    },
+    {
+      "name": "primitive_polygon",
+      "args": [
+        "CSX_polygon",
+        "options"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 173,
+      "local": true,
+      "file": "matlab/export_povray.m",
+      "public": false
+    },
+    {
+      "name": "process_primitives",
+      "args": [
+        "fid",
+        "prop",
+        "default_obj_modifier",
+        "options"
+      ],
+      "returns": [],
+      "line": 189,
+      "local": true,
+      "file": "matlab/export_povray.m",
+      "public": false
+    },
+    {
+      "name": "isOctave",
+      "args": [],
+      "returns": [
+        "isOct",
+        "ver"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/isOctave.m",
+      "public": true
+    },
+    {
+      "name": "searchBinary",
+      "args": [
+        "name",
+        "searchpath",
+        "err_fail"
+      ],
+      "returns": [
+        "binary_location"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/searchBinary.m",
+      "public": true
+    },
+    {
+      "name": "struct_2_xml",
+      "args": [
+        "filename",
+        "xml_struct",
+        "rootName"
+      ],
+      "returns": [],
+      "line": 1,
+      "local": false,
+      "file": "matlab/struct_2_xml.m",
+      "public": true
+    },
+    {
+      "name": "Add2Property",
+      "args": [
+        "CSX",
+        "propName",
+        "newPrim",
+        "primName"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/Add2Property.m",
+      "public": false
+    },
+    {
+      "name": "AddPrimitiveArgs",
+      "args": [
+        "primitive",
+        "varargin"
+      ],
+      "returns": [
+        "primitive"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/AddPrimitiveArgs.m",
+      "public": false
+    },
+    {
+      "name": "AddProperty",
+      "args": [
+        "CSX",
+        "type",
+        "name",
+        "varargin"
+      ],
+      "returns": [
+        "CSX",
+        "pos"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/AddProperty.m",
+      "public": false
+    },
+    {
+      "name": "CheckSymmtricLines",
+      "args": [
+        "lines"
+      ],
+      "returns": [
+        "result"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/CheckSymmtricLines.m",
+      "public": false
+    },
+    {
+      "name": "FindProperty",
+      "args": [
+        "CSX",
+        "name"
+      ],
+      "returns": [
+        "type",
+        "pos"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/FindProperty.m",
+      "public": false
+    },
+    {
+      "name": "GetPropertyPosition",
+      "args": [
+        "CSX",
+        "type",
+        "name"
+      ],
+      "returns": [
+        "pos"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/GetPropertyPosition.m",
+      "public": false
+    },
+    {
+      "name": "GetPropertyType",
+      "args": [
+        "CSX",
+        "name"
+      ],
+      "returns": [
+        "type_name"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/GetPropertyType.m",
+      "public": false
+    },
+    {
+      "name": "SetPropertyArgs",
+      "args": [
+        "CSX",
+        "type",
+        "name",
+        "property",
+        "varargin"
+      ],
+      "returns": [
+        "CSX"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/SetPropertyArgs.m",
+      "public": false
+    },
+    {
+      "name": "SmoothRange",
+      "args": [
+        "start",
+        "stop",
+        "start_res",
+        "stop_res",
+        "max_res",
+        "ratio"
+      ],
+      "returns": [
+        "lines"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/SmoothRange.m",
+      "public": false
+    },
+    {
+      "name": "octave_struct2xml_2",
+      "args": [
+        "in",
+        "rootName",
+        "indent"
+      ],
+      "returns": [
+        "out"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/octave_struct2xml_2.m",
+      "public": false
+    },
+    {
+      "name": "struct_2_xmlNode",
+      "args": [
+        "docNode",
+        "docElem",
+        "mat_struct"
+      ],
+      "returns": [
+        "docElem"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/struct_2_xmlNode.m",
+      "public": false
+    },
+    {
+      "name": "vector2str",
+      "args": [
+        "vec",
+        "acc"
+      ],
+      "returns": [
+        "str"
+      ],
+      "line": 1,
+      "local": false,
+      "file": "matlab/private/vector2str.m",
+      "public": false
+    }
+  ],
+  "delivery": {
+    "m_files": "the unchanged native M-files in CSXCAD/matlab (this inventory)",
+    "c_abi": {
+      "library": "csxcad-matlab / libcsxcad_matlab (CSXCAD/rust-matlab)",
+      "purpose": "embedding and MEX path on top of csxcad-core; tested by src/contract_tests.rs",
+      "symbols": [
+        "csxcad_new",
+        "csxcad_free",
+        "csxcad_clear",
+        "csxcad_property_count",
+        "csxcad_add_property",
+        "csxcad_find_property",
+        "csxcad_set_background_material",
+        "csxcad_set_material_property",
+        "csxcad_add_box",
+        "csxcad_add_sphere",
+        "csxcad_add_point",
+        "csxcad_add_cylinder",
+        "csxcad_to_xml_string",
+        "csxcad_from_xml_string",
+        "csxcad_free_string",
+        "csxcad_set_coord_system",
+        "csxcad_add_grid_line",
+        "csxcad_set_delta_unit"
+      ]
+    },
+    "cli": [
+      "openEMS",
+      "AppCSXCAD"
+    ]
+  },
+  "absent": {},
+  "absent_note": "Empty on purpose: all 58 public and 12 private native M-files are delivered unchanged, so no native entry point is missing. A name would only be listed here with the native source that defines it and the reason it cannot be provided."
+}

@@ -208,10 +208,6 @@ impl PyProperty {
         self.local = None;
     }
 
-    pub(crate) fn property(&self) -> Option<&Property> {
-        self.local.as_ref()
-    }
-
     fn deleted(&self) -> pyo3::PyErr {
         PyRuntimeError::new_err(format!(
             "wrapped C++ object of type {} has been deleted",
@@ -249,7 +245,8 @@ impl PyProperty {
             return Err(self.deleted());
         };
         let mut structure = owner.borrow_mut(py);
-        let Some((property, parameters)) = structure.structure_mut().property_with_parameters_mut(id)
+        let Some((property, parameters)) =
+            structure.structure_mut().property_with_parameters_mut(id)
         else {
             return Err(self.deleted());
         };
@@ -290,11 +287,7 @@ impl PyProperty {
         })
     }
 
-    fn add_primitive(
-        &mut self,
-        py: Python<'_>,
-        primitive: Primitive,
-    ) -> PyResult<usize> {
+    fn add_primitive(&mut self, py: Python<'_>, primitive: Primitive) -> PyResult<usize> {
         let mut index = 0;
         self.with_mut(py, |property, _| {
             property.add_primitive(primitive);
@@ -309,9 +302,8 @@ impl PyProperty {
 impl PyProperty {
     #[new]
     fn py_new(type_name: &str) -> PyResult<Self> {
-        let property_type = property_type_from_name(type_name).ok_or_else(|| {
-            PyValueError::new_err(format!("unknown property type: {type_name}"))
-        })?;
+        let property_type = property_type_from_name(type_name)
+            .ok_or_else(|| PyValueError::new_err(format!("unknown property type: {type_name}")))?;
         Ok(Self::from_owned(Property::new("", property_type)))
     }
 
@@ -345,7 +337,9 @@ impl PyProperty {
     }
 
     fn type_id(&self, py: Python<'_>) -> PyResult<i32> {
-        self.with(py, |property, _| Ok(type_mask_value(property.property_type())))
+        self.with(py, |property, _| {
+            Ok(type_mask_value(property.property_type()))
+        })
     }
 
     fn is_material(&self, py: Python<'_>) -> PyResult<bool> {
@@ -376,16 +370,21 @@ impl PyProperty {
 
     fn fill_color(&self, py: Python<'_>) -> PyResult<Option<(u8, u8, u8, u8)>> {
         self.with(py, |property, _| {
-            Ok(property
-                .fill_color()
-                .map(|color| {
-                    let [red, green, blue, alpha] = color.components();
-                    (red, green, blue, alpha)
-                }))
+            Ok(property.fill_color().map(|color| {
+                let [red, green, blue, alpha] = color.components();
+                (red, green, blue, alpha)
+            }))
         })
     }
 
-    fn set_fill_color(&mut self, py: Python<'_>, red: u8, green: u8, blue: u8, alpha: u8) -> PyResult<()> {
+    fn set_fill_color(
+        &mut self,
+        py: Python<'_>,
+        red: u8,
+        green: u8,
+        blue: u8,
+        alpha: u8,
+    ) -> PyResult<()> {
         self.with_mut(py, |property, _| {
             property.set_fill_color(Some(PropertyColor::new(red, green, blue, alpha)));
             Ok(())
@@ -401,7 +400,14 @@ impl PyProperty {
         })
     }
 
-    fn set_edge_color(&mut self, py: Python<'_>, red: u8, green: u8, blue: u8, alpha: u8) -> PyResult<()> {
+    fn set_edge_color(
+        &mut self,
+        py: Python<'_>,
+        red: u8,
+        green: u8,
+        blue: u8,
+        alpha: u8,
+    ) -> PyResult<()> {
         self.with_mut(py, |property, _| {
             property.set_edge_color(Some(PropertyColor::new(red, green, blue, alpha)));
             Ok(())
@@ -420,9 +426,10 @@ impl PyProperty {
     }
 
     fn coord_input_type(&self, py: Python<'_>) -> PyResult<i32> {
-        self.with(py, |property, _| {
-            Ok(property.coordinate_input_type() as i32)
-        })
+        self.with(
+            py,
+            |property, _| Ok(property.coordinate_input_type() as i32),
+        )
     }
 
     fn set_coord_input_type(&mut self, py: Python<'_>, ctype: i32) -> PyResult<()> {
@@ -551,7 +558,9 @@ impl PyProperty {
             if let Some(lorentz) = property.lorentz_material() {
                 return Ok(lorentz.order());
             }
-            Err(PyValueError::new_err("property is not a dispersive material"))
+            Err(PyValueError::new_err(
+                "property is not a dispersive material",
+            ))
         })
     }
 
@@ -565,7 +574,9 @@ impl PyProperty {
                 lorentz.set_order(order);
                 return Ok(());
             }
-            Err(PyValueError::new_err("property is not a dispersive material"))
+            Err(PyValueError::new_err(
+                "property is not a dispersive material",
+            ))
         })
     }
 
@@ -677,9 +688,9 @@ impl PyProperty {
                     )))
                 }
             };
-            let grid = discrete.load_grid().map_err(|error| {
-                PyValueError::new_err(format!("ReadFile: {error}"))
-            })?;
+            let grid = discrete
+                .load_grid()
+                .map_err(|error| PyValueError::new_err(format!("ReadFile: {error}")))?;
             let value = grid
                 .material_value(
                     field,
@@ -747,10 +758,7 @@ impl PyProperty {
             if discrete.transform().is_none() {
                 discrete.set_transform(Some(Transform::new()));
             }
-            let transform = discrete
-                .transform()
-                .cloned()
-                .unwrap_or_else(Transform::new);
+            let transform = discrete.transform().cloned().unwrap_or_else(Transform::new);
             Ok(transform)
         })?;
         Py::new(py, PyCSTransform::from_transform(transform))
@@ -776,7 +784,12 @@ impl PyProperty {
         let value = match transform {
             None => None,
             Some(value) if value.is_none() => None,
-            Some(value) => Some(value.extract::<pyo3::PyRef<'_, PyCSTransform>>()?.transform().clone()),
+            Some(value) => Some(
+                value
+                    .extract::<pyo3::PyRef<'_, PyCSTransform>>()?
+                    .transform()
+                    .clone(),
+            ),
         };
         self.with_mut(py, |property, _| {
             let discrete = property
@@ -817,21 +830,11 @@ impl PyProperty {
         self.add_primitive(py, Primitive::point(coord))
     }
 
-    fn create_box(
-        &mut self,
-        py: Python<'_>,
-        start: [f64; 3],
-        stop: [f64; 3],
-    ) -> PyResult<usize> {
+    fn create_box(&mut self, py: Python<'_>, start: [f64; 3], stop: [f64; 3]) -> PyResult<usize> {
         self.add_primitive(py, Primitive::box_primitive(start, stop))
     }
 
-    fn create_sphere(
-        &mut self,
-        py: Python<'_>,
-        center: [f64; 3],
-        radius: f64,
-    ) -> PyResult<usize> {
+    fn create_sphere(&mut self, py: Python<'_>, center: [f64; 3], radius: f64) -> PyResult<usize> {
         self.add_primitive(py, Primitive::sphere(center, radius))
     }
 
@@ -876,12 +879,7 @@ impl PyProperty {
         norm_dir: i64,
         elevation: f64,
     ) -> PyResult<usize> {
-        let primitive = polygon_primitive(
-            Primitive::polygon(),
-            points,
-            norm_dir,
-            elevation,
-        )?;
+        let primitive = polygon_primitive(Primitive::polygon(), points, norm_dir, elevation)?;
         self.add_primitive(py, primitive)
     }
 
@@ -893,12 +891,8 @@ impl PyProperty {
         elevation: f64,
         length: f64,
     ) -> PyResult<usize> {
-        let primitive = polygon_primitive(
-            Primitive::lin_poly(length),
-            points,
-            norm_dir,
-            elevation,
-        )?;
+        let primitive =
+            polygon_primitive(Primitive::lin_poly(length), points, norm_dir, elevation)?;
         self.add_primitive(py, primitive)
     }
 
@@ -958,11 +952,7 @@ impl PyProperty {
         self.add_primitive(py, Primitive::polyhedron())
     }
 
-    fn create_polyhedron_reader(
-        &mut self,
-        py: Python<'_>,
-        filename: &str,
-    ) -> PyResult<usize> {
+    fn create_polyhedron_reader(&mut self, py: Python<'_>, filename: &str) -> PyResult<usize> {
         let mut reader = Primitive::polyhedron_reader();
         if let Some(shape) = reader.polyhedron_reader_shape_mut() {
             shape.set_filename(filename.to_string());
@@ -1025,12 +1015,7 @@ impl PyProperty {
         self.with_primitive(py, index, |primitive, _| Ok(primitive.is_used()))
     }
 
-    fn set_primitive_used(
-        &mut self,
-        py: Python<'_>,
-        index: usize,
-        used: bool,
-    ) -> PyResult<()> {
+    fn set_primitive_used(&mut self, py: Python<'_>, index: usize, used: bool) -> PyResult<()> {
         self.with_primitive_mut(py, index, |primitive, _| {
             primitive.set_used(used);
             Ok(())
@@ -1253,9 +1238,7 @@ impl PyProperty {
             let angles = shape
                 .rotation_angles(parameters)
                 .map_err(|error| param_error("GetAngle", error))?
-                .ok_or_else(|| {
-                    PyValueError::new_err("GetAngle: primitive is not a rotpoly")
-                })?;
+                .ok_or_else(|| PyValueError::new_err("GetAngle: primitive is not a rotpoly"))?;
             Ok((angles[0], angles[1]))
         })
     }
@@ -1279,16 +1262,11 @@ impl PyProperty {
         })
     }
 
-    fn primitive_string(
-        &self,
-        py: Python<'_>,
-        index: usize,
-        field: &str,
-    ) -> PyResult<String> {
+    fn primitive_string(&self, py: Python<'_>, index: usize, field: &str) -> PyResult<String> {
         self.with_primitive(py, index, |primitive, _| {
-            let shape = primitive.polyhedron_reader_shape().ok_or_else(|| {
-                PyValueError::new_err("primitive is not a polyhedron reader")
-            })?;
+            let shape = primitive
+                .polyhedron_reader_shape()
+                .ok_or_else(|| PyValueError::new_err("primitive is not a polyhedron reader"))?;
             match field {
                 "filename" => Ok(shape.filename().to_string()),
                 other => Err(PyValueError::new_err(format!(
@@ -1306,9 +1284,9 @@ impl PyProperty {
         value: &str,
     ) -> PyResult<()> {
         self.with_primitive_mut(py, index, |primitive, _| {
-            let shape = primitive.polyhedron_reader_shape_mut().ok_or_else(|| {
-                PyValueError::new_err("primitive is not a polyhedron reader")
-            })?;
+            let shape = primitive
+                .polyhedron_reader_shape_mut()
+                .ok_or_else(|| PyValueError::new_err("primitive is not a polyhedron reader"))?;
             match field {
                 "filename" => {
                     shape.set_filename(value.to_string());
@@ -1435,7 +1413,8 @@ impl PyProperty {
         stop: [f64; 3],
     ) -> PyResult<()> {
         self.with_primitive_mut(py, index, |primitive, _| {
-            multibox_shape_mut(primitive)?.add_box(csxcad_core::model::BoxPrimitive::new(start, stop));
+            multibox_shape_mut(primitive)?
+                .add_box(csxcad_core::model::BoxPrimitive::new(start, stop));
             Ok(())
         })
     }
@@ -1511,7 +1490,9 @@ fn get_f64(
         return require_material(property)?
             .value(material_field, component, parameters)
             .map_err(|error| param_error(field, error))?
-            .ok_or_else(|| PyIndexError::new_err(format!("{field}: invalid component {component}")));
+            .ok_or_else(|| {
+                PyIndexError::new_err(format!("{field}: invalid component {component}"))
+            });
     }
     match field {
         "density" => require_material(property)?
@@ -1546,15 +1527,21 @@ fn get_f64(
         "excitation" => require_excitation(property)?
             .excitation(component, parameters)
             .map_err(|error| param_error(field, error))?
-            .ok_or_else(|| PyIndexError::new_err(format!("{field}: invalid component {component}"))),
+            .ok_or_else(|| {
+                PyIndexError::new_err(format!("{field}: invalid component {component}"))
+            }),
         "propagation_direction" => require_excitation(property)?
             .propagation_direction(component, parameters)
             .map_err(|error| param_error(field, error))?
-            .ok_or_else(|| PyIndexError::new_err(format!("{field}: invalid component {component}"))),
+            .ok_or_else(|| {
+                PyIndexError::new_err(format!("{field}: invalid component {component}"))
+            }),
         "weighting" => require_excitation(property)?
             .weighting(component, parameters)
             .map_err(|error| param_error(field, error))?
-            .ok_or_else(|| PyIndexError::new_err(format!("{field}: invalid component {component}"))),
+            .ok_or_else(|| {
+                PyIndexError::new_err(format!("{field}: invalid component {component}"))
+            }),
         "weight_origin" => Ok(require_excitation(property)?.weight_origin()[component]),
         "mode_origin" => Ok(require_probe(property)?.mode_origin()[component]),
         "optimal_resolution" => Ok(require_dump(property)?.optimal_resolution()[component]),
@@ -1608,7 +1595,8 @@ fn set_f64(
         "weight" => require_probe_mut(property)?.set_weight(value),
         "scale" => require_discrete_mut(property)?.set_scale(value),
         "excitation" => {
-            if !require_excitation_mut(property)?.set_excitation_term(component, &format!("{value}"))
+            if !require_excitation_mut(property)?
+                .set_excitation_term(component, &format!("{value}"))
                 .map_err(|error| param_error(field, error))?
             {
                 return Err(PyIndexError::new_err(format!(
@@ -1706,8 +1694,9 @@ fn set_int(property: &mut Property, field: &str, _component: usize, value: i64) 
         "boundary_type" => require_absorbing_mut(property)?
             .set_boundary_type(AbsorbingBoundaryType::from_xml_value(value)),
         "direction" => require_lumped_mut(property)?.set_direction(value),
-        "element_type" => require_lumped_mut(property)?
-            .set_element_type(LumpedElementType::from_xml_value(value)),
+        "element_type" => {
+            require_lumped_mut(property)?.set_element_type(LumpedElementType::from_xml_value(value))
+        }
         "excitation_type" => require_excitation_mut(property)?.set_excitation_type(value),
         "probe_type" => require_probe_mut(property)?.set_probe_type(value),
         "normal_direction" => require_probe_mut(property)?.set_normal_direction(value),
@@ -1832,9 +1821,7 @@ fn set_string(property: &mut Property, field: &str, component: usize, value: &st
             }
         }
         "mode_function" => {
-            if !require_probe_mut(property)?
-                .set_mode_function(component, value.to_string())
-            {
+            if !require_probe_mut(property)?.set_mode_function(component, value.to_string()) {
                 return Err(PyIndexError::new_err(format!(
                     "{field}: invalid component {component}"
                 )));
@@ -1879,7 +1866,9 @@ fn get_dispersive(
             .map_err(|error| param_error(field, error))?
             .ok_or_else(|| PyIndexError::new_err("Invalid dispersive media order requested"));
     }
-    Err(PyValueError::new_err("property is not a dispersive material"))
+    Err(PyValueError::new_err(
+        "property is not a dispersive material",
+    ))
 }
 
 fn set_dispersive(
@@ -1917,7 +1906,9 @@ fn set_dispersive(
         }
         return Ok(());
     }
-    Err(PyValueError::new_err("property is not a dispersive material"))
+    Err(PyValueError::new_err(
+        "property is not a dispersive material",
+    ))
 }
 
 fn get_dispersive_weight(
@@ -1944,9 +1935,12 @@ fn get_dispersive_weight(
                 )))
             }
         };
-        return value.ok_or_else(|| PyIndexError::new_err("Invalid dispersive media order requested"));
+        return value
+            .ok_or_else(|| PyIndexError::new_err("Invalid dispersive media order requested"));
     }
-    Err(PyValueError::new_err("property is not a dispersive material"))
+    Err(PyValueError::new_err(
+        "property is not a dispersive material",
+    ))
 }
 
 fn set_dispersive_weight(
@@ -1972,9 +1966,7 @@ fn set_dispersive_weight(
     }
     if let Some(debye) = property.debye_material_mut() {
         let applied = match field {
-            "eps_delta" => {
-                debye.set_epsilon_delta_weight_expression(order, component, expression)
-            }
+            "eps_delta" => debye.set_epsilon_delta_weight_expression(order, component, expression),
             "eps_relax" => {
                 debye.set_epsilon_relax_time_weight_expression(order, component, expression)
             }
@@ -1992,7 +1984,9 @@ fn set_dispersive_weight(
         }
         return Ok(());
     }
-    Err(PyValueError::new_err("property is not a dispersive material"))
+    Err(PyValueError::new_err(
+        "property is not a dispersive material",
+    ))
 }
 
 // -- typed accessor helpers ------------------------------------------------
@@ -2026,14 +2020,62 @@ macro_rules! accessor {
     };
 }
 
-accessor!(require_material, require_material_mut, material, material_mut, csxcad_core::material::MaterialProperties);
-accessor!(require_sheet, require_sheet_mut, conducting_sheet, conducting_sheet_mut, csxcad_core::material::ConductingSheetProperties);
-accessor!(require_absorbing, require_absorbing_mut, absorbing_boundary, absorbing_boundary_mut, csxcad_core::material::AbsorbingBoundaryProperties);
-accessor!(require_lumped, require_lumped_mut, lumped_element, lumped_element_mut, csxcad_core::material::LumpedElementProperties);
-accessor!(require_excitation, require_excitation_mut, excitation, excitation_mut, csxcad_core::material::ExcitationProperties);
-accessor!(require_probe, require_probe_mut, probe, probe_mut, csxcad_core::material::ProbeProperties);
-accessor!(require_dump, require_dump_mut, dump_box, dump_box_mut, csxcad_core::material::DumpBoxProperties);
-accessor!(require_discrete, require_discrete_mut, discrete_material, discrete_material_mut, csxcad_core::material::DiscreteMaterialProperties);
+accessor!(
+    require_material,
+    require_material_mut,
+    material,
+    material_mut,
+    csxcad_core::material::MaterialProperties
+);
+accessor!(
+    require_sheet,
+    require_sheet_mut,
+    conducting_sheet,
+    conducting_sheet_mut,
+    csxcad_core::material::ConductingSheetProperties
+);
+accessor!(
+    require_absorbing,
+    require_absorbing_mut,
+    absorbing_boundary,
+    absorbing_boundary_mut,
+    csxcad_core::material::AbsorbingBoundaryProperties
+);
+accessor!(
+    require_lumped,
+    require_lumped_mut,
+    lumped_element,
+    lumped_element_mut,
+    csxcad_core::material::LumpedElementProperties
+);
+accessor!(
+    require_excitation,
+    require_excitation_mut,
+    excitation,
+    excitation_mut,
+    csxcad_core::material::ExcitationProperties
+);
+accessor!(
+    require_probe,
+    require_probe_mut,
+    probe,
+    probe_mut,
+    csxcad_core::material::ProbeProperties
+);
+accessor!(
+    require_dump,
+    require_dump_mut,
+    dump_box,
+    dump_box_mut,
+    csxcad_core::material::DumpBoxProperties
+);
+accessor!(
+    require_discrete,
+    require_discrete_mut,
+    discrete_material,
+    discrete_material_mut,
+    csxcad_core::material::DiscreteMaterialProperties
+);
 
 fn curve_shape(primitive: &Primitive) -> PyResult<&csxcad_core::model::CurvePrimitive> {
     primitive
@@ -2042,9 +2084,7 @@ fn curve_shape(primitive: &Primitive) -> PyResult<&csxcad_core::model::CurvePrim
         .ok_or_else(|| PyValueError::new_err("primitive is not a curve"))
 }
 
-fn curve_shape_mut(
-    primitive: &mut Primitive,
-) -> PyResult<&mut csxcad_core::model::CurvePrimitive> {
+fn curve_shape_mut(primitive: &mut Primitive) -> PyResult<&mut csxcad_core::model::CurvePrimitive> {
     if primitive.curve_shape().is_some() {
         return primitive
             .curve_shape_mut()
@@ -2107,9 +2147,7 @@ fn primitive_coordinate(
     parameters: Option<&ParameterSet>,
 ) -> PyResult<f64> {
     let value = match primitive.shape() {
-        csxcad_core::model::PrimitiveShape::Point(shape) => {
-            shape.coordinate(coord, parameters)
-        }
+        csxcad_core::model::PrimitiveShape::Point(shape) => shape.coordinate(coord, parameters),
         csxcad_core::model::PrimitiveShape::Box(shape) => shape.coordinate(coord, parameters),
         csxcad_core::model::PrimitiveShape::Sphere(shape) => {
             shape.center_coordinate(coord, parameters)
@@ -2134,7 +2172,9 @@ fn set_primitive_coordinate(primitive: &mut Primitive, coord: usize, value: f64)
     let applied = match primitive.shape_mut() {
         csxcad_core::model::PrimitiveShape::Point(shape) => shape.set_coordinate(coord, value),
         csxcad_core::model::PrimitiveShape::Box(shape) => shape.set_coordinate(coord, value),
-        csxcad_core::model::PrimitiveShape::Sphere(shape) => shape.set_center_coordinate(coord, value),
+        csxcad_core::model::PrimitiveShape::Sphere(shape) => {
+            shape.set_center_coordinate(coord, value)
+        }
         csxcad_core::model::PrimitiveShape::SphericalShell(shape) => {
             shape.set_center_coordinate(coord, value)
         }
@@ -2168,7 +2208,9 @@ fn primitive_f64(
             _ => return Err(PyValueError::new_err("GetRadius: primitive has no radius")),
         },
         "shell_width" => match primitive.shape() {
-            csxcad_core::model::PrimitiveShape::SphericalShell(shape) => shape.shell_width(parameters),
+            csxcad_core::model::PrimitiveShape::SphericalShell(shape) => {
+                shape.shell_width(parameters)
+            }
             csxcad_core::model::PrimitiveShape::Cylinder(shape) => shape
                 .shell_width(parameters)
                 .map(|width| width.unwrap_or(0.0)),
@@ -2180,25 +2222,41 @@ fn primitive_f64(
         },
         "elevation" => match primitive.shape() {
             csxcad_core::model::PrimitiveShape::Polygon(shape) => shape.elevation(parameters),
-            _ => return Err(PyValueError::new_err("GetElevation: primitive is not a polygon")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "GetElevation: primitive is not a polygon",
+                ))
+            }
         },
         "length" => match primitive.shape() {
             csxcad_core::model::PrimitiveShape::Polygon(shape) => shape
                 .extrusion_length(parameters)
                 .map(|length| length.unwrap_or(0.0)),
-            _ => return Err(PyValueError::new_err("GetLength: primitive is not a linpoly")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "GetLength: primitive is not a linpoly",
+                ))
+            }
         },
         "wire_radius" => match primitive.shape() {
             csxcad_core::model::PrimitiveShape::Curve(shape) => shape
                 .wire_radius(parameters)
                 .map(|radius| radius.unwrap_or(0.0)),
-            _ => return Err(PyValueError::new_err("GetWireRadius: primitive is not a wire")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "GetWireRadius: primitive is not a wire",
+                ))
+            }
         },
         "angle" => match primitive.shape() {
             csxcad_core::model::PrimitiveShape::Polygon(shape) => shape
                 .rotation_angles(parameters)
                 .map(|angles| angles.map(|angles| angles[0]).unwrap_or(0.0)),
-            _ => return Err(PyValueError::new_err("GetAngle: primitive is not a rotpoly")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "GetAngle: primitive is not a rotpoly",
+                ))
+            }
         },
         other => {
             return Err(PyValueError::new_err(format!(
@@ -2237,15 +2295,25 @@ fn set_primitive_f64(primitive: &mut Primitive, field: &str, value: f64) -> PyRe
         },
         "elevation" => match shape {
             csxcad_core::model::PrimitiveShape::Polygon(shape) => shape.set_elevation(value),
-            _ => return Err(PyValueError::new_err("SetElevation: primitive is not a polygon")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "SetElevation: primitive is not a polygon",
+                ))
+            }
         },
         "length" => match shape {
             csxcad_core::model::PrimitiveShape::Polygon(shape) => {
                 if !shape.set_extrusion_length(value) {
-                    return Err(PyValueError::new_err("SetLength: primitive is not a linpoly"));
+                    return Err(PyValueError::new_err(
+                        "SetLength: primitive is not a linpoly",
+                    ));
                 }
             }
-            _ => return Err(PyValueError::new_err("SetLength: primitive is not a linpoly")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "SetLength: primitive is not a linpoly",
+                ))
+            }
         },
         "wire_radius" => match shape {
             csxcad_core::model::PrimitiveShape::Curve(shape) => {
@@ -2255,7 +2323,11 @@ fn set_primitive_f64(primitive: &mut Primitive, field: &str, value: f64) -> PyRe
                     ));
                 }
             }
-            _ => return Err(PyValueError::new_err("SetWireRadius: primitive is not a wire")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "SetWireRadius: primitive is not a wire",
+                ))
+            }
         },
         "angle" => match shape {
             csxcad_core::model::PrimitiveShape::Polygon(shape) => {
@@ -2263,7 +2335,11 @@ fn set_primitive_f64(primitive: &mut Primitive, field: &str, value: f64) -> PyRe
                     .set_rotation_angle_expression(0, &format!("{value}"))
                     .map_err(|error| param_error(field, error))?;
             }
-            _ => return Err(PyValueError::new_err("SetAngle: primitive is not a rotpoly")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "SetAngle: primitive is not a rotpoly",
+                ))
+            }
         },
         other => {
             return Err(PyValueError::new_err(format!(
@@ -2277,17 +2353,23 @@ fn set_primitive_f64(primitive: &mut Primitive, field: &str, value: f64) -> PyRe
 fn primitive_int(primitive: &Primitive, field: &str) -> PyResult<i64> {
     Ok(match field {
         "norm_dir" => match primitive.shape() {
-            csxcad_core::model::PrimitiveShape::Polygon(shape) => {
-                shape.normal_direction() as i64
+            csxcad_core::model::PrimitiveShape::Polygon(shape) => shape.normal_direction() as i64,
+            _ => {
+                return Err(PyValueError::new_err(
+                    "GetNormDir: primitive is not a polygon",
+                ))
             }
-            _ => return Err(PyValueError::new_err("GetNormDir: primitive is not a polygon")),
         },
         "rot_axis" => match primitive.shape() {
             csxcad_core::model::PrimitiveShape::Polygon(shape) => shape
                 .rotation_axis_direction()
                 .map(|direction| direction as i64)
                 .unwrap_or(0),
-            _ => return Err(PyValueError::new_err("GetRotAxisDir: primitive is not a rotpoly")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "GetRotAxisDir: primitive is not a rotpoly",
+                ))
+            }
         },
         "file_type" => match primitive.shape() {
             csxcad_core::model::PrimitiveShape::PolyhedronReader(shape) => {
@@ -2320,7 +2402,11 @@ fn set_primitive_int(primitive: &mut Primitive, field: &str, value: i64) -> PyRe
                     return Err(PyValueError::new_err("SetNormDir: invalid direction"));
                 }
             }
-            _ => return Err(PyValueError::new_err("SetNormDir: primitive is not a polygon")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "SetNormDir: primitive is not a polygon",
+                ))
+            }
         },
         "rot_axis" => match primitive.shape_mut() {
             csxcad_core::model::PrimitiveShape::Polygon(shape) => {
@@ -2328,7 +2414,11 @@ fn set_primitive_int(primitive: &mut Primitive, field: &str, value: i64) -> PyRe
                     return Err(PyValueError::new_err("SetRotAxisDir: invalid direction"));
                 }
             }
-            _ => return Err(PyValueError::new_err("SetRotAxisDir: primitive is not a rotpoly")),
+            _ => {
+                return Err(PyValueError::new_err(
+                    "SetRotAxisDir: primitive is not a rotpoly",
+                ))
+            }
         },
         "file_type" => match primitive.shape_mut() {
             csxcad_core::model::PrimitiveShape::PolyhedronReader(shape) => {
@@ -2365,5 +2455,72 @@ fn file_type_from_value(value: i64) -> PyResult<csxcad_core::model::PolyhedronFi
         other => Err(PyValueError::new_err(format!(
             "unknown polyhedron file type: {other}"
         ))),
+    }
+}
+
+/// Contract tests for the native name/id tables (RM-031/RM-033).
+///
+/// The Python layer dispatches on these exact strings and numbers, so a typo
+/// would silently create the wrong native type. References:
+/// `CSXCAD/python/CSXCAD/CSProperties.pyx` (`fromTypeName`, the only accepted
+/// spellings) and `CSXCAD/src/CSPrimitives.h:84-85` (the `Type` enum order that
+/// `GetType()` returns).
+#[cfg(test)]
+mod type_table_contract_tests {
+    use super::*;
+
+    #[test]
+    fn native_property_type_names_resolve() {
+        let expected = [
+            ("Material", PropertyType::Material),
+            ("Metal", PropertyType::Metal),
+            ("ConductingSheet", PropertyType::ConductingSheet),
+            ("LumpedElement", PropertyType::LumpedElement),
+            ("Excitation", PropertyType::Excitation),
+            ("ProbeBox", PropertyType::ProbeBox),
+            ("DumpBox", PropertyType::DumpBox),
+            ("LorentzMaterial", PropertyType::LorentzMaterial),
+            ("DebyeMaterial", PropertyType::DebyeMaterial),
+            ("AbsorbingBC", PropertyType::AbsorbingBoundary),
+            ("Discrete-Material", PropertyType::DiscreteMaterial),
+            ("DiscMaterial", PropertyType::DiscreteMaterial),
+        ];
+        for (name, property_type) in expected {
+            assert_eq!(
+                property_type_from_name(name),
+                Some(property_type),
+                "native fromTypeName({name})"
+            );
+        }
+        // Native fromTypeName returns None for anything else, including the
+        // abstract dispersive base, which is created through a concrete class.
+        for name in ["DispersiveMaterial", "Material ", "material", "", "Bogus"] {
+            assert_eq!(property_type_from_name(name), None, "{name}");
+        }
+    }
+
+    #[test]
+    fn primitive_type_ids_match_the_native_enum_order() {
+        let expected = [
+            (PrimitiveType::Point, 0, "Point"),
+            (PrimitiveType::Box, 1, "Box"),
+            (PrimitiveType::MultiBox, 2, "MultiBox"),
+            (PrimitiveType::Sphere, 3, "Sphere"),
+            (PrimitiveType::SphericalShell, 4, "SphericalShell"),
+            (PrimitiveType::Cylinder, 5, "Cylinder"),
+            (PrimitiveType::CylindricalShell, 6, "CylindricalShell"),
+            (PrimitiveType::Polygon, 7, "Polygon"),
+            (PrimitiveType::LinPoly, 8, "LinPoly"),
+            (PrimitiveType::RotPoly, 9, "RotPoly"),
+            (PrimitiveType::Polyhedron, 10, "Polyhedron"),
+            (PrimitiveType::Curve, 11, "Curve"),
+            (PrimitiveType::Wire, 12, "Wire"),
+            (PrimitiveType::UserDefined, 13, "UserDefined"),
+            (PrimitiveType::PolyhedronReader, 14, "PolyhedronReader"),
+        ];
+        for (primitive_type, id, name) in expected {
+            assert_eq!(primitive_type_id(primitive_type), id, "{name}");
+            assert_eq!(primitive_type_name(primitive_type), name);
+        }
     }
 }

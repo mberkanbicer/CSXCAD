@@ -251,10 +251,22 @@ class ContinuousStructure:
         prop._attach(self, pid)
 
     def RemoveProperty(self, prop):
+        # Native ContinuousStructure::RemoveProperty searches its own vector by
+        # pointer (src/ContinuousStructure.cpp:115-126) and silently does
+        # nothing when the property belongs to another structure or to nobody.
+        if prop._csx is not self:
+            return
         local = self._live().remove_property(prop._pid)
         prop._detach(local)
 
     def DeleteProperty(self, prop):
+        # Native ContinuousStructure::DeleteProperty (src/ContinuousStructure.cpp:
+        # 137-150) also searches by pointer: a property that is not in this
+        # structure -- including one already removed, deleted or invalidated --
+        # is left untouched instead of deleting some other property with a
+        # colliding id.
+        if prop._csx is not self:
+            return
         self._live().delete_property(prop._pid)
         prop._mark_deleted()
 

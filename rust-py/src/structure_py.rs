@@ -39,10 +39,6 @@ pub struct PyStructure {
 }
 
 impl PyStructure {
-    pub(crate) fn structure(&self) -> &Structure {
-        &self.inner
-    }
-
     pub(crate) fn structure_mut(&mut self) -> &mut Structure {
         &mut self.inner
     }
@@ -197,11 +193,7 @@ impl PyStructure {
     }
 
     /// Handle to an existing property of this structure.
-    fn property_handle(
-        slf: &Bound<'_, Self>,
-        py: Python<'_>,
-        id: u64,
-    ) -> PyResult<Py<PyProperty>> {
+    fn property_handle(slf: &Bound<'_, Self>, py: Python<'_>, id: u64) -> PyResult<Py<PyProperty>> {
         let property_id = PropertyId::from_u64(id);
         if slf.borrow().inner.property(property_id).is_none() {
             return Err(PyValueError::new_err("unknown property id"));
@@ -214,9 +206,8 @@ impl PyStructure {
 
     /// Create and add a property of the given type name; returns its id.
     fn create_property(&mut self, type_name: &str, name: &str) -> PyResult<u64> {
-        let property_type = property_type_from_name(type_name).ok_or_else(|| {
-            PyValueError::new_err(format!("unknown property type: {type_name}"))
-        })?;
+        let property_type = property_type_from_name(type_name)
+            .ok_or_else(|| PyValueError::new_err(format!("unknown property type: {type_name}")))?;
         let property = csxcad_core::model::Property::new(name, property_type);
         Ok(self.inner.add_property(property).get())
     }
@@ -229,9 +220,7 @@ impl PyStructure {
         })?;
         drop(borrowed);
         let id = slf.borrow_mut().inner.add_property(local);
-        property
-            .borrow_mut()
-            .attach(slf.clone().unbind(), id);
+        property.borrow_mut().attach(slf.clone().unbind(), id);
         Ok(id.get())
     }
 
@@ -257,23 +246,17 @@ impl PyStructure {
     ) -> PyResult<Option<u64>> {
         let found = self
             .inner
-            .property_by_coord_priority(
-                coord,
-                property_mask(property_type)?,
-                mark_found_as_used,
-            )
-            .map_err(|error| PyValueError::new_err(format!("GetPropertyByCoordPriority: {error}")))?;
+            .property_by_coord_priority(coord, property_mask(property_type)?, mark_found_as_used)
+            .map_err(|error| {
+                PyValueError::new_err(format!("GetPropertyByCoordPriority: {error}"))
+            })?;
         Ok(found.map(|(property, _primitive)| property.get()))
     }
 
     // -- primitives --------------------------------------------------------
 
     #[pyo3(signature = (sorted = false, property_type = 0xffff))]
-    fn primitive_locations(
-        &self,
-        sorted: bool,
-        property_type: i32,
-    ) -> PyResult<Vec<(u64, usize)>> {
+    fn primitive_locations(&self, sorted: bool, property_type: i32) -> PyResult<Vec<(u64, usize)>> {
         let mask = property_mask(property_type)?;
         let mut locations = Vec::new();
         for primitive in self.inner.all_primitives(sorted, mask) {

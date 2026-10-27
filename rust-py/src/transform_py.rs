@@ -30,6 +30,11 @@ fn numpy_shaped<'py>(
     numpy_array(py, data)?.call_method1("reshape", (shape,))
 }
 
+// The `Local` variant holds the whole 4x4 matrix (296 bytes) while `Primitive`
+// is two words. Boxing would add an allocation on every transform operation for
+// a value that lives for the duration of one call, so the size difference is
+// accepted deliberately.
+#[allow(clippy::large_enum_variant)]
 enum TransformBacking {
     Local(Transform),
     /// Transform of a primitive; every operation edits the primitive in place.
@@ -94,9 +99,9 @@ impl PyCSTransform {
             TransformBacking::Local(transform) => Ok(f(transform)),
             TransformBacking::Primitive { property, index } => {
                 let mut property = property.borrow_mut(py);
-                match property.with_primitive_mut(py, *index, |primitive, _| {
-                    Ok(f(primitive.transform_mut()))
-                }) {
+                match property
+                    .with_primitive_mut(py, *index, |primitive, _| Ok(f(primitive.transform_mut())))
+                {
                     Ok(value) => Ok(value),
                     Err(error) if error.is_instance_of::<PyRuntimeError>(py) => Err(deleted()),
                     Err(error) => Err(error),
@@ -213,7 +218,9 @@ impl PyCSTransform {
             ));
         }
         let translation = [vec[0], vec[1], vec[2]];
-        self.with_mut(py, |transform| transform.translate(translation, concatenate))
+        self.with_mut(py, |transform| {
+            transform.translate(translation, concatenate)
+        })
     }
 
     #[pyo3(signature = (mat, concatenate = true))]

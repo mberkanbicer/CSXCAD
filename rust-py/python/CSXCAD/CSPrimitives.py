@@ -184,14 +184,22 @@ class CSPrimitives:
 
     # -- generic accessors -------------------------------------------------
     def GetCopy(self, prop=None):
-        if prop is not None:
-            raise NotImplementedError(
-                "GetCopy(prop): copying into another property is not supported"
-            )
+        """Copy this primitive, optionally re-pointing it at another property.
+
+        Native ``CSPrimitives::GetCopy(CSProperties*)`` (``CSXCAD/src/
+        CSPrimitives.cpp:87-101``) builds a new primitive, sets its property
+        pointer to ``prop`` (or keeps the source property when ``prop`` is
+        ``None``) and deliberately does *not* call ``CSProperties::AddPrimitive``
+        (``CSXCAD/src/CSProperties.cpp:262-272``), so the copy is not part of the
+        target property's primitive list. The copy is deep for the geometry and
+        the transform (``CSPrimitives.cpp:95-96``).
+        """
         holder = self._ptr().copy_primitive(self._index)
         cls = primitive_class(self.GetTypeName())
         obj = cls.__new__(cls)
-        obj._prop = self._prop
+        # Native keeps the source property when no target is given, and points
+        # the copy at the requested property otherwise (CSPrimitives.cpp:90-93).
+        obj._prop = self._prop if prop is None else prop
         obj._holder = holder
         obj._index = 0
         obj._fallback = _fallback_id()
@@ -733,7 +741,17 @@ class CSPrimMultiBox(CSPrimitives):
         self._ptr().primitive_multibox_delete(self._index, idx)
 
     def ClearOverlap(self):
-        raise NotImplementedError("ClearOverlap is not supported by the Rust core")
+        """Drop a trailing, incomplete box coordinate set.
+
+        Native ``CSPrimMultiBox::ClearOverlap`` (``CSXCAD/src/CSPrimMultiBox.cpp:
+        132-140``) removes the ``vCoords.size() % 6`` trailing coordinates that
+        do not form a whole box; it is a no-op when the coordinate count already
+        is a multiple of six (line 134). A ``MultiBox`` primitive stores whole
+        ``(start, stop)`` pairs (``MultiBoxPrimitive::add_box``), so the
+        incomplete state cannot occur here and the call is a documented no-op
+        that keeps the native signature and return value.
+        """
+        return None
 
 
 _PRIMITIVE_CLASSES = {

@@ -1,0 +1,3624 @@
+{
+  "inventory_version": 1,
+  "generator": "CSXCAD/rust-py/tests/native_inventory.py",
+  "rules": {
+    "class": "line starting with 'cdef class' or 'class'",
+    "declaration": "line whose first token is 'def' (cdef excluded, no cpdef present)",
+    "public_name": "declaration name not starting with '_'"
+  },
+  "sources": [
+    {
+      "file": "CSXCAD/python/CSXCAD/CSPrimitives.pyx",
+      "bytes": 46372,
+      "sha256": "39fe85caddf0f9188ee7bc80b4ed11af3e3dff979e6ff9138291cb7dfc80ff52",
+      "classes": 15,
+      "def_declarations": 96
+    },
+    {
+      "file": "CSXCAD/python/CSXCAD/CSProperties.pyx",
+      "bytes": 75768,
+      "sha256": "b7e8b6a88740c337fc78688cbf9a79f3abd241585c4f6d811ed0e82f43d31a43",
+      "classes": 13,
+      "def_declarations": 174
+    },
+    {
+      "file": "CSXCAD/python/CSXCAD/CSRectGrid.pyx",
+      "bytes": 11565,
+      "sha256": "814a6f5267eb03d3277f8f8885d639ca20339f01994f32f2075588527b29d845",
+      "classes": 1,
+      "def_declarations": 19
+    },
+    {
+      "file": "CSXCAD/python/CSXCAD/CSTransform.pyx",
+      "bytes": 10558,
+      "sha256": "da9a07a3cad931f834fc97b5a0d3aed1b0713078f1b6953acf73698cafc55d00",
+      "classes": 1,
+      "def_declarations": 16
+    },
+    {
+      "file": "CSXCAD/python/CSXCAD/CSXCAD.pyx",
+      "bytes": 20668,
+      "sha256": "6423d052f81df4d1fd9deab72a68d9d92433bc64499f7ff172a9a1dc85248516",
+      "classes": 2,
+      "def_declarations": 48
+    },
+    {
+      "file": "CSXCAD/python/CSXCAD/ParameterObjects.pyx",
+      "bytes": 3288,
+      "sha256": "304de38a2898aee0c125995b334bac15406d99323cdb85699e9402cb63b42408",
+      "classes": 1,
+      "def_declarations": 3
+    },
+    {
+      "file": "CSXCAD/python/CSXCAD/Utilities.pyx",
+      "bytes": 2850,
+      "sha256": "23600c0d315fc4a9685758d7ef6166225393e8a56e37e7602338630f3bc44445",
+      "classes": 0,
+      "def_declarations": 4
+    }
+  ],
+  "counts": {
+    "files": 7,
+    "classes": 33,
+    "class_declarations": 33,
+    "def_declarations": 360,
+    "public_declarations": 293,
+    "public_distinct_names": 256,
+    "private_declarations": 67
+  },
+  "classes": [
+    {
+      "name": "CSBackgroundMaterial",
+      "module": "CSXCAD",
+      "bases": [],
+      "line": 65,
+      "methods": [
+        "_from_address",
+        "__dealloc__",
+        "__cinit__",
+        "__init__",
+        "GetEpsilon",
+        "SetEpsilon",
+        "GetMue",
+        "SetMue",
+        "GetKappa",
+        "SetKappa",
+        "GetSigma",
+        "SetSigma",
+        "Reset"
+      ]
+    },
+    {
+      "name": "CSPrimBox",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimitives"
+      ],
+      "line": 412,
+      "methods": [
+        "__init__",
+        "SetStart",
+        "SetStop",
+        "GetStart",
+        "GetStop"
+      ]
+    },
+    {
+      "name": "CSPrimCurve",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimitives"
+      ],
+      "line": 1004,
+      "methods": [
+        "__init__",
+        "AddPoint",
+        "SetPoints",
+        "GetPoint",
+        "ClearPoints",
+        "GetNumberOfPoints"
+      ]
+    },
+    {
+      "name": "CSPrimCylinder",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimitives"
+      ],
+      "line": 491,
+      "methods": [
+        "__init__",
+        "SetStart",
+        "SetStop",
+        "GetStart",
+        "GetStop",
+        "SetRadius",
+        "GetRadius"
+      ]
+    },
+    {
+      "name": "CSPrimCylindricalShell",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimCylinder"
+      ],
+      "line": 592,
+      "methods": [
+        "__init__",
+        "SetShellWidth",
+        "GetShellWidth"
+      ]
+    },
+    {
+      "name": "CSPrimLinPoly",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimPolygon"
+      ],
+      "line": 875,
+      "methods": [
+        "__init__",
+        "SetLength",
+        "GetLength"
+      ]
+    },
+    {
+      "name": "CSPrimMultiBox",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimitives"
+      ],
+      "line": 1335,
+      "methods": [
+        "__init__",
+        "AddBox",
+        "GetBox",
+        "GetQtyBoxes",
+        "DeleteBox",
+        "ClearOverlap"
+      ]
+    },
+    {
+      "name": "CSPrimPoint",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimitives"
+      ],
+      "line": 364,
+      "methods": [
+        "__init__",
+        "SetCoord",
+        "GetCoord"
+      ]
+    },
+    {
+      "name": "CSPrimPolygon",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimitives"
+      ],
+      "line": 747,
+      "methods": [
+        "__init__",
+        "SetCoords",
+        "GetCoords",
+        "GetQtyCoords",
+        "ClearCoords",
+        "SetNormDir",
+        "GetNormDir",
+        "SetElevation",
+        "GetElevation"
+      ]
+    },
+    {
+      "name": "CSPrimPolyhedron",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimitives"
+      ],
+      "line": 1144,
+      "methods": [
+        "__init__",
+        "Reset",
+        "AddVertex",
+        "GetVertex",
+        "GetNumVertices",
+        "GetFaceValid",
+        "AddFace",
+        "GetFace",
+        "GetNumFaces"
+      ]
+    },
+    {
+      "name": "CSPrimPolyhedronReader",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimPolyhedron"
+      ],
+      "line": 1255,
+      "methods": [
+        "__init__",
+        "SetFilename",
+        "GetFilename",
+        "SetFileType",
+        "GetFileType",
+        "ReadFile"
+      ]
+    },
+    {
+      "name": "CSPrimRotPoly",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimPolygon"
+      ],
+      "line": 926,
+      "methods": [
+        "__init__",
+        "SetRotAxisDir",
+        "GetRotAxisDir",
+        "SetAngle",
+        "GetAngle"
+      ]
+    },
+    {
+      "name": "CSPrimSphere",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimitives"
+      ],
+      "line": 634,
+      "methods": [
+        "__init__",
+        "SetCenter",
+        "GetCenter",
+        "SetRadius",
+        "GetRadius"
+      ]
+    },
+    {
+      "name": "CSPrimSphericalShell",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimSphere"
+      ],
+      "line": 705,
+      "methods": [
+        "__init__",
+        "SetShellWidth",
+        "GetShellWidth"
+      ]
+    },
+    {
+      "name": "CSPrimWire",
+      "module": "CSPrimitives",
+      "bases": [
+        "CSPrimCurve"
+      ],
+      "line": 1102,
+      "methods": [
+        "__init__",
+        "SetWireRadius",
+        "GetWireRadius"
+      ]
+    },
+    {
+      "name": "CSPrimitives",
+      "module": "CSPrimitives",
+      "bases": [],
+      "line": 54,
+      "methods": [
+        "fromType",
+        "__init__",
+        "__dealloc__",
+        "_from_address",
+        "GetCopy",
+        "GetID",
+        "GetProperty",
+        "GetParameterSet",
+        "GetType",
+        "GetTypeName",
+        "SetPriority",
+        "GetPriority",
+        "GetBoundBox",
+        "GetDimension",
+        "IsInside",
+        "GetPrimitiveUsed",
+        "SetPrimitiveUsed",
+        "GetTransform",
+        "AddTransform",
+        "HasTransform",
+        "SetCoordinateSystem",
+        "GetCoordinateSystem",
+        "Update"
+      ]
+    },
+    {
+      "name": "CSPropAbsorbingBC",
+      "module": "CSProperties",
+      "bases": [
+        "CSProperties"
+      ],
+      "line": 765,
+      "methods": [
+        "__init__",
+        "SetNormalSignPositive",
+        "GetNormalSignPositive",
+        "SetPhaseVelocity",
+        "GetPhaseVelocity",
+        "SetAbsorbingBoundaryType",
+        "GetAbsorbingBoundaryType"
+      ]
+    },
+    {
+      "name": "CSPropConductingSheet",
+      "module": "CSProperties",
+      "bases": [
+        "CSPropMetal"
+      ],
+      "line": 957,
+      "methods": [
+        "__init__",
+        "SetConductivity",
+        "GetConductivity",
+        "SetThickness",
+        "GetThickness"
+      ]
+    },
+    {
+      "name": "CSPropDebyeMaterial",
+      "module": "CSProperties",
+      "bases": [
+        "CSPropDispersiveMaterial"
+      ],
+      "line": 1746,
+      "methods": [
+        "__init__",
+        "_GetDispersiveMaterialPropertyDir",
+        "_SetDispersiveMaterialPropertyDir",
+        "_GetDispersiveMaterialWeightDir",
+        "_SetDispersiveMaterialWeightDir"
+      ]
+    },
+    {
+      "name": "CSPropDiscMaterial",
+      "module": "CSProperties",
+      "bases": [
+        "CSPropMaterial"
+      ],
+      "line": 1790,
+      "methods": [
+        "__init__",
+        "SetFilename",
+        "GetFilename",
+        "SetFileType",
+        "GetFileType",
+        "SetScale",
+        "GetScale",
+        "SetUseDataBaseForBackground",
+        "GetUseDataBaseForBackground",
+        "GetTransform",
+        "SetTransform",
+        "ReadFile",
+        "GetEpsilonWeighted",
+        "GetMueWeighted",
+        "GetKappaWeighted",
+        "GetSigmaWeighted",
+        "GetDensityWeighted"
+      ]
+    },
+    {
+      "name": "CSPropDispersiveMaterial",
+      "module": "CSProperties",
+      "bases": [
+        "CSPropMaterial"
+      ],
+      "line": 1563,
+      "methods": [
+        "__init__",
+        "GetDispersionOrder",
+        "SetDispersionOrder",
+        "_CheckOrder",
+        "GetDispersiveMaterialProperty",
+        "_GetDispersiveMaterialPropertyDir",
+        "SetDispersiveMaterialProperty",
+        "_SetDispersiveMaterialPropertyDir",
+        "GetDispersiveMaterialWeight",
+        "_GetDispersiveMaterialWeightDir",
+        "SetDispersiveMaterialWeight",
+        "_SetDispersiveMaterialWeightDir"
+      ]
+    },
+    {
+      "name": "CSPropDumpBox",
+      "module": "CSProperties",
+      "bases": [
+        "CSPropProbeBox"
+      ],
+      "line": 1413,
+      "methods": [
+        "__init__",
+        "SetDumpType",
+        "GetDumpType",
+        "SetDumpMode",
+        "GetDumpMode",
+        "SetFileType",
+        "GetFileType",
+        "SetOptResolution",
+        "GetOptResolution",
+        "SetSubSampling",
+        "GetSubSampling"
+      ]
+    },
+    {
+      "name": "CSPropExcitation",
+      "module": "CSProperties",
+      "bases": [
+        "CSProperties"
+      ],
+      "line": 1005,
+      "methods": [
+        "__init__",
+        "SetExcitType",
+        "GetExcitType",
+        "SetEnabled",
+        "GetEnabled",
+        "SetExcitation",
+        "GetExcitation",
+        "SetPropagationDir",
+        "GetPropagationDir",
+        "SetWeightFunction",
+        "GetWeightFunction",
+        "SetWeightFile",
+        "GetWeightFile",
+        "SetWeightOrigin",
+        "GetWeightOrigin",
+        "GetWeightedExcitation",
+        "SetFrequency",
+        "GetFrequency",
+        "SetDelay",
+        "GetDelay"
+      ]
+    },
+    {
+      "name": "CSPropLorentzMaterial",
+      "module": "CSProperties",
+      "bases": [
+        "CSPropDispersiveMaterial"
+      ],
+      "line": 1670,
+      "methods": [
+        "__init__",
+        "_GetDispersiveMaterialPropertyDir",
+        "_SetDispersiveMaterialPropertyDir",
+        "_GetDispersiveMaterialWeightDir",
+        "_SetDispersiveMaterialWeightDir"
+      ]
+    },
+    {
+      "name": "CSPropLumpedElement",
+      "module": "CSProperties",
+      "bases": [
+        "CSProperties"
+      ],
+      "line": 819,
+      "methods": [
+        "__init__",
+        "SetResistance",
+        "GetResistance",
+        "SetCapacity",
+        "GetCapacity",
+        "SetInductance",
+        "GetInductance",
+        "SetDirection",
+        "GetDirection",
+        "SetCaps",
+        "GetCaps",
+        "SetLEtype",
+        "GetLEtype"
+      ]
+    },
+    {
+      "name": "CSPropMaterial",
+      "module": "CSProperties",
+      "bases": [
+        "CSProperties"
+      ],
+      "line": 581,
+      "methods": [
+        "__init__",
+        "SetIsotropy",
+        "GetIsotropy",
+        "SetMaterialProperty",
+        "_SetMaterialPropertyDir",
+        "SetMaterialWeight",
+        "_SetMaterialWeightDir",
+        "GetMaterialProperty",
+        "_GetMaterialPropertyDir",
+        "GetMaterialWeight",
+        "_GetMaterialWeightDir"
+      ]
+    },
+    {
+      "name": "CSPropMetal",
+      "module": "CSProperties",
+      "bases": [
+        "CSProperties"
+      ],
+      "line": 938,
+      "methods": [
+        "__init__"
+      ]
+    },
+    {
+      "name": "CSPropProbeBox",
+      "module": "CSProperties",
+      "bases": [
+        "CSProperties"
+      ],
+      "line": 1225,
+      "methods": [
+        "__init__",
+        "SetProbeType",
+        "GetProbeType",
+        "SetWeighting",
+        "GetWeighting",
+        "SetOverSampling",
+        "GetOverSampling",
+        "SetNormalDir",
+        "GetNormalDir",
+        "AddFrequency",
+        "ClearFrequency",
+        "SetFrequency",
+        "GetFrequency",
+        "GetFrequencyCount",
+        "SetModeFunction",
+        "GetModeFunction",
+        "SetModeFile",
+        "GetModeFile",
+        "SetModeOrigin",
+        "GetModeOrigin"
+      ]
+    },
+    {
+      "name": "CSProperties",
+      "module": "CSProperties",
+      "bases": [],
+      "line": 57,
+      "methods": [
+        "fromType",
+        "fromTypeName",
+        "__init__",
+        "__dealloc__",
+        "_from_address",
+        "GetCopy",
+        "GetQtyPrimitives",
+        "GetPrimitive",
+        "GetAllPrimitives",
+        "GetType",
+        "GetTypeString",
+        "GetParameterSet",
+        "GetMaterial",
+        "GetID",
+        "SetName",
+        "GetName",
+        "SetColor",
+        "SetFillColor",
+        "GetFillColor",
+        "SetEdgeColor",
+        "GetEdgeColor",
+        "GetVisibility",
+        "SetVisibility",
+        "SetCoordInputType",
+        "GetCoordInputType",
+        "ExistAttribute",
+        "GetAttributeValue",
+        "SetAttributeValue",
+        "RemoveAttribute",
+        "GetAttributeNames",
+        "GetAttributes",
+        "AddPoint",
+        "AddBox",
+        "AddCylinder",
+        "AddCylindricalShell",
+        "AddSphere",
+        "AddSphericalShell",
+        "AddPolygon",
+        "AddLinPoly",
+        "AddRotPoly",
+        "AddCurve",
+        "AddWire",
+        "AddPolyhedron",
+        "AddPolyhedronReader",
+        "AddMultiBox",
+        "__CreatePrimitive"
+      ]
+    },
+    {
+      "name": "CSRectGrid",
+      "module": "CSRectGrid",
+      "bases": [],
+      "line": 35,
+      "methods": [
+        "__cinit__",
+        "_from_address",
+        "__dealloc__",
+        "SetMeshType",
+        "GetMeshType",
+        "SetLines",
+        "AddLine",
+        "GetQtyLines",
+        "GetLine",
+        "GetLines",
+        "ClearLines",
+        "SmoothMeshLines",
+        "Clear",
+        "SetDeltaUnit",
+        "GetDeltaUnit",
+        "Sort",
+        "Snap2LineNumber",
+        "GetSimArea",
+        "IsValid"
+      ]
+    },
+    {
+      "name": "CSTransform",
+      "module": "CSTransform",
+      "bases": [],
+      "line": 34,
+      "methods": [
+        "__cinit__",
+        "_from_address",
+        "__dealloc__",
+        "copy",
+        "Reset",
+        "HasTransform",
+        "Transform",
+        "GetMatrix",
+        "AddTransform",
+        "Translate",
+        "SetMatrix",
+        "RotateOrigin",
+        "RotateAxis",
+        "Scale",
+        "SetPreMultiply",
+        "SetPostMultiply"
+      ]
+    },
+    {
+      "name": "ContinuousStructure",
+      "module": "CSXCAD",
+      "bases": [],
+      "line": 164,
+      "methods": [
+        "__cinit__",
+        "_from_address",
+        "__dealloc__",
+        "Update",
+        "Clear",
+        "Write2XML",
+        "ReadFromXML",
+        "GetParameterSet",
+        "GetGrid",
+        "GetBackgroundMaterial",
+        "grid",
+        "SetMeshType",
+        "GetCoordInputType",
+        "DefineGrid",
+        "GetQtyProperties",
+        "GetQtyPrimitives",
+        "AddMaterial",
+        "AddDiscMaterial",
+        "AddAbsorbingBC",
+        "AddLumpedElement",
+        "AddMetal",
+        "AddConductingSheet",
+        "AddExcitation",
+        "AddProbe",
+        "AddDump",
+        "__CreateProperty",
+        "AddProperty",
+        "RemoveProperty",
+        "DeleteProperty",
+        "GetProperty",
+        "GetAllProperties",
+        "GetPropertiesByName",
+        "GetPropertyByType",
+        "GetPropertyByCoordPriority",
+        "GetAllPrimitives"
+      ]
+    },
+    {
+      "name": "ParameterSet",
+      "module": "ParameterObjects",
+      "bases": [],
+      "line": 30,
+      "methods": [
+        "__cinit__",
+        "_from_address",
+        "__dealloc__"
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "name": "fromType",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 64
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "private",
+      "line": 125
+    },
+    {
+      "name": "__dealloc__",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "private",
+      "line": 142
+    },
+    {
+      "name": "_from_address",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "private",
+      "line": 149
+    },
+    {
+      "name": "GetCopy",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 172
+    },
+    {
+      "name": "GetID",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 183
+    },
+    {
+      "name": "GetProperty",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 191
+    },
+    {
+      "name": "GetParameterSet",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 202
+    },
+    {
+      "name": "GetType",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 208
+    },
+    {
+      "name": "GetTypeName",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 216
+    },
+    {
+      "name": "SetPriority",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 224
+    },
+    {
+      "name": "GetPriority",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 233
+    },
+    {
+      "name": "GetBoundBox",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 241
+    },
+    {
+      "name": "GetDimension",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 255
+    },
+    {
+      "name": "IsInside",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 263
+    },
+    {
+      "name": "GetPrimitiveUsed",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 277
+    },
+    {
+      "name": "SetPrimitiveUsed",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 283
+    },
+    {
+      "name": "GetTransform",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 290
+    },
+    {
+      "name": "AddTransform",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 304
+    },
+    {
+      "name": "HasTransform",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 316
+    },
+    {
+      "name": "SetCoordinateSystem",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 325
+    },
+    {
+      "name": "GetCoordinateSystem",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 343
+    },
+    {
+      "name": "Update",
+      "module": "CSPrimitives",
+      "class": "CSPrimitives",
+      "kind": "method",
+      "visibility": "public",
+      "line": 353
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimPoint",
+      "kind": "method",
+      "visibility": "private",
+      "line": 375
+    },
+    {
+      "name": "SetCoord",
+      "module": "CSPrimitives",
+      "class": "CSPrimPoint",
+      "kind": "method",
+      "visibility": "public",
+      "line": 387
+    },
+    {
+      "name": "GetCoord",
+      "module": "CSPrimitives",
+      "class": "CSPrimPoint",
+      "kind": "method",
+      "visibility": "public",
+      "line": 399
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimBox",
+      "kind": "method",
+      "visibility": "private",
+      "line": 428
+    },
+    {
+      "name": "SetStart",
+      "module": "CSPrimitives",
+      "class": "CSPrimBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 442
+    },
+    {
+      "name": "SetStop",
+      "module": "CSPrimitives",
+      "class": "CSPrimBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 454
+    },
+    {
+      "name": "GetStart",
+      "module": "CSPrimitives",
+      "class": "CSPrimBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 466
+    },
+    {
+      "name": "GetStop",
+      "module": "CSPrimitives",
+      "class": "CSPrimBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 478
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylinder",
+      "kind": "method",
+      "visibility": "private",
+      "line": 507
+    },
+    {
+      "name": "SetStart",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylinder",
+      "kind": "method",
+      "visibility": "public",
+      "line": 524
+    },
+    {
+      "name": "SetStop",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylinder",
+      "kind": "method",
+      "visibility": "public",
+      "line": 536
+    },
+    {
+      "name": "GetStart",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylinder",
+      "kind": "method",
+      "visibility": "public",
+      "line": 548
+    },
+    {
+      "name": "GetStop",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylinder",
+      "kind": "method",
+      "visibility": "public",
+      "line": 560
+    },
+    {
+      "name": "SetRadius",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylinder",
+      "kind": "method",
+      "visibility": "public",
+      "line": 572
+    },
+    {
+      "name": "GetRadius",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylinder",
+      "kind": "method",
+      "visibility": "public",
+      "line": 582
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylindricalShell",
+      "kind": "method",
+      "visibility": "private",
+      "line": 603
+    },
+    {
+      "name": "SetShellWidth",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylindricalShell",
+      "kind": "method",
+      "visibility": "public",
+      "line": 614
+    },
+    {
+      "name": "GetShellWidth",
+      "module": "CSPrimitives",
+      "class": "CSPrimCylindricalShell",
+      "kind": "method",
+      "visibility": "public",
+      "line": 624
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimSphere",
+      "kind": "method",
+      "visibility": "private",
+      "line": 648
+    },
+    {
+      "name": "SetCenter",
+      "module": "CSPrimitives",
+      "class": "CSPrimSphere",
+      "kind": "method",
+      "visibility": "public",
+      "line": 662
+    },
+    {
+      "name": "GetCenter",
+      "module": "CSPrimitives",
+      "class": "CSPrimSphere",
+      "kind": "method",
+      "visibility": "public",
+      "line": 673
+    },
+    {
+      "name": "SetRadius",
+      "module": "CSPrimitives",
+      "class": "CSPrimSphere",
+      "kind": "method",
+      "visibility": "public",
+      "line": 685
+    },
+    {
+      "name": "GetRadius",
+      "module": "CSPrimitives",
+      "class": "CSPrimSphere",
+      "kind": "method",
+      "visibility": "public",
+      "line": 695
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimSphericalShell",
+      "kind": "method",
+      "visibility": "private",
+      "line": 716
+    },
+    {
+      "name": "SetShellWidth",
+      "module": "CSPrimitives",
+      "class": "CSPrimSphericalShell",
+      "kind": "method",
+      "visibility": "public",
+      "line": 727
+    },
+    {
+      "name": "GetShellWidth",
+      "module": "CSPrimitives",
+      "class": "CSPrimSphericalShell",
+      "kind": "method",
+      "visibility": "public",
+      "line": 737
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolygon",
+      "kind": "method",
+      "visibility": "private",
+      "line": 771
+    },
+    {
+      "name": "SetCoords",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolygon",
+      "kind": "method",
+      "visibility": "public",
+      "line": 789
+    },
+    {
+      "name": "GetCoords",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolygon",
+      "kind": "method",
+      "visibility": "public",
+      "line": 805
+    },
+    {
+      "name": "GetQtyCoords",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolygon",
+      "kind": "method",
+      "visibility": "public",
+      "line": 820
+    },
+    {
+      "name": "ClearCoords",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolygon",
+      "kind": "method",
+      "visibility": "public",
+      "line": 829
+    },
+    {
+      "name": "SetNormDir",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolygon",
+      "kind": "method",
+      "visibility": "public",
+      "line": 836
+    },
+    {
+      "name": "GetNormDir",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolygon",
+      "kind": "method",
+      "visibility": "public",
+      "line": 846
+    },
+    {
+      "name": "SetElevation",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolygon",
+      "kind": "method",
+      "visibility": "public",
+      "line": 855
+    },
+    {
+      "name": "GetElevation",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolygon",
+      "kind": "method",
+      "visibility": "public",
+      "line": 865
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimLinPoly",
+      "kind": "method",
+      "visibility": "private",
+      "line": 895
+    },
+    {
+      "name": "SetLength",
+      "module": "CSPrimitives",
+      "class": "CSPrimLinPoly",
+      "kind": "method",
+      "visibility": "public",
+      "line": 906
+    },
+    {
+      "name": "GetLength",
+      "module": "CSPrimitives",
+      "class": "CSPrimLinPoly",
+      "kind": "method",
+      "visibility": "public",
+      "line": 916
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimRotPoly",
+      "kind": "method",
+      "visibility": "private",
+      "line": 948
+    },
+    {
+      "name": "SetRotAxisDir",
+      "module": "CSPrimitives",
+      "class": "CSPrimRotPoly",
+      "kind": "method",
+      "visibility": "public",
+      "line": 963
+    },
+    {
+      "name": "GetRotAxisDir",
+      "module": "CSPrimitives",
+      "class": "CSPrimRotPoly",
+      "kind": "method",
+      "visibility": "public",
+      "line": 973
+    },
+    {
+      "name": "SetAngle",
+      "module": "CSPrimitives",
+      "class": "CSPrimRotPoly",
+      "kind": "method",
+      "visibility": "public",
+      "line": 982
+    },
+    {
+      "name": "GetAngle",
+      "module": "CSPrimitives",
+      "class": "CSPrimRotPoly",
+      "kind": "method",
+      "visibility": "public",
+      "line": 994
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimCurve",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1023
+    },
+    {
+      "name": "AddPoint",
+      "module": "CSPrimitives",
+      "class": "CSPrimCurve",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1035
+    },
+    {
+      "name": "SetPoints",
+      "module": "CSPrimitives",
+      "class": "CSPrimCurve",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1049
+    },
+    {
+      "name": "GetPoint",
+      "module": "CSPrimitives",
+      "class": "CSPrimCurve",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1067
+    },
+    {
+      "name": "ClearPoints",
+      "module": "CSPrimitives",
+      "class": "CSPrimCurve",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1084
+    },
+    {
+      "name": "GetNumberOfPoints",
+      "module": "CSPrimitives",
+      "class": "CSPrimCurve",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1091
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimWire",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1112
+    },
+    {
+      "name": "SetWireRadius",
+      "module": "CSPrimitives",
+      "class": "CSPrimWire",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1124
+    },
+    {
+      "name": "GetWireRadius",
+      "module": "CSPrimitives",
+      "class": "CSPrimWire",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1134
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedron",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1150
+    },
+    {
+      "name": "Reset",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedron",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1158
+    },
+    {
+      "name": "AddVertex",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedron",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1165
+    },
+    {
+      "name": "GetVertex",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedron",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1175
+    },
+    {
+      "name": "GetNumVertices",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedron",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1193
+    },
+    {
+      "name": "GetFaceValid",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedron",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1202
+    },
+    {
+      "name": "AddFace",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedron",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1212
+    },
+    {
+      "name": "GetFace",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedron",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1224
+    },
+    {
+      "name": "GetNumFaces",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedron",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1245
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedronReader",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1265
+    },
+    {
+      "name": "SetFilename",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedronReader",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1276
+    },
+    {
+      "name": "GetFilename",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedronReader",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1292
+    },
+    {
+      "name": "SetFileType",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedronReader",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1301
+    },
+    {
+      "name": "GetFileType",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedronReader",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1311
+    },
+    {
+      "name": "ReadFile",
+      "module": "CSPrimitives",
+      "class": "CSPrimPolyhedronReader",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1320
+    },
+    {
+      "name": "__init__",
+      "module": "CSPrimitives",
+      "class": "CSPrimMultiBox",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1346
+    },
+    {
+      "name": "AddBox",
+      "module": "CSPrimitives",
+      "class": "CSPrimMultiBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1358
+    },
+    {
+      "name": "GetBox",
+      "module": "CSPrimitives",
+      "class": "CSPrimMultiBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1375
+    },
+    {
+      "name": "GetQtyBoxes",
+      "module": "CSPrimitives",
+      "class": "CSPrimMultiBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1390
+    },
+    {
+      "name": "DeleteBox",
+      "module": "CSPrimitives",
+      "class": "CSPrimMultiBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1394
+    },
+    {
+      "name": "ClearOverlap",
+      "module": "CSPrimitives",
+      "class": "CSPrimMultiBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1401
+    },
+    {
+      "name": "hex2color",
+      "module": "CSProperties",
+      "class": null,
+      "kind": "function",
+      "visibility": "public",
+      "line": 51
+    },
+    {
+      "name": "fromType",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 68
+    },
+    {
+      "name": "fromTypeName",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 106
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "private",
+      "line": 162
+    },
+    {
+      "name": "__dealloc__",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "private",
+      "line": 187
+    },
+    {
+      "name": "_from_address",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "private",
+      "line": 194
+    },
+    {
+      "name": "GetCopy",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 217
+    },
+    {
+      "name": "GetQtyPrimitives",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 229
+    },
+    {
+      "name": "GetPrimitive",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 237
+    },
+    {
+      "name": "GetAllPrimitives",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 242
+    },
+    {
+      "name": "GetType",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 248
+    },
+    {
+      "name": "GetTypeString",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 255
+    },
+    {
+      "name": "GetParameterSet",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 262
+    },
+    {
+      "name": "GetMaterial",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 268
+    },
+    {
+      "name": "GetID",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 271
+    },
+    {
+      "name": "SetName",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 274
+    },
+    {
+      "name": "GetName",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 283
+    },
+    {
+      "name": "SetColor",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 291
+    },
+    {
+      "name": "SetFillColor",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 302
+    },
+    {
+      "name": "GetFillColor",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 313
+    },
+    {
+      "name": "SetEdgeColor",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 323
+    },
+    {
+      "name": "GetEdgeColor",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 334
+    },
+    {
+      "name": "GetVisibility",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 344
+    },
+    {
+      "name": "SetVisibility",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 347
+    },
+    {
+      "name": "SetCoordInputType",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 350
+    },
+    {
+      "name": "GetCoordInputType",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 358
+    },
+    {
+      "name": "ExistAttribute",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 365
+    },
+    {
+      "name": "GetAttributeValue",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 375
+    },
+    {
+      "name": "SetAttributeValue",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 385
+    },
+    {
+      "name": "RemoveAttribute",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 397
+    },
+    {
+      "name": "GetAttributeNames",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 406
+    },
+    {
+      "name": "GetAttributes",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 411
+    },
+    {
+      "name": "AddPoint",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 417
+    },
+    {
+      "name": "AddBox",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 428
+    },
+    {
+      "name": "AddCylinder",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 439
+    },
+    {
+      "name": "AddCylindricalShell",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 450
+    },
+    {
+      "name": "AddSphere",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 461
+    },
+    {
+      "name": "AddSphericalShell",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 472
+    },
+    {
+      "name": "AddPolygon",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 483
+    },
+    {
+      "name": "AddLinPoly",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 494
+    },
+    {
+      "name": "AddRotPoly",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 505
+    },
+    {
+      "name": "AddCurve",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 516
+    },
+    {
+      "name": "AddWire",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 527
+    },
+    {
+      "name": "AddPolyhedron",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 538
+    },
+    {
+      "name": "AddPolyhedronReader",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 549
+    },
+    {
+      "name": "AddMultiBox",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "public",
+      "line": 560
+    },
+    {
+      "name": "__CreatePrimitive",
+      "module": "CSProperties",
+      "class": "CSProperties",
+      "kind": "method",
+      "visibility": "private",
+      "line": 573
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 594
+    },
+    {
+      "name": "SetIsotropy",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 611
+    },
+    {
+      "name": "GetIsotropy",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 620
+    },
+    {
+      "name": "SetMaterialProperty",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 628
+    },
+    {
+      "name": "_SetMaterialPropertyDir",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 650
+    },
+    {
+      "name": "SetMaterialWeight",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 662
+    },
+    {
+      "name": "_SetMaterialWeightDir",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 695
+    },
+    {
+      "name": "GetMaterialProperty",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 708
+    },
+    {
+      "name": "_GetMaterialPropertyDir",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 724
+    },
+    {
+      "name": "GetMaterialWeight",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 736
+    },
+    {
+      "name": "_GetMaterialWeightDir",
+      "module": "CSProperties",
+      "class": "CSPropMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 752
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropAbsorbingBC",
+      "kind": "method",
+      "visibility": "private",
+      "line": 779
+    },
+    {
+      "name": "SetNormalSignPositive",
+      "module": "CSProperties",
+      "class": "CSPropAbsorbingBC",
+      "kind": "method",
+      "visibility": "public",
+      "line": 800
+    },
+    {
+      "name": "GetNormalSignPositive",
+      "module": "CSProperties",
+      "class": "CSPropAbsorbingBC",
+      "kind": "method",
+      "visibility": "public",
+      "line": 803
+    },
+    {
+      "name": "SetPhaseVelocity",
+      "module": "CSProperties",
+      "class": "CSPropAbsorbingBC",
+      "kind": "method",
+      "visibility": "public",
+      "line": 806
+    },
+    {
+      "name": "GetPhaseVelocity",
+      "module": "CSProperties",
+      "class": "CSPropAbsorbingBC",
+      "kind": "method",
+      "visibility": "public",
+      "line": 809
+    },
+    {
+      "name": "SetAbsorbingBoundaryType",
+      "module": "CSProperties",
+      "class": "CSPropAbsorbingBC",
+      "kind": "method",
+      "visibility": "public",
+      "line": 812
+    },
+    {
+      "name": "GetAbsorbingBoundaryType",
+      "module": "CSProperties",
+      "class": "CSPropAbsorbingBC",
+      "kind": "method",
+      "visibility": "public",
+      "line": 815
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "private",
+      "line": 843
+    },
+    {
+      "name": "SetResistance",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 877
+    },
+    {
+      "name": "GetResistance",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 882
+    },
+    {
+      "name": "SetCapacity",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 887
+    },
+    {
+      "name": "GetCapacity",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 892
+    },
+    {
+      "name": "SetInductance",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 897
+    },
+    {
+      "name": "GetInductance",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 902
+    },
+    {
+      "name": "SetDirection",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 907
+    },
+    {
+      "name": "GetDirection",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 912
+    },
+    {
+      "name": "SetCaps",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 917
+    },
+    {
+      "name": "GetCaps",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 922
+    },
+    {
+      "name": "SetLEtype",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 927
+    },
+    {
+      "name": "GetLEtype",
+      "module": "CSProperties",
+      "class": "CSPropLumpedElement",
+      "kind": "method",
+      "visibility": "public",
+      "line": 932
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropMetal",
+      "kind": "method",
+      "visibility": "private",
+      "line": 948
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropConductingSheet",
+      "kind": "method",
+      "visibility": "private",
+      "line": 969
+    },
+    {
+      "name": "SetConductivity",
+      "module": "CSProperties",
+      "class": "CSPropConductingSheet",
+      "kind": "method",
+      "visibility": "public",
+      "line": 984
+    },
+    {
+      "name": "GetConductivity",
+      "module": "CSProperties",
+      "class": "CSPropConductingSheet",
+      "kind": "method",
+      "visibility": "public",
+      "line": 989
+    },
+    {
+      "name": "SetThickness",
+      "module": "CSProperties",
+      "class": "CSPropConductingSheet",
+      "kind": "method",
+      "visibility": "public",
+      "line": 994
+    },
+    {
+      "name": "GetThickness",
+      "module": "CSProperties",
+      "class": "CSPropConductingSheet",
+      "kind": "method",
+      "visibility": "public",
+      "line": 999
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1017
+    },
+    {
+      "name": "SetExcitType",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1038
+    },
+    {
+      "name": "GetExcitType",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1045
+    },
+    {
+      "name": "SetEnabled",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1053
+    },
+    {
+      "name": "GetEnabled",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1057
+    },
+    {
+      "name": "SetExcitation",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1061
+    },
+    {
+      "name": "GetExcitation",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1078
+    },
+    {
+      "name": "SetPropagationDir",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1088
+    },
+    {
+      "name": "GetPropagationDir",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1099
+    },
+    {
+      "name": "SetWeightFunction",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1111
+    },
+    {
+      "name": "GetWeightFunction",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1123
+    },
+    {
+      "name": "SetWeightFile",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1136
+    },
+    {
+      "name": "GetWeightFile",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1149
+    },
+    {
+      "name": "SetWeightOrigin",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1153
+    },
+    {
+      "name": "GetWeightOrigin",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1175
+    },
+    {
+      "name": "GetWeightedExcitation",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1179
+    },
+    {
+      "name": "SetFrequency",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1196
+    },
+    {
+      "name": "GetFrequency",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1205
+    },
+    {
+      "name": "SetDelay",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1210
+    },
+    {
+      "name": "GetDelay",
+      "module": "CSProperties",
+      "class": "CSPropExcitation",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1219
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1250
+    },
+    {
+      "name": "SetProbeType",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1277
+    },
+    {
+      "name": "GetProbeType",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1282
+    },
+    {
+      "name": "SetWeighting",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1287
+    },
+    {
+      "name": "GetWeighting",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1292
+    },
+    {
+      "name": "SetOverSampling",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1297
+    },
+    {
+      "name": "GetOverSampling",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1305
+    },
+    {
+      "name": "SetNormalDir",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1312
+    },
+    {
+      "name": "GetNormalDir",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1317
+    },
+    {
+      "name": "AddFrequency",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1322
+    },
+    {
+      "name": "ClearFrequency",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1331
+    },
+    {
+      "name": "SetFrequency",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1336
+    },
+    {
+      "name": "GetFrequency",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1342
+    },
+    {
+      "name": "GetFrequencyCount",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1352
+    },
+    {
+      "name": "SetModeFunction",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1357
+    },
+    {
+      "name": "GetModeFunction",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1367
+    },
+    {
+      "name": "SetModeFile",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1371
+    },
+    {
+      "name": "GetModeFile",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1383
+    },
+    {
+      "name": "SetModeOrigin",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1387
+    },
+    {
+      "name": "GetModeOrigin",
+      "module": "CSProperties",
+      "class": "CSPropProbeBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1408
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1478
+    },
+    {
+      "name": "SetDumpType",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1502
+    },
+    {
+      "name": "GetDumpType",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1507
+    },
+    {
+      "name": "SetDumpMode",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1512
+    },
+    {
+      "name": "GetDumpMode",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1517
+    },
+    {
+      "name": "SetFileType",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1522
+    },
+    {
+      "name": "GetFileType",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1527
+    },
+    {
+      "name": "SetOptResolution",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1532
+    },
+    {
+      "name": "GetOptResolution",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1539
+    },
+    {
+      "name": "SetSubSampling",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1547
+    },
+    {
+      "name": "GetSubSampling",
+      "module": "CSProperties",
+      "class": "CSPropDumpBox",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1554
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1564
+    },
+    {
+      "name": "GetDispersionOrder",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1575
+    },
+    {
+      "name": "SetDispersionOrder",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1578
+    },
+    {
+      "name": "_CheckOrder",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1581
+    },
+    {
+      "name": "GetDispersiveMaterialProperty",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1585
+    },
+    {
+      "name": "_GetDispersiveMaterialPropertyDir",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1601
+    },
+    {
+      "name": "SetDispersiveMaterialProperty",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1604
+    },
+    {
+      "name": "_SetDispersiveMaterialPropertyDir",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1625
+    },
+    {
+      "name": "GetDispersiveMaterialWeight",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1628
+    },
+    {
+      "name": "_GetDispersiveMaterialWeightDir",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1644
+    },
+    {
+      "name": "SetDispersiveMaterialWeight",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1647
+    },
+    {
+      "name": "_SetDispersiveMaterialWeightDir",
+      "module": "CSProperties",
+      "class": "CSPropDispersiveMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1666
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropLorentzMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1671
+    },
+    {
+      "name": "_GetDispersiveMaterialPropertyDir",
+      "module": "CSProperties",
+      "class": "CSPropLorentzMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1680
+    },
+    {
+      "name": "_SetDispersiveMaterialPropertyDir",
+      "module": "CSProperties",
+      "class": "CSPropLorentzMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1696
+    },
+    {
+      "name": "_GetDispersiveMaterialWeightDir",
+      "module": "CSProperties",
+      "class": "CSPropLorentzMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1712
+    },
+    {
+      "name": "_SetDispersiveMaterialWeightDir",
+      "module": "CSProperties",
+      "class": "CSPropLorentzMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1728
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropDebyeMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1747
+    },
+    {
+      "name": "_GetDispersiveMaterialPropertyDir",
+      "module": "CSProperties",
+      "class": "CSPropDebyeMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1756
+    },
+    {
+      "name": "_SetDispersiveMaterialPropertyDir",
+      "module": "CSProperties",
+      "class": "CSPropDebyeMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1764
+    },
+    {
+      "name": "_GetDispersiveMaterialWeightDir",
+      "module": "CSProperties",
+      "class": "CSPropDebyeMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1772
+    },
+    {
+      "name": "_SetDispersiveMaterialWeightDir",
+      "module": "CSProperties",
+      "class": "CSPropDebyeMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1780
+    },
+    {
+      "name": "__init__",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 1800
+    },
+    {
+      "name": "SetFilename",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1822
+    },
+    {
+      "name": "GetFilename",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1826
+    },
+    {
+      "name": "SetFileType",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1830
+    },
+    {
+      "name": "GetFileType",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1834
+    },
+    {
+      "name": "SetScale",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1838
+    },
+    {
+      "name": "GetScale",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1842
+    },
+    {
+      "name": "SetUseDataBaseForBackground",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1846
+    },
+    {
+      "name": "GetUseDataBaseForBackground",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1850
+    },
+    {
+      "name": "GetTransform",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1854
+    },
+    {
+      "name": "SetTransform",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1861
+    },
+    {
+      "name": "ReadFile",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1874
+    },
+    {
+      "name": "GetEpsilonWeighted",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1878
+    },
+    {
+      "name": "GetMueWeighted",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1884
+    },
+    {
+      "name": "GetKappaWeighted",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1890
+    },
+    {
+      "name": "GetSigmaWeighted",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1896
+    },
+    {
+      "name": "GetDensityWeighted",
+      "module": "CSProperties",
+      "class": "CSPropDiscMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 1902
+    },
+    {
+      "name": "__cinit__",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "private",
+      "line": 62
+    },
+    {
+      "name": "_from_address",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "private",
+      "line": 78
+    },
+    {
+      "name": "__dealloc__",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "private",
+      "line": 91
+    },
+    {
+      "name": "SetMeshType",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 109
+    },
+    {
+      "name": "GetMeshType",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 119
+    },
+    {
+      "name": "SetLines",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 122
+    },
+    {
+      "name": "AddLine",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 142
+    },
+    {
+      "name": "GetQtyLines",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 163
+    },
+    {
+      "name": "GetLine",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 176
+    },
+    {
+      "name": "GetLines",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 203
+    },
+    {
+      "name": "ClearLines",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 222
+    },
+    {
+      "name": "SmoothMeshLines",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 232
+    },
+    {
+      "name": "Clear",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 251
+    },
+    {
+      "name": "SetDeltaUnit",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 257
+    },
+    {
+      "name": "GetDeltaUnit",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 264
+    },
+    {
+      "name": "Sort",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 270
+    },
+    {
+      "name": "Snap2LineNumber",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 286
+    },
+    {
+      "name": "GetSimArea",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 296
+    },
+    {
+      "name": "IsValid",
+      "module": "CSRectGrid",
+      "class": "CSRectGrid",
+      "kind": "method",
+      "visibility": "public",
+      "line": 309
+    },
+    {
+      "name": "__cinit__",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "private",
+      "line": 59
+    },
+    {
+      "name": "_from_address",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "private",
+      "line": 71
+    },
+    {
+      "name": "__dealloc__",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "private",
+      "line": 84
+    },
+    {
+      "name": "copy",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 99
+    },
+    {
+      "name": "Reset",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 106
+    },
+    {
+      "name": "HasTransform",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 112
+    },
+    {
+      "name": "Transform",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 118
+    },
+    {
+      "name": "GetMatrix",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 141
+    },
+    {
+      "name": "AddTransform",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 156
+    },
+    {
+      "name": "Translate",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 198
+    },
+    {
+      "name": "SetMatrix",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 212
+    },
+    {
+      "name": "RotateOrigin",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 227
+    },
+    {
+      "name": "RotateAxis",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 244
+    },
+    {
+      "name": "Scale",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 258
+    },
+    {
+      "name": "SetPreMultiply",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 276
+    },
+    {
+      "name": "SetPostMultiply",
+      "module": "CSTransform",
+      "class": "CSTransform",
+      "kind": "method",
+      "visibility": "public",
+      "line": 282
+    },
+    {
+      "name": "_from_address",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 95
+    },
+    {
+      "name": "__dealloc__",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 106
+    },
+    {
+      "name": "__cinit__",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 121
+    },
+    {
+      "name": "__init__",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "private",
+      "line": 124
+    },
+    {
+      "name": "GetEpsilon",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 127
+    },
+    {
+      "name": "SetEpsilon",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 131
+    },
+    {
+      "name": "GetMue",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 135
+    },
+    {
+      "name": "SetMue",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 139
+    },
+    {
+      "name": "GetKappa",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 143
+    },
+    {
+      "name": "SetKappa",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 147
+    },
+    {
+      "name": "GetSigma",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 151
+    },
+    {
+      "name": "SetSigma",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 155
+    },
+    {
+      "name": "Reset",
+      "module": "CSXCAD",
+      "class": "CSBackgroundMaterial",
+      "kind": "method",
+      "visibility": "public",
+      "line": 159
+    },
+    {
+      "name": "__cinit__",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "private",
+      "line": 192
+    },
+    {
+      "name": "_from_address",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "private",
+      "line": 226
+    },
+    {
+      "name": "__dealloc__",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "private",
+      "line": 236
+    },
+    {
+      "name": "Update",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 251
+    },
+    {
+      "name": "Clear",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 254
+    },
+    {
+      "name": "Write2XML",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 259
+    },
+    {
+      "name": "ReadFromXML",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 269
+    },
+    {
+      "name": "GetParameterSet",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 278
+    },
+    {
+      "name": "GetGrid",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 284
+    },
+    {
+      "name": "GetBackgroundMaterial",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 294
+    },
+    {
+      "name": "grid",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 302
+    },
+    {
+      "name": "SetMeshType",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 306
+    },
+    {
+      "name": "GetCoordInputType",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 311
+    },
+    {
+      "name": "DefineGrid",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 314
+    },
+    {
+      "name": "GetQtyProperties",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 340
+    },
+    {
+      "name": "GetQtyPrimitives",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 343
+    },
+    {
+      "name": "AddMaterial",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 346
+    },
+    {
+      "name": "AddDiscMaterial",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 357
+    },
+    {
+      "name": "AddAbsorbingBC",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 370
+    },
+    {
+      "name": "AddLumpedElement",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 382
+    },
+    {
+      "name": "AddMetal",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 393
+    },
+    {
+      "name": "AddConductingSheet",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 402
+    },
+    {
+      "name": "AddExcitation",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 413
+    },
+    {
+      "name": "AddProbe",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 424
+    },
+    {
+      "name": "AddDump",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 435
+    },
+    {
+      "name": "__CreateProperty",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "private",
+      "line": 446
+    },
+    {
+      "name": "AddProperty",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 455
+    },
+    {
+      "name": "RemoveProperty",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 468
+    },
+    {
+      "name": "DeleteProperty",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 473
+    },
+    {
+      "name": "GetProperty",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 476
+    },
+    {
+      "name": "GetAllProperties",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 494
+    },
+    {
+      "name": "GetPropertiesByName",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 504
+    },
+    {
+      "name": "GetPropertyByType",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 525
+    },
+    {
+      "name": "GetPropertyByCoordPriority",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 546
+    },
+    {
+      "name": "GetAllPrimitives",
+      "module": "CSXCAD",
+      "class": "ContinuousStructure",
+      "kind": "method",
+      "visibility": "public",
+      "line": 559
+    },
+    {
+      "name": "__cinit__",
+      "module": "ParameterObjects",
+      "class": "ParameterSet",
+      "kind": "method",
+      "visibility": "private",
+      "line": 50
+    },
+    {
+      "name": "_from_address",
+      "module": "ParameterObjects",
+      "class": "ParameterSet",
+      "kind": "method",
+      "visibility": "private",
+      "line": 58
+    },
+    {
+      "name": "__dealloc__",
+      "module": "ParameterObjects",
+      "class": "ParameterSet",
+      "kind": "method",
+      "visibility": "private",
+      "line": 71
+    },
+    {
+      "name": "CheckNyDir",
+      "module": "Utilities",
+      "class": null,
+      "kind": "function",
+      "visibility": "public",
+      "line": 20
+    },
+    {
+      "name": "GetMultiDirs",
+      "module": "Utilities",
+      "class": null,
+      "kind": "function",
+      "visibility": "public",
+      "line": 40
+    },
+    {
+      "name": "RegisterWrapperFactory",
+      "module": "Utilities",
+      "class": null,
+      "kind": "function",
+      "visibility": "public",
+      "line": 65
+    },
+    {
+      "name": "WrapperFromAddress",
+      "module": "Utilities",
+      "class": null,
+      "kind": "function",
+      "visibility": "public",
+      "line": 69
+    }
+  ]
+}
