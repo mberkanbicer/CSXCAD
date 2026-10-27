@@ -1,0 +1,18 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "CSXCAD"
+version = "0.1.0"
+description = "CSXCAD geometry and material description (Rust core)"
+requires-python = ">=3.8"
+license = { text = "LGPL-3.0-or-later" }
+
+[tool.maturin]
+python-source = "python"
+module-name = "csxcad_py"
+# The wheel ships both the compiled `csxcad_py` extension and the pure-Python
+# `CSXCAD` package that wraps it, exactly like the native layout.
+python-packages = ["CSXCAD"]
+features = ["pyo3/extension-module"]
