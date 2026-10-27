@@ -541,7 +541,8 @@ impl PointPrimitive {
             .transpose()
     }
 
-    pub(crate) fn evaluated_coordinates(
+    /// Evaluate the point coordinates (renderer / exporter accessor).
+    pub fn evaluated_coordinates(
         &self,
         parameters: Option<&ParameterSet>,
     ) -> Result<[f64; 3], ParameterError> {
@@ -977,7 +978,8 @@ impl CylinderPrimitive {
         self.radius.value_string()
     }
 
-    fn axis_coordinates(
+    /// Evaluate the cylinder axis endpoints in Cartesian coordinates.
+    pub fn axis_coordinates(
         &self,
         parameters: Option<&ParameterSet>,
         coordinate_system: CoordinateSystem,
@@ -1130,6 +1132,23 @@ impl CurvePrimitive {
 
     pub fn point_count(&self) -> usize {
         self.points.len()
+    }
+
+    /// Evaluate every curve point (renderer / exporter accessor).
+    pub fn evaluated_points(
+        &self,
+        parameters: Option<&ParameterSet>,
+    ) -> Result<Vec<[f64; 3]>, ParameterError> {
+        self.points
+            .iter()
+            .map(|point| {
+                Ok([
+                    point[0].evaluate(parameters)?,
+                    point[1].evaluate(parameters)?,
+                    point[2].evaluate(parameters)?,
+                ])
+            })
+            .collect()
     }
 
     pub fn set_coordinate(&mut self, point: usize, axis: usize, value: f64) -> bool {
@@ -1568,7 +1587,9 @@ impl PolygonPrimitive {
         ]))
     }
 
-    fn evaluated_vertices(
+    /// Evaluate the two-dimensional polygon profile vertices (renderer /
+    /// exporter accessor).
+    pub fn evaluated_vertices(
         &self,
         parameters: Option<&ParameterSet>,
     ) -> Result<Vec<[f64; 2]>, ParameterError> {
