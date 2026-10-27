@@ -549,9 +549,6 @@ fn write_property(property: &Property) -> Result<XmlNode, StructureXmlError> {
                 .join(",");
             node.children.push(samples);
         }
-        if dump_box.oversampling() >= 0 {
-            node.set_attribute("OverSampling", dump_box.oversampling().to_string());
-        }
         if !dump_box.sar_method().is_empty() {
             node.set_attribute("SAR_Method", dump_box.sar_method().to_string());
         }
@@ -1284,9 +1281,6 @@ fn read_property(
                     .collect::<Result<Vec<_>, _>>()?;
                 dump_box.set_fd_samples(values);
             }
-        }
-        if let Some(value) = node.attribute("OverSampling") {
-            dump_box.set_oversampling(parse_integer(value, "DumpBox.OverSampling")?);
         }
         if let Some(value) = node.attribute("SAR_Method") {
             dump_box.set_sar_method(value.to_owned());

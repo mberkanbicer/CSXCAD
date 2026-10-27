@@ -224,8 +224,6 @@ pub struct DumpBoxProperties {
     optimal_resolution: [f64; 3],
     /// Frequency samples of a frequency-domain dump (`Frequency` attribute).
     fd_samples: Vec<f64>,
-    /// Per-box oversampling override; negative means "use the global value".
-    oversampling: i32,
     /// Averaging method of a SAR dump (`SAR_Method` attribute).
     sar_method: String,
 }
@@ -242,7 +240,6 @@ impl Default for DumpBoxProperties {
             optimal_resolution_enabled: false,
             optimal_resolution: [1.0; 3],
             fd_samples: Vec::new(),
-            oversampling: -1,
             sar_method: String::new(),
         }
     }
@@ -668,15 +665,6 @@ impl DumpBoxProperties {
 
     pub fn set_fd_samples(&mut self, samples: Vec<f64>) {
         self.fd_samples = samples;
-    }
-
-    /// Per-box oversampling override, `-1` when the global value applies.
-    pub fn oversampling(&self) -> i32 {
-        self.oversampling
-    }
-
-    pub fn set_oversampling(&mut self, value: i32) {
-        self.oversampling = value;
     }
 
     /// Averaging method of a SAR dump (empty for the default).

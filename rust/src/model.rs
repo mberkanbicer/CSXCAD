@@ -80,6 +80,30 @@ pub enum PropertyType {
     AbsorbingBoundary = 0x8000,
 }
 
+impl PropertyType {
+    /// Native `CSProperties::GetTypeXMLString`: the XML element name of the
+    /// property type. `Any` is not a concrete property and has no name.
+    pub fn xml_string(self) -> Option<&'static str> {
+        match self {
+            PropertyType::Any => None,
+            PropertyType::Unknown => Some("Unknown"),
+            PropertyType::Material => Some("Material"),
+            PropertyType::Metal => Some("Metal"),
+            PropertyType::Excitation => Some("Excitation"),
+            PropertyType::ProbeBox => Some("ProbeBox"),
+            PropertyType::ResBox => Some("ResBox"),
+            PropertyType::DumpBox => Some("DumpBox"),
+            PropertyType::DispersiveMaterial => Some("DispersiveMaterial"),
+            PropertyType::LorentzMaterial => Some("LorentzMaterial"),
+            PropertyType::DebyeMaterial => Some("DebyeMaterial"),
+            PropertyType::DiscreteMaterial => Some("DiscMaterial"),
+            PropertyType::LumpedElement => Some("LumpedElement"),
+            PropertyType::ConductingSheet => Some("ConductingSheet"),
+            PropertyType::AbsorbingBoundary => Some("AbsorbingBC"),
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct PropertyTypeMask(u16);
 
@@ -145,6 +169,30 @@ pub enum PrimitiveType {
     MultiBox,
     UserDefined,
     PolyhedronReader,
+}
+
+impl PrimitiveType {
+    /// Native `CSPrimitives::GetTypeName`: the primitive type name shown in
+    /// the structure tree and used as the XML element name.
+    pub fn type_name(self) -> &'static str {
+        match self {
+            PrimitiveType::Point => "Point",
+            PrimitiveType::Box => "Box",
+            PrimitiveType::Sphere => "Sphere",
+            PrimitiveType::SphericalShell => "SphericalShell",
+            PrimitiveType::Cylinder => "Cylinder",
+            PrimitiveType::CylindricalShell => "CylindricalShell",
+            PrimitiveType::Curve => "Curve",
+            PrimitiveType::Wire => "Wire",
+            PrimitiveType::Polygon => "Polygon",
+            PrimitiveType::LinPoly => "LinPoly",
+            PrimitiveType::RotPoly => "RotPoly",
+            PrimitiveType::Polyhedron => "Polyhedron",
+            PrimitiveType::MultiBox => "MultiBox",
+            PrimitiveType::UserDefined => "User-Defined",
+            PrimitiveType::PolyhedronReader => "PolyhedronReader",
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -1413,6 +1461,14 @@ impl PolygonPrimitive {
             ParameterScalar::from_value_string(coordinates[1])?,
         ]);
         Ok(self.vertices.len())
+    }
+
+    pub fn remove_vertex(&mut self, index: usize) -> bool {
+        if index >= self.vertices.len() {
+            return false;
+        }
+        self.vertices.remove(index);
+        true
     }
 
     pub fn clear_vertices(&mut self) {
@@ -3887,6 +3943,10 @@ impl Structure {
 
     pub fn property_by_index(&self, index: usize) -> Option<&Property> {
         self.properties.get(index)
+    }
+
+    pub fn property_by_index_mut(&mut self, index: usize) -> Option<&mut Property> {
+        self.properties.get_mut(index)
     }
 
     pub fn properties_by_name<'a>(&'a self, name: &'a str) -> impl Iterator<Item = &'a Property> {

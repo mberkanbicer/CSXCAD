@@ -181,6 +181,20 @@ impl Parameter {
         self.modified = modified;
     }
 
+    /// Native `LinearParameter::SetMin`/`SetMax`/`SetStep`: updates the
+    /// sweep range and clamps the current value into it.
+    pub fn set_linear_range(&mut self, min: f64, max: f64, step: f64) -> bool {
+        let ParameterKind::Linear { .. } = self.kind else {
+            return false;
+        };
+        let min = if min.is_finite() { min } else { 0.0 };
+        let max = if max.is_finite() { max.max(min) } else { min };
+        let step = if step.is_finite() { step.max(0.0) } else { 0.0 };
+        self.kind = ParameterKind::Linear { min, max, step };
+        self.set_value(self.value);
+        true
+    }
+
     pub fn linear_range(&self) -> Option<(f64, f64, f64)> {
         match self.kind {
             ParameterKind::Constant => None,
@@ -273,6 +287,16 @@ impl ParameterSet {
 
     pub fn is_empty(&self) -> bool {
         self.parameters.is_empty()
+    }
+
+    /// Native `ParameterSet::DeleteParameter(index)`.
+    pub fn remove(&mut self, index: usize) -> bool {
+        if index >= self.parameters.len() {
+            return false;
+        }
+        self.parameters.remove(index);
+        self.modified = true;
+        true
     }
 
     pub fn clear(&mut self) {
