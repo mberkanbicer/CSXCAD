@@ -1604,6 +1604,28 @@ impl DiscreteMaterialGrid {
         })
     }
 
+
+    pub fn mesh(&self) -> &[Vec<f32>; 3] {
+        &self.mesh
+    }
+
+    pub fn material_indices(&self) -> &[u8] {
+        &self.material_indices
+    }
+
+    /// Number of mesh nodes per axis (`[nx, ny, nz]`).
+    pub fn size(&self) -> [usize; 3] {
+        [
+            self.mesh[0].len(),
+            self.mesh[1].len(),
+            self.mesh[2].len(),
+        ]
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.material_indices.is_empty()
+    }
+
     pub fn set_database_values(
         &mut self,
         field: DiscreteMaterialField,
