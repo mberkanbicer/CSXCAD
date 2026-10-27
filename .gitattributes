@@ -4,3 +4,14 @@
 # Fixture documents, native reports and VTK expectations are compared (and in
 # places hashed) byte for byte; keep their committed bytes on every platform.
 rust/tests/fixtures/** -text
+
+# The Python/MATLAB surface inventories record file sizes and SHA-256 values of
+# the native interface sources, so those sources and the generated inventories
+# must keep their committed bytes.
+matlab/** -text
+python/** -text
+rust-py/tests/native_python_inventory.json -text
+rust-matlab/tests/native_mfiles/native_mfile_inventory.json -text
+
+# Shell helpers and test drivers run on Linux and inside WSL.
+*.sh text eol=lf
