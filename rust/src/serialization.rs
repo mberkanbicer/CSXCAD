@@ -42,6 +42,10 @@ pub enum StructureXmlWarning {
         kind: String,
         reason: String,
     },
+    InvalidTransformSkipped {
+        kind: String,
+        reason: String,
+    },
 }
 
 impl fmt::Display for StructureXmlError {
@@ -172,28 +176,35 @@ impl Structure {
             });
         };
         for property_node in &properties.children {
-            let property =
-                match read_property(property_node, structure.parameters(), native_compatibility) {
-                    Ok(property) => property,
-                    Err(StructureXmlError::UnsupportedPropertyType(kind))
-                        if native_compatibility =>
-                    {
-                        warnings.push(StructureXmlWarning::UnsupportedPropertySkipped(kind));
-                        continue;
-                    }
-                    Err(error) if native_compatibility => {
-                        warnings.push(StructureXmlWarning::InvalidPropertyRetainedAsUnknown {
-                            kind: property_node.name.clone(),
-                            reason: error.to_string(),
-                        });
-                        read_unknown_property(property_node, native_compatibility)?
-                    }
-                    Err(error) => return Err(error),
-                };
+            let property = match read_property(
+                property_node,
+                structure.parameters(),
+                native_compatibility,
+                &mut warnings,
+            ) {
+                Ok(property) => property,
+                Err(StructureXmlError::UnsupportedPropertyType(kind)) if native_compatibility => {
+                    warnings.push(StructureXmlWarning::UnsupportedPropertySkipped(kind));
+                    continue;
+                }
+                Err(error) if native_compatibility => {
+                    warnings.push(StructureXmlWarning::InvalidPropertyRetainedAsUnknown {
+                        kind: property_node.name.clone(),
+                        reason: error.to_string(),
+                    });
+                    read_unknown_property(property_node, native_compatibility)?
+                }
+                Err(error) => return Err(error),
+            };
             let property_id = structure.add_property(property);
             if let Some(primitives) = property_node.child("Primitives") {
                 for primitive_node in &primitives.children {
-                    let primitive = match read_primitive(primitive_node, structure.parameters()) {
+                    let primitive = match read_primitive(
+                        primitive_node,
+                        structure.parameters(),
+                        native_compatibility,
+                        &mut warnings,
+                    ) {
                         Ok(primitive) => primitive,
                         Err(StructureXmlError::UnsupportedPrimitiveType(kind))
                             if native_compatibility =>
@@ -937,6 +948,7 @@ fn read_property(
     node: &XmlNode,
     parameters: &ParameterSet,
     native_compatibility: bool,
+    warnings: &mut Vec<StructureXmlWarning>,
 ) -> Result<Property, StructureXmlError> {
     let kind = property_type(&node.name)?;
     let mut property = Property::new(node.attribute("Name").unwrap_or(""), kind);
@@ -1090,14 +1102,13 @@ fn read_property(
         }
         if let Some(transformation) = node.child("Transformation") {
             let mut transform = crate::transform::Transform::new();
-            for operation in &transformation.children {
-                transform.transform_by_string(
-                    &operation.name,
-                    required_attribute(operation, "Argument")?,
-                    Some(parameters),
-                    true,
-                )?;
-            }
+            apply_transform_operations(
+                transformation,
+                &mut transform,
+                parameters,
+                native_compatibility,
+                warnings,
+            )?;
             discrete.set_transform(Some(transform));
         }
     }
@@ -1157,12 +1168,9 @@ fn read_property(
             lumped_element.set_inductance_term(value)?;
         }
         if let Some(value) = node.attribute("LEtype") {
-            let value = value
-                .parse::<i32>()
-                .map_err(|_| StructureXmlError::InvalidValue {
-                    field: "LumpedElement.LEtype".to_owned(),
-                    value: value.to_owned(),
-                })?;
+            // Native writes LEtype through WriteTerm(), which formats the
+            // integer as a parameter value ("1.000000e+00" for LE_SERIES).
+            let value = parse_number(value, "LumpedElement.LEtype")? as i32;
             lumped_element
                 .set_element_type(crate::material::LumpedElementType::from_xml_value(value));
         }
@@ -1510,6 +1518,8 @@ fn read_debye_vector(
 fn read_primitive(
     node: &XmlNode,
     parameters: &ParameterSet,
+    native_compatibility: bool,
+    warnings: &mut Vec<StructureXmlWarning>,
 ) -> Result<Primitive, StructureXmlError> {
     let mut primitive = match node.name.as_str() {
         "Point" => Primitive::point_from_expressions([
@@ -1726,16 +1736,41 @@ fn read_primitive(
     }
     if let Some(transformation) = node.child("Transformation") {
         let transform = primitive.transform_mut();
-        for operation in &transformation.children {
-            transform.transform_by_string(
-                &operation.name,
-                operation.attribute("Argument").unwrap_or(""),
-                Some(parameters),
-                true,
-            )?;
-        }
+        apply_transform_operations(
+            transformation,
+            transform,
+            parameters,
+            native_compatibility,
+            warnings,
+        )?;
     }
     Ok(primitive)
+}
+
+fn apply_transform_operations(
+    transformation: &XmlNode,
+    transform: &mut crate::transform::Transform,
+    parameters: &ParameterSet,
+    native_compatibility: bool,
+    warnings: &mut Vec<StructureXmlWarning>,
+) -> Result<(), StructureXmlError> {
+    // Native CSTransform::ReadFromXML warns and skips an operation it cannot
+    // apply (unknown name, wrong argument count, failed expression) and keeps
+    // the operations that did apply. Strict mode reports the first failure.
+    for operation in &transformation.children {
+        let arguments = operation.attribute("Argument").unwrap_or("");
+        match transform.transform_by_string(&operation.name, arguments, Some(parameters), true) {
+            Ok(()) => {}
+            Err(error) if native_compatibility => {
+                warnings.push(StructureXmlWarning::InvalidTransformSkipped {
+                    kind: operation.name.clone(),
+                    reason: error.to_string(),
+                });
+            }
+            Err(error) => return Err(StructureXmlError::Transform(error)),
+        }
+    }
+    Ok(())
 }
 
 fn read_endpoints<'a>(
@@ -1880,14 +1915,17 @@ fn primitive_xml_name(primitive: &Primitive) -> Result<&'static str, StructureXm
 }
 
 fn transform_xml_name(kind: TransformType) -> &'static str {
+    // Native CSTransform::GetNameByType (CSTransform.cpp) and therefore the
+    // element names produced by CSTransform::Write2XML. Native
+    // CSTransform::GetTypeByName rejects any other spelling.
     match kind {
         TransformType::Scale => "Scale",
-        TransformType::Scale3 => "Scale",
+        TransformType::Scale3 => "Scale3",
         TransformType::Translate => "Translate",
-        TransformType::RotateOrigin => "RotateOrigin",
-        TransformType::RotateX => "RotateX",
-        TransformType::RotateY => "RotateY",
-        TransformType::RotateZ => "RotateZ",
+        TransformType::RotateOrigin => "Rotate_Origin",
+        TransformType::RotateX => "Rotate_X",
+        TransformType::RotateY => "Rotate_Y",
+        TransformType::RotateZ => "Rotate_Z",
         TransformType::Matrix => "Matrix",
     }
 }

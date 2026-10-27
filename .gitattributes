@@ -1,2 +1,6 @@
 .gitattributes    export-ignore
 .gitignore        export-ignore
+
+# Fixture documents, native reports and VTK expectations are compared (and in
+# places hashed) byte for byte; keep their committed bytes on every platform.
+rust/tests/fixtures/** -text

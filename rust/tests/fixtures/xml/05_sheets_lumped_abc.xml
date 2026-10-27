@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<ContinuousStructure CoordSystem="0">
+    <RectilinearGrid DeltaUnit="1" CoordSystem="0">
+        <XLines Qty="4">0,1,2,3</XLines>
+        <YLines Qty="3">0,1,2</YLines>
+        <ZLines Qty="3">0,1,2</ZLines>
+    </RectilinearGrid>
+    <BackgroundMaterial Epsilon="1" Mue="1" Kappa="0" Sigma="0" />
+    <ParameterSet />
+    <Properties>
+        <ConductingSheet ID="0" Name="sheet" Conductivity="5.600000e+07" Thickness="1.800000e-05">
+            <FillColor R="210" G="170" B="40" a="255" />
+            <EdgeColor R="210" G="170" B="40" a="255" />
+            <Primitives>
+                <Box Priority="5">
+                    <P1 X="1.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+            </Primitives>
+        </ConductingSheet>
+        <LumpedElement ID="1" Name="lumped" Direction="1" Caps="1" R="5.000000e+01" C="1.000000e-12" L="1.000000e-09" LEtype="1.000000e+00">
+            <FillColor R="40" G="120" B="220" a="255" />
+            <EdgeColor R="40" G="120" B="220" a="255" />
+            <Primitives>
+                <Box Priority="1">
+                    <P1 X="1.500000e+00" Y="5.000000e-01" Z="5.000000e-01" />
+                    <P2 X="1.500000e+00" Y="1.500000e+00" Z="1.500000e+00" />
+                </Box>
+            </Primitives>
+        </LumpedElement>
+        <AbsorbingBC ID="2" Name="abc" NormalSignPositive="0" AbsorbingBoundaryType="1" PhaseVelocity="3.000000e+08">
+            <FillColor R="70" G="70" B="70" a="255" />
+            <EdgeColor R="70" G="70" B="70" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="5.000000e-01" Y="2.000000e+00" Z="2.000000e+00" />
+                </Box>
+            </Primitives>
+        </AbsorbingBC>
+    </Properties>
+</ContinuousStructure>

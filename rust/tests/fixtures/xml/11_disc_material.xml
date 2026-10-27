@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<ContinuousStructure CoordSystem="0">
+    <RectilinearGrid DeltaUnit="1" CoordSystem="0">
+        <XLines Qty="3">0,1,2</XLines>
+        <YLines Qty="3">0,1,2</YLines>
+        <ZLines Qty="3">0,1,2</ZLines>
+    </RectilinearGrid>
+    <BackgroundMaterial Epsilon="1" Mue="1" Kappa="0" Sigma="0" />
+    <ParameterSet />
+    <Properties>
+        <DiscMaterial ID="0" Name="disc" Isotropy="1">
+            <FillColor R="100" G="200" B="100" a="255" />
+            <EdgeColor R="100" G="200" B="100" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+            </Primitives>
+            <Property Epsilon="1.000000e+00,1.000000e+00,1.000000e+00" Mue="1.000000e+00,1.000000e+00,1.000000e+00" Kappa="0.000000e+00,0.000000e+00,0.000000e+00" Sigma="0.000000e+00,0.000000e+00,0.000000e+00" Density="0.000000e+00" />
+            <Weight Epsilon="1.000000e+00,1.000000e+00,1.000000e+00" Mue="1.000000e+00,1.000000e+00,1.000000e+00" Kappa="1.000000e+00,1.000000e+00,1.000000e+00" Sigma="1.000000e+00,1.000000e+00,1.000000e+00" Density="1.000000e+00" />
+            <Transformation>
+                <Translate Argument="1,0,0" />
+            </Transformation>
+            <DiscFile Type="0" File="materials.h5" UseDBBackground="0" Scale="0.001" />
+        </DiscMaterial>
+    </Properties>
+</ContinuousStructure>

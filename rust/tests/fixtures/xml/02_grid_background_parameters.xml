@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<ContinuousStructure CoordSystem="0">
+    <RectilinearGrid DeltaUnit="0.001" CoordSystem="0">
+        <XLines Qty="3">-10,0,10</XLines>
+        <YLines Qty="2">-5,5</YLines>
+        <ZLines Qty="3">0,2,4</ZLines>
+    </RectilinearGrid>
+    <BackgroundMaterial Epsilon="2.5" Mue="1.5" Kappa="0.01" Sigma="0.02" />
+    <ParameterSet>
+        <Parameter Type="Const" name="width" Sweep="1" value="4" />
+        <Parameter Type="Linear" name="radius" Sweep="1" value="1.5" min="0.5" max="2.5" step="0.5" />
+        <Parameter Type="Const" name="disabled" Sweep="0" value="3" />
+    </ParameterSet>
+    <Properties>
+        <Metal ID="0" Name="grid-metal">
+            <FillColor R="220" G="40" B="40" a="255" />
+            <EdgeColor R="220" G="40" B="40" a="255" />
+            <Primitives>
+                <Box Priority="1">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="width" Y="radius" Z="2.000000e+00" />
+                </Box>
+            </Primitives>
+        </Metal>
+    </Properties>
+</ContinuousStructure>

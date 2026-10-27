@@ -215,7 +215,7 @@ impl Transform {
         concatenate: bool,
     ) -> Result<(), TransformError> {
         let values = evaluate_arguments(arguments, 3, parameters)?;
-        let scalar_arguments = expression_scalars(arguments)?;
+        let scalar_arguments = expression_scalars_limited(arguments, 3)?;
         let mut matrix = identity_matrix();
         for row in 0..3 {
             matrix[4 * row + 3] = values[row];
@@ -241,12 +241,17 @@ impl Transform {
                     operation.arguments = vec![scalar];
                 }
             }
-            3 => {
+            // Native CSTransform::Scale(std::string): more than one argument
+            // that is not exactly three is accepted with a warning and the
+            // first three are used, so four or more arguments scale by the
+            // first three.
+            3.. => {
                 let values = raw_arguments
                     .iter()
+                    .take(3)
                     .map(|argument| evaluate_argument(argument, parameters))
                     .collect::<Result<Vec<_>, _>>()?;
-                let scalar_arguments = expression_scalars(arguments)?;
+                let scalar_arguments = expression_scalars_limited(arguments, 3)?;
                 let scales = [values[0], values[1], values[2]];
                 let mut matrix = identity_matrix();
                 for axis in 0..3 {
@@ -296,20 +301,24 @@ impl Transform {
         parameters: Option<&ParameterSet>,
         concatenate: bool,
     ) -> Result<(), TransformError> {
+        // Native CSTransform::GetTypeByName accepts exactly these names; the
+        // Rust aliases (RotateX, RotateOrigin) are kept readable for documents
+        // written by earlier Rust builds.
         match operation {
             "Translate" => self.translate_expressions(arguments, parameters, concatenate),
-            "Scale" => self.scale_expressions(arguments, parameters, concatenate),
-            "RotateX" | "RotateY" | "RotateZ" => {
-                let direction = match operation {
-                    "RotateX" => 0,
-                    "RotateY" => 1,
-                    _ => 2,
-                };
-                self.rotate_axis_expression(direction, arguments, parameters, concatenate)
+            "Scale" | "Scale3" => self.scale_expressions(arguments, parameters, concatenate),
+            "RotateX" | "Rotate_X" => {
+                self.rotate_axis_expression(0, arguments, parameters, concatenate)
             }
-            "RotateOrigin" => {
+            "RotateY" | "Rotate_Y" => {
+                self.rotate_axis_expression(1, arguments, parameters, concatenate)
+            }
+            "RotateZ" | "Rotate_Z" => {
+                self.rotate_axis_expression(2, arguments, parameters, concatenate)
+            }
+            "RotateOrigin" | "Rotate_Origin" => {
                 let values = evaluate_arguments(arguments, 4, parameters)?;
-                let scalar_arguments = expression_scalars(arguments)?;
+                let scalar_arguments = expression_scalars_limited(arguments, 4)?;
                 self.rotate_origin([values[0], values[1], values[2]], values[3], concatenate)?;
                 if let Some(operation) = self.operations.last_mut() {
                     operation.arguments = scalar_arguments;
@@ -318,7 +327,7 @@ impl Transform {
             }
             "Matrix" => {
                 let values = evaluate_arguments(arguments, 16, parameters)?;
-                let scalar_arguments = expression_scalars(arguments)?;
+                let scalar_arguments = expression_scalars_limited(arguments, 16)?;
                 let matrix: Matrix4 = values.try_into().expect("argument count checked");
                 self.apply_matrix(&matrix, concatenate);
                 self.record_scalars(TransformType::Matrix, scalar_arguments);
@@ -451,9 +460,15 @@ fn split_arguments(arguments: &str) -> Vec<&str> {
     arguments.split(',').map(str::trim).collect()
 }
 
-fn expression_scalars(arguments: &str) -> Result<Vec<ParameterScalar>, ParameterError> {
+/// Native-compatible argument list: extra trailing arguments are ignored (the
+/// native string setters warn about them and use the leading arguments).
+fn expression_scalars_limited(
+    arguments: &str,
+    expected: usize,
+) -> Result<Vec<ParameterScalar>, ParameterError> {
     split_arguments(arguments)
         .into_iter()
+        .take(expected)
         .map(ParameterScalar::from_value_string)
         .collect()
 }
@@ -464,7 +479,9 @@ fn evaluate_arguments(
     parameters: Option<&ParameterSet>,
 ) -> Result<Vec<f64>, TransformError> {
     let arguments = split_arguments(arguments);
-    if arguments.len() != expected {
+    // Native CSTransform::Translate/RotateOrigin/SetMatrix warn about too many
+    // arguments and apply the leading ones; too few arguments are rejected.
+    if arguments.len() < expected {
         return Err(TransformError::InvalidArgumentCount {
             expected: expected.to_string(),
             actual: arguments.len(),
@@ -472,6 +489,7 @@ fn evaluate_arguments(
     }
     arguments
         .into_iter()
+        .take(expected)
         .map(|argument| evaluate_argument(argument, parameters))
         .collect()
 }

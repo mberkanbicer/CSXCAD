@@ -37,11 +37,19 @@ pub(crate) fn read_file(
         path: filename.to_owned(),
         message: error.to_string(),
     })?;
-    match file_type {
+    let shape = match file_type {
         PolyhedronFileType::Stl => read_stl(&data),
         PolyhedronFileType::Ply => read_ply(&data),
         PolyhedronFileType::Unknown => Err(PolyhedronReaderError::UnsupportedFileType),
+    }?;
+    // Native CSPrimPolyhedronReader::ReadFile():
+    //   (points == 0) || (cells == 0)  ->  "file invalid or empty, skipping".
+    if shape.vertex_count() == 0 || shape.face_count() == 0 {
+        return Err(invalid_file(
+            "file invalid or empty (no points or no cells)",
+        ));
     }
+    Ok(shape)
 }
 
 fn read_stl(data: &[u8]) -> Result<PolyhedronPrimitive, PolyhedronReaderError> {

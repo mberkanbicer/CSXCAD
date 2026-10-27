@@ -7,24 +7,24 @@ use std::fmt;
 // (no default: case in the native switch ⇒ unlisted codes append nothing).
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PsErrorCode {
-    InternalError,     // -1
-    NoError,           // 0
-    DivisionByZero,    // 1
-    SqrtError,         // 2
-    LogError,          // 3
-    TrigError,         // 4
-    MaxRecursion,      // 5
-    SyntaxError,       // 100
-    MismatchedParen,   // 101
-    MissingParen,      // 102
-    EmptyParens,       // 103
-    ExpectedOperator,  // 104
-    OutOfMemory,       // 105
-    UnexpectedError,   // 106
-    SyntaxInParams,    // 107
-    IllParamsAmount,   // 108
-    PrematureEos,      // 109
-    ExpectFuncParen,   // 110
+    InternalError,    // -1
+    NoError,          // 0
+    DivisionByZero,   // 1
+    SqrtError,        // 2
+    LogError,         // 3
+    TrigError,        // 4
+    MaxRecursion,     // 5
+    SyntaxError,      // 100
+    MismatchedParen,  // 101
+    MissingParen,     // 102
+    EmptyParens,      // 103
+    ExpectedOperator, // 104
+    OutOfMemory,      // 105
+    UnexpectedError,  // 106
+    SyntaxInParams,   // 107
+    IllParamsAmount,  // 108
+    PrematureEos,     // 109
+    ExpectFuncParen,  // 110
 }
 
 impl PsErrorCode {
@@ -325,6 +325,30 @@ impl ParameterSet {
 
     pub fn value_array(&self) -> Vec<f64> {
         self.parameters.iter().map(Parameter::value).collect()
+    }
+}
+
+impl ParameterError {
+    /// Error code the native CSXCAD `ParameterScalar` reports for the same
+    /// failure (`CSXCAD/src/ParameterObjects.cpp`):
+    ///
+    /// * `SetValue("")` returns `-1` without touching the value.
+    /// * A function-parser parse error is reported as `fparser code + 100`
+    ///   (100 Syntax, 101 Mismatched parenthesis, 102 Missing ')', ...
+    ///   110 Expecting '(' after function; 111 is an unknown identifier and
+    ///   has no message in `PSErrorCode2Msg`).
+    /// * An evaluation error is the bare function-parser code
+    ///   (1 division by zero, 2 sqrt of a negative value, 3 log/power,
+    ///   4 asin/acos out of range).
+    pub fn native_code(&self) -> i32 {
+        match self {
+            Self::EmptyExpression => -1,
+            Self::Parse(error) => i32::from(error.kind.legacy_code()) + 100,
+            Self::Evaluation(error) => error
+                .legacy_code()
+                .map(i32::from)
+                .unwrap_or(PsErrorCode::InternalError as i32),
+        }
     }
 }
 

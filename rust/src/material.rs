@@ -487,11 +487,13 @@ impl ExcitationProperties {
             }
             #[cfg(not(feature = "hdf5"))]
             {
+                // without the HDF5 feature the weight file cannot be loaded and
+                // the parameters are not needed
+                let _ = parameters;
                 return Ok(0.0);
             }
         } else {
-            let coordinate_parameters =
-                coordinate_parameters(local, CoordinateSystem::Cartesian);
+            let coordinate_parameters = coordinate_parameters(local, CoordinateSystem::Cartesian);
             self.weighting[component].evaluate(Some(&coordinate_parameters))?
         };
 
@@ -507,12 +509,8 @@ impl ExcitationProperties {
         coordinate_system: CoordinateSystem,
     ) -> Result<f64, ParameterError> {
         let amplitude = self.excitation[component].evaluate(parameters)?;
-        let weight = self.weighted_excitation_weight(
-            component,
-            parameters,
-            coordinates,
-            coordinate_system,
-        )?;
+        let weight =
+            self.weighted_excitation_weight(component, parameters, coordinates, coordinate_system)?;
         Ok(weight * amplitude)
     }
 
@@ -749,6 +747,9 @@ impl ProbeProperties {
     }
 
     pub(crate) fn set_start_time_from_xml(&mut self, time: f64) {
+        // Native ReadFromXML uses QueryDoubleAttribute into its `float` member;
+        // the double value XML actually contains (e.g. "0.1") is what the
+        // native re-read model reports, so the parsed double is kept verbatim.
         self.start_time = time;
     }
 
@@ -761,6 +762,7 @@ impl ProbeProperties {
     }
 
     pub(crate) fn set_stop_time_from_xml(&mut self, time: f64) {
+        // See set_start_time_from_xml: the parsed double is kept verbatim.
         self.stop_time = time;
     }
 
@@ -1604,7 +1606,6 @@ impl DiscreteMaterialGrid {
         })
     }
 
-
     pub fn mesh(&self) -> &[Vec<f32>; 3] {
         &self.mesh
     }
@@ -1615,11 +1616,7 @@ impl DiscreteMaterialGrid {
 
     /// Number of mesh nodes per axis (`[nx, ny, nz]`).
     pub fn size(&self) -> [usize; 3] {
-        [
-            self.mesh[0].len(),
-            self.mesh[1].len(),
-            self.mesh[2].len(),
-        ]
+        [self.mesh[0].len(), self.mesh[1].len(), self.mesh[2].len()]
     }
 
     pub fn is_empty(&self) -> bool {

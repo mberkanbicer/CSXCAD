@@ -2751,10 +2751,17 @@ impl Primitive {
                 }
             }
             PrimitiveShape::Box(shape) => {
-                // Native: Box short-circuit - if any coordinate fails, report first failure and stop
-                let err = self.update_box_coordinates(&shape.coordinates[0], parameters);
-                if !matches!(err, ParameterError::EmptyExpression) || errors.is_empty() {
-                    errors.push(err);
+                // Native CSPrimBox::Update:
+                //   m_Coords[0].Evaluate(ErrStr) && m_Coords[1].Evaluate(ErrStr)
+                // ParameterCoord::Evaluate() collects all three component errors;
+                // the `&&` means a failing P1 short-circuits P2.
+                collect_coordinate_update_errors(&shape.coordinates[0], parameters, &mut errors);
+                if errors.is_empty() {
+                    collect_coordinate_update_errors(
+                        &shape.coordinates[1],
+                        parameters,
+                        &mut errors,
+                    );
                 }
             }
             PrimitiveShape::Sphere(shape) => {
@@ -2823,9 +2830,17 @@ impl Primitive {
                 for axis in 0..3 {
                     for box_primitive in &shape.boxes {
                         // start coordinate for this axis
-                        collect_scalar_update_error(&box_primitive.coordinates[0][axis], parameters, &mut errors);
+                        collect_scalar_update_error(
+                            &box_primitive.coordinates[0][axis],
+                            parameters,
+                            &mut errors,
+                        );
                         // stop coordinate for this axis
-                        collect_scalar_update_error(&box_primitive.coordinates[1][axis], parameters, &mut errors);
+                        collect_scalar_update_error(
+                            &box_primitive.coordinates[1][axis],
+                            parameters,
+                            &mut errors,
+                        );
                     }
                 }
             }
@@ -2840,27 +2855,6 @@ impl Primitive {
             PrimitiveShape::Polyhedron(_) | PrimitiveShape::PolyhedronReader(_) => {}
         }
         errors
-    }
-
-    /// Native-exact box coordinate update error.
-    /// Matches native CSXCAD Box::Update() short-circuit behavior: if any coordinate fails,
-    /// report the first failure and stop evaluating remaining coordinates.
-    fn update_box_coordinates(
-        &self,
-        coordinates: &[ParameterScalar; 3],
-        parameters: &ParameterSet,
-    ) -> ParameterError {
-        // Native: evaluate all 3 coordinates; if any fail, report the first failure and stop
-        let mut errors = Vec::new();
-        for coord in coordinates {
-            collect_scalar_update_error(coord, parameters, &mut errors);
-            if !errors.is_empty() {
-                // Native short-circuit: stop after first failure
-                return errors.into_iter().next().unwrap_or(ParameterError::EmptyExpression);
-            }
-        }
-        // All coordinates succeeded
-        ParameterError::EmptyExpression
     }
 
     pub fn box_shape(&self) -> Option<&BoxPrimitive> {

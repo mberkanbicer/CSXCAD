@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<ContinuousStructure CoordSystem="0">
+    <RectilinearGrid DeltaUnit="1" CoordSystem="0">
+        <XLines Qty="5">-2,-1,0,1,2</XLines>
+        <YLines Qty="5">-2,-1,0,1,2</YLines>
+        <ZLines Qty="5">-2,-1,0,1,2</ZLines>
+    </RectilinearGrid>
+    <BackgroundMaterial Epsilon="1" Mue="1" Kappa="0" Sigma="0" />
+    <ParameterSet>
+        <Parameter Type="Const" name="dx" Sweep="1" value="2" />
+    </ParameterSet>
+    <Properties>
+        <Metal ID="0" Name="transforms">
+            <FillColor R="180" G="80" B="180" a="255" />
+            <EdgeColor R="180" G="80" B="180" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <Transformation>
+                        <Translate Argument="dx,0,0" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Scale Argument="2" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Scale3 Argument="1,2,3" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Rotate_Origin Argument="0,1,1,1.5708" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Rotate_X Argument="1.5708" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Rotate_Y Argument="0.785398" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Rotate_Z Argument="1.5708" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Rotate_Z Argument="90" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Matrix Argument="1,0,0,0,0,1,0,0,0,0,1,0,0.5,0.5,0.5,1" />
+                        <Scale Argument="2" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Translate Argument="1,0,0" />
+                        <Rotate_Z Argument="1.5708" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+                <Box Priority="0">
+                    <Transformation>
+                        <Translate Argument="1,0,0" />
+                        <Rotate_Z Argument="1.5708" />
+                    </Transformation>
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+            </Primitives>
+        </Metal>
+    </Properties>
+</ContinuousStructure>

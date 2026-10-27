@@ -1,0 +1,14 @@
+read_back|1
+format|csxcad-native-report|1
+library|CSXCAD -- Version: v0.7.0
+fixture|01_empty
+coord_system|0
+grid_delta_unit|1
+grid|0|0
+grid|1|0
+grid|2|0
+background|1|1|0|0
+property_count|0
+primitive_count|0
+object_area|0|0|0|0|0|0
+geometry_valid|0

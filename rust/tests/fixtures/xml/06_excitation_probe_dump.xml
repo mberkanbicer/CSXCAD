@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<ContinuousStructure CoordSystem="0">
+    <RectilinearGrid DeltaUnit="0.001" CoordSystem="0">
+        <XLines Qty="3">0,1,2</XLines>
+        <YLines Qty="3">0,1,2</YLines>
+        <ZLines Qty="3">0,1,2</ZLines>
+    </RectilinearGrid>
+    <BackgroundMaterial Epsilon="1" Mue="1" Kappa="0" Sigma="0" />
+    <ParameterSet />
+    <Properties>
+        <Excitation ID="0" Name="excitation" Number="1" Enabled="0" Frequency="2.400000e+09" Delay="1.000000e-09" Type="1" Excite="1.000000e+00,0.000000e+00,0.000000e+00" PropDir="0.000000e+00,0.000000e+00,1.000000e+00">
+            <FillColor R="250" G="100" B="0" a="255" />
+            <EdgeColor R="250" G="100" B="0" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="5.000000e-01" Y="5.000000e-01" Z="0.000000e+00" />
+                    <P2 X="5.000000e-01" Y="5.000000e-01" Z="1.000000e+00" />
+                </Box>
+            </Primitives>
+            <WeightOrigin X="1" Y="2" Z="3" />
+            <Weight X="sin(x)" Y="cos(y)" Z="1.000000e+00" />
+        </Excitation>
+        <Excitation ID="1" Name="excitation-weight-file" Number="2" Enabled="1" Frequency="0.000000e+00" Delay="0.000000e+00" Type="0" Excite="0.000000e+00,1.000000e+00,0.000000e+00" WeightFile="mode_profile.h5" PropDir="0.000000e+00,0.000000e+00,0.000000e+00">
+            <FillColor R="250" G="150" B="50" a="255" />
+            <EdgeColor R="250" G="150" B="50" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="1.500000e+00" Y="5.000000e-01" Z="0.000000e+00" />
+                    <P2 X="1.500000e+00" Y="5.000000e-01" Z="1.000000e+00" />
+                </Box>
+            </Primitives>
+            <Weight X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+        </Excitation>
+        <ProbeBox ID="2" Name="probe" Visible="0" Number="2" Type="1" Weight="2.5" NormDir="1" StartTime="0.1" StopTime="2.5" OverSampling="4">
+            <FillColor R="60" G="180" B="240" a="255" />
+            <EdgeColor R="60" G="180" B="240" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+            </Primitives>
+            <FD_Samples>1000000000,2000000000,3000000000</FD_Samples>
+            <ModeFunction X="sin(x)" Y="cos(y)" Z="1" />
+            <ModeOrigin X="1" Y="2" Z="3" />
+        </ProbeBox>
+        <ProbeBox ID="3" Name="probe-mode-file" Visible="0" Number="10" Type="0" Weight="1" NormDir="-1" StartTime="0" StopTime="0" ModeFile="mode.h5">
+            <FillColor R="80" G="200" B="120" a="255" />
+            <EdgeColor R="80" G="200" B="120" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="1.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="2.000000e+00" />
+                </Box>
+            </Primitives>
+            <ModeOrigin X="1" Y="2" Z="3" />
+        </ProbeBox>
+        <DumpBox ID="4" Name="dump" Visible="0" Number="3" Type="0" Weight="1" NormDir="-1" StartTime="0" StopTime="0" DumpType="10" DumpMode="2" FileType="1" MultiGridLevel="2" SubSampling="2,3,4" OptResolution="0.1,0.2,0.3">
+            <FillColor R="200" G="60" B="200" a="255" />
+            <EdgeColor R="200" G="60" B="200" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="2.000000e+00" Y="2.000000e+00" Z="2.000000e+00" />
+                </Box>
+            </Primitives>
+            <FD_Samples>1000000000,2000000000</FD_Samples>
+        </DumpBox>
+    </Properties>
+</ContinuousStructure>

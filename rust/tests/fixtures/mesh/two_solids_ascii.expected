@@ -1,0 +1,9 @@
+format|stl|ascii
+vertices|4
+vertex|0|0|0
+vertex|1|0|0
+vertex|0|1|0
+vertex|0|0|1
+faces|2
+face|0,1,2
+face|3,1,2

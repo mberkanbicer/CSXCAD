@@ -306,8 +306,8 @@ impl ModeData {
             H5Gclose,
             "failed to open the HDF5 root group",
         )?;
-        let version = read_scalar_attribute::<f64>(root.id, "/", "Version", native_double)?
-            .unwrap_or(0.0);
+        let version =
+            read_scalar_attribute::<f64>(root.id, "/", "Version", native_double)?.unwrap_or(0.0);
         if !version.is_finite() || version < 1.0 {
             return Err(DiscreteMaterialLoadError::UnsupportedVersion(version));
         }
@@ -376,7 +376,11 @@ impl ModeData {
 }
 
 fn left_index(axis: &[f64], value: f64) -> usize {
-    match axis.binary_search_by(|probe| probe.partial_cmp(&value).unwrap_or(std::cmp::Ordering::Equal)) {
+    match axis.binary_search_by(|probe| {
+        probe
+            .partial_cmp(&value)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    }) {
         Ok(index) => index.saturating_sub(1),
         Err(index) => index.saturating_sub(1),
     }

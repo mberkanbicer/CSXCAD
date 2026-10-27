@@ -1,0 +1,24 @@
+read_back|1
+format|csxcad-native-report|1
+library|CSXCAD -- Version: v0.7.0
+fixture|02_grid_background_parameters
+coord_system|0
+grid_delta_unit|0.001
+grid|0|3|-10|0|10
+grid|1|2|-5|5
+grid|2|3|0|2|4
+background|2.5|1.5|0.01|0.02
+parameter|0|width|Const|4|na|0|0|0
+parameter|1|radius|Linear|1.5|1|0.5|2.5|0.5
+parameter_steps|1|0.5|1|1.5|2|2.5
+parameter|2|disabled|Const|3|na|0|0|0
+property_count|1
+primitive_count|1
+property|0|Metal|grid-metal|1|220|40|40|255|220|40|40|255|0|1
+primitive|0|0|Box|1|2|1|0|3|0|4|0|1.5|0|2
+query|0|0.5|0.5|0.5|0|0
+query|1|5|5|5|-1|-1
+query|2|-20|0|0|-1|-1
+expression|width/2+radius|0|3.5
+object_area|0|4|0|1.5|0|2
+geometry_valid|0

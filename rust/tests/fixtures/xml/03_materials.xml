@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<ContinuousStructure CoordSystem="0">
+    <RectilinearGrid DeltaUnit="1" CoordSystem="0">
+        <XLines Qty="3">0,1,2</XLines>
+        <YLines Qty="3">0,1,2</YLines>
+        <ZLines Qty="3">0,1,2</ZLines>
+    </RectilinearGrid>
+    <BackgroundMaterial Epsilon="1" Mue="1" Kappa="0" Sigma="0" />
+    <ParameterSet />
+    <Properties>
+        <Material ID="0" Name="material-iso" Visible="0" Isotropy="1">
+            <FillColor R="100" G="150" B="200" a="255" />
+            <EdgeColor R="100" G="150" B="200" a="255" />
+            <Attributes custom="value &amp; &lt;tag&gt;" />
+            <Primitives>
+                <Box Priority="2">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="1.000000e+00" />
+                </Box>
+            </Primitives>
+            <Property Epsilon="2.500000e+00,1.000000e+00,1.000000e+00" Mue="1.500000e+00,1.000000e+00,1.000000e+00" Kappa="1.000000e-01,0.000000e+00,0.000000e+00" Sigma="2.000000e-01,0.000000e+00,0.000000e+00" Density="1.200000e+03" />
+            <Weight Epsilon="2*x+1,1.000000e+00,1.000000e+00" Mue="1.000000e+00,1.000000e+00,1.000000e+00" Kappa="y*z,1.000000e+00,1.000000e+00" Sigma="1.000000e+00,1.000000e+00,1.000000e+00" Density="rho" />
+        </Material>
+        <Material ID="1" Name="material-aniso" Isotropy="0">
+            <FillColor R="90" G="140" B="190" a="255" />
+            <EdgeColor R="90" G="140" B="190" a="255" />
+            <Primitives>
+                <Box Priority="1">
+                    <P1 X="2.000000e-01" Y="2.000000e-01" Z="2.000000e-01" />
+                    <P2 X="8.000000e-01" Y="8.000000e-01" Z="8.000000e-01" />
+                </Box>
+            </Primitives>
+            <Property Epsilon="2.000000e+00,3.000000e+00,4.000000e+00" Mue="1.100000e+00,1.200000e+00,1.300000e+00" Kappa="0.000000e+00,0.000000e+00,0.000000e+00" Sigma="0.000000e+00,0.000000e+00,0.000000e+00" Density="0.000000e+00" />
+            <Weight Epsilon="1.000000e+00,y,1.000000e+00" Mue="1.000000e+00,1.000000e+00,1.000000e+00" Kappa="1.000000e+00,1.000000e+00,1.000000e+00" Sigma="1.000000e+00,1.000000e+00,1.000000e+00" Density="1.000000e+00" />
+        </Material>
+        <Metal ID="2" Name="metal">
+            <FillColor R="200" G="200" B="200" a="255" />
+            <EdgeColor R="200" G="200" B="200" a="255" />
+            <Primitives>
+                <Box Priority="3">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="1.000000e+00" />
+                    <P2 X="1.000000e+00" Y="1.000000e+00" Z="2.000000e+00" />
+                </Box>
+            </Primitives>
+        </Metal>
+        <Unknown ID="3" Name="unknown" Visible="0" Property="mystery-tag">
+            <FillColor R="10" G="20" B="30" a="255" />
+            <EdgeColor R="10" G="20" B="30" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="0.000000e+00" Y="0.000000e+00" Z="0.000000e+00" />
+                    <P2 X="5.000000e-01" Y="5.000000e-01" Z="5.000000e-01" />
+                </Box>
+            </Primitives>
+        </Unknown>
+        <ResBox ID="4" Name="resolution" Visible="0" Factor="2">
+            <FillColor R="50" G="50" B="160" a="255" />
+            <EdgeColor R="50" G="50" B="160" a="255" />
+            <Primitives>
+                <Box Priority="0">
+                    <P1 X="1.000000e-01" Y="1.000000e-01" Z="1.000000e-01" />
+                    <P2 X="9.000000e-01" Y="9.000000e-01" Z="9.000000e-01" />
+                </Box>
+            </Primitives>
+        </ResBox>
+    </Properties>
+</ContinuousStructure>
