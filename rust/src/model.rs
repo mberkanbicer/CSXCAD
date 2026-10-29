@@ -436,6 +436,17 @@ impl BoxPrimitive {
         Ok(true)
     }
 
+    /// Shift both corners by `delta` (metres), the viewport drag primitive.
+    pub fn translate(&mut self, delta: [f64; 3]) -> Result<(), ParameterError> {
+        for index in 0..6 {
+            let axis = index / 2;
+            if let Some(value) = self.coordinate(index, None)? {
+                self.set_coordinate(index, value + delta[axis]);
+            }
+        }
+        Ok(())
+    }
+
     pub fn coordinate(
         &self,
         index: usize,
@@ -687,6 +698,15 @@ impl SpherePrimitive {
 
     pub fn set_radius_expression(&mut self, expression: &str) -> Result<(), ParameterError> {
         self.radius.set_value_string(expression)
+    }
+
+    /// Shift the centre by `delta` (metres).
+    pub fn translate(&mut self, delta: [f64; 3]) -> Result<(), ParameterError> {
+        let center = self.center(None)?;
+        for axis in 0..3 {
+            self.set_center_coordinate(axis, center[axis] + delta[axis]);
+        }
+        Ok(())
     }
 
     pub fn center(&self, parameters: Option<&ParameterSet>) -> Result<[f64; 3], ParameterError> {
