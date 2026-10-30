@@ -1992,14 +1992,14 @@ impl UserDefinedPrimitive {
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct PolyhedronPrimitive {
-    vertices: Vec<[f32; 3]>,
+    vertices: Vec<[f64; 3]>,
     faces: Vec<Vec<i32>>,
 }
 
 impl PolyhedronPrimitive {
     pub fn add_vertex(&mut self, coordinates: [f64; 3]) -> usize {
-        self.vertices
-            .push(coordinates.map(|coordinate| coordinate as f32));
+        // Native: polyhedron vertices are double precision.
+        self.vertices.push(coordinates);
         self.vertices.len() - 1
     }
 
@@ -2021,7 +2021,7 @@ impl PolyhedronPrimitive {
         self.faces.len()
     }
 
-    pub fn vertex(&self, index: usize) -> Option<[f32; 3]> {
+    pub fn vertex(&self, index: usize) -> Option<[f64; 3]> {
         self.vertices.get(index).copied()
     }
 
@@ -6657,5 +6657,26 @@ mod tests {
         assert!(Property::new("metal", PropertyType::Metal)
             .material()
             .is_none());
+    }
+}
+
+#[cfg(test)]
+mod polyhedron_precision_tests {
+    use super::*;
+
+    #[test]
+    fn polyhedron_vertices_keep_double_precision() {
+        let mut primitive = Primitive::polyhedron();
+        let vertex = primitive
+            .polyhedron_shape_mut()
+            .expect("polyhedron")
+            .add_vertex([1.0 / 3.0, 2.0e-12, 1.23456789012345]);
+        let stored = primitive
+            .polyhedron_shape()
+            .and_then(|shape| shape.vertex(vertex))
+            .expect("vertex");
+        // Native `CSPrimPolyhedron` stores double vertices; a 32-bit store
+        // would round 1/3 to 0.33333334 and lose the 1e-12 coordinate.
+        assert_eq!(stored, [1.0 / 3.0, 2.0e-12, 1.23456789012345]);
     }
 }
