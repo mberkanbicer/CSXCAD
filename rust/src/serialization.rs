@@ -120,7 +120,20 @@ impl Structure {
         Ok(output)
     }
 
-    pub fn from_xml_str(input: &str) -> Result<Self, StructureXmlError> {
+    /// Depth-first search for the first element named `name` below `node`.
+fn find_descendant<'a>(node: &'a crate::xml::XmlNode, name: &str) -> Option<&'a crate::xml::XmlNode> {
+    for child in &node.children {
+        if child.name == name {
+            return Some(child);
+        }
+        if let Some(found) = Self::find_descendant(child, name) {
+            return Some(found);
+        }
+    }
+    None
+}
+
+pub fn from_xml_str(input: &str) -> Result<Self, StructureXmlError> {
         Self::from_xml_str_with_policy(input, false).map(|(structure, _)| structure)
     }
 
@@ -135,10 +148,13 @@ impl Structure {
         native_compatibility: bool,
     ) -> Result<(Self, Vec<StructureXmlWarning>), StructureXmlError> {
         let document = xml::parse(input).map_err(StructureXmlError::Parse)?;
+        // Native `ContinuousStructure::ReadFromXML` finds the element anywhere
+        // in the document, not only directly below the root, so a structure
+        // embedded in a larger document loads too.
         let root = if document.name == "ContinuousStructure" {
             &document
         } else {
-            document.child("ContinuousStructure").ok_or_else(|| {
+            Self::find_descendant(&document, "ContinuousStructure").ok_or_else(|| {
                 StructureXmlError::MissingChild {
                     node: document.name.clone(),
                     child: "ContinuousStructure".to_owned(),
@@ -3038,5 +3054,38 @@ mod anisotropic_parse_tests {
         let structure = Structure::from_xml_str(xml).unwrap();
         let material = structure.property_by_index(0).unwrap().material().unwrap();
         assert!(material.is_isotropic());
+    }
+}
+
+#[cfg(test)]
+mod nested_xml_tests {
+    use super::*;
+
+    #[test]
+    fn a_structure_embedded_in_a_larger_document_is_found() {
+        let structure = r#"<ContinuousStructure CoordSystem="0">
+            <RectilinearGrid DeltaUnit="0.001">
+                <XLines>0,1,2</XLines>
+                <YLines>0,1,2</YLines>
+                <ZLines>0,1,2</ZLines>
+            </RectilinearGrid>
+            <Properties>
+                <Metal Name="metal">
+                    <Primitives>
+                        <Box Priority="0"><P1 X="0" Y="0" Z="0"/><P2 X="1" Y="1" Z="1"/></Box>
+                        <UserDefined Priority="0" CoordSystem="0">
+                            <CoordShift X="0" Y="0" Z="0"/>
+                            <Function>x*x+y*y+z*z-1</Function>
+                        </UserDefined>
+                    </Primitives>
+                </Metal>
+            </Properties>
+        </ContinuousStructure>"#;
+        let wrapped = format!(
+            "<?xml version=\"1.0\"?>\n<Outer><Settings/><Inner>{structure}</Inner></Outer>"
+        );
+        let parsed = Structure::from_xml_str(&wrapped).expect("nested structure");
+        assert_eq!(parsed.property_count(), 1);
+        assert_eq!(parsed.primitive_count(), 2);
     }
 }
