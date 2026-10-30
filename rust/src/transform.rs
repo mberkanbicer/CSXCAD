@@ -130,6 +130,24 @@ impl Transform {
             .ok_or(TransformError::SingularMatrix)
     }
 
+    /// Native `CSTransform::GetInverseScale`: the largest length of a column
+    /// of the inverse linear part, used to convert a global drawing tolerance
+    /// into the primitive's own coordinates.
+    pub fn inverse_scale(&self) -> f64 {
+        let Some(matrix) = self.inverse_matrix.as_ref() else {
+            return 1.0;
+        };
+        let mut scale = 0.0f64;
+        for column in 0..3 {
+            let mut length_squared = 0.0;
+            for row in 0..3 {
+                length_squared += matrix[4 * row + column].powi(2);
+            }
+            scale = scale.max(length_squared.sqrt());
+        }
+        scale
+    }
+
     pub fn invert(&mut self) -> Result<(), TransformError> {
         let inverse = self
             .inverse_matrix

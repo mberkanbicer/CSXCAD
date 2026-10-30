@@ -533,15 +533,18 @@ impl BoxPrimitive {
         &self,
         coordinates: [f64; 3],
         parameters: Option<&ParameterSet>,
+        coordinate_system: CoordinateSystem,
+        tolerance: f64,
     ) -> Result<bool, ParameterError> {
         let [[start_x, start_y, start_z], [stop_x, stop_y, stop_z]] =
             self.evaluated_coordinates(parameters)?;
-        let start = [start_x, start_y, start_z];
-        let stop = [stop_x, stop_y, stop_z];
-        Ok((0..3).all(|axis| {
-            coordinates[axis] >= start[axis].min(stop[axis])
-                && coordinates[axis] <= start[axis].max(stop[axis])
-        }))
+        Ok(coordinate_in_range(
+            coordinates,
+            [start_x, start_y, start_z],
+            [stop_x, stop_y, stop_z],
+            coordinate_system,
+            tolerance,
+        ))
     }
 }
 
@@ -758,6 +761,7 @@ impl SpherePrimitive {
         coordinates: [f64; 3],
         center_coordinate_system: CoordinateSystem,
         parameters: Option<&ParameterSet>,
+        tolerance: f64,
     ) -> Result<bool, ParameterError> {
         let center = transform_coordinates(
             self.center(parameters)?,
@@ -769,7 +773,7 @@ impl SpherePrimitive {
             .map(|axis| (coordinates[axis] - center[axis]).powi(2))
             .sum::<f64>()
             .sqrt();
-        Ok(distance < radius)
+        Ok(distance <= radius + tolerance)
     }
 }
 
@@ -892,6 +896,7 @@ impl SphericalShellPrimitive {
         coordinates: [f64; 3],
         center_coordinate_system: CoordinateSystem,
         parameters: Option<&ParameterSet>,
+        tolerance: f64,
     ) -> Result<bool, ParameterError> {
         let center = transform_coordinates(
             self.sphere.center(parameters)?,
@@ -902,10 +907,8 @@ impl SphericalShellPrimitive {
             .map(|axis| (coordinates[axis] - center[axis]).powi(2))
             .sum::<f64>()
             .sqrt();
-        Ok(
-            (distance - self.sphere.radius(parameters)?).abs()
-                < self.shell_width(parameters)? / 2.0,
-        )
+        Ok((distance - self.sphere.radius(parameters)?).abs()
+            <= self.shell_width(parameters)? / 2.0 + tolerance)
     }
 }
 
@@ -1121,6 +1124,7 @@ impl CylinderPrimitive {
         coordinates: [f64; 3],
         parameters: Option<&ParameterSet>,
         coordinate_system: CoordinateSystem,
+        tolerance: f64,
     ) -> Result<bool, ParameterError> {
         let [[start_x, start_y, start_z], [stop_x, stop_y, stop_z]] =
             self.axis_coordinates(parameters, coordinate_system)?;
@@ -1130,7 +1134,11 @@ impl CylinderPrimitive {
         let length_squared = axis.iter().map(|value| value.powi(2)).sum::<f64>();
         if length_squared == 0.0 {
             // Native CSPrimCylinder's degenerate bounds collapse to the axis point.
-            return Ok(coordinates == start);
+            return Ok((0..3)
+                .map(|axis| (coordinates[axis] - start[axis]).powi(2))
+                .sum::<f64>()
+                .sqrt()
+                <= tolerance);
         }
         let offset = [
             coordinates[0] - start[0],
@@ -1138,7 +1146,14 @@ impl CylinderPrimitive {
             coordinates[2] - start[2],
         ];
         let foot = (0..3).map(|index| offset[index] * axis[index]).sum::<f64>() / length_squared;
-        if !(0.0..=1.0).contains(&foot) {
+        // The tolerance along the axis, in parts of its length.
+        let length = length_squared.sqrt();
+        let foot_tolerance = if length > 0.0 {
+            tolerance / length
+        } else {
+            0.0
+        };
+        if foot < -foot_tolerance || foot > 1.0 + foot_tolerance {
             return Ok(false);
         }
         let distance_squared = (0..3)
@@ -1147,9 +1162,9 @@ impl CylinderPrimitive {
         let distance = distance_squared.sqrt();
         let radius = self.radius(parameters)?;
         if let Some(shell_width) = self.shell_width(parameters)? {
-            Ok((distance - radius).abs() <= shell_width / 2.0)
+            Ok((distance - radius).abs() <= shell_width / 2.0 + tolerance)
         } else {
-            Ok(distance <= radius)
+            Ok(distance <= radius + tolerance)
         }
     }
 }
@@ -1367,17 +1382,19 @@ impl CurvePrimitive {
         coordinates: [f64; 3],
         parameters: Option<&ParameterSet>,
         coordinate_system: CoordinateSystem,
+        tolerance: f64,
     ) -> Result<bool, ParameterError> {
         let Some(radius) = self.wire_radius(parameters)? else {
             return Ok(false);
         };
+        let radius = radius + tolerance;
         let points = self.evaluate_points(parameters, coordinate_system)?;
         for (index, point) in points.iter().enumerate() {
             let distance = (0..3)
                 .map(|axis| (coordinates[axis] - point[axis]).powi(2))
                 .sum::<f64>()
                 .sqrt();
-            if distance < radius {
+            if distance <= radius {
                 return Ok(true);
             }
             if let Some(next) = points.get(index + 1) {
@@ -1726,11 +1743,13 @@ impl PolygonPrimitive {
         &self,
         coordinates: [f64; 3],
         parameters: Option<&ParameterSet>,
+        tolerance: f64,
     ) -> Result<bool, ParameterError> {
         let bounds = self.bounding_box(parameters)?;
         if self.vertices.len() < 2
             || (0..3).any(|axis| {
-                coordinates[axis] < bounds[2 * axis] || coordinates[axis] > bounds[2 * axis + 1]
+                coordinates[axis] < bounds[2 * axis] - tolerance
+                    || coordinates[axis] > bounds[2 * axis + 1] + tolerance
             })
         {
             return Ok(false);
@@ -1739,6 +1758,26 @@ impl PolygonPrimitive {
         let first_axis = (self.normal_direction + 1) % 3;
         let second_axis = (self.normal_direction + 2) % 3;
         let (x, y) = (coordinates[first_axis], coordinates[second_axis]);
+        // Native: an edge or corner counts as inside, and so does a point
+        // within the drawing tolerance of it.
+        if tolerance > 0.0 {
+            let mut start = *vertices.last().expect("at least two vertices");
+            for end in &vertices {
+                let edge = [end[0] - start[0], end[1] - start[1]];
+                let length_squared = edge[0].powi(2) + edge[1].powi(2);
+                let foot = if length_squared > 0.0 {
+                    (((x - start[0]) * edge[0] + (y - start[1]) * edge[1]) / length_squared)
+                        .clamp(0.0, 1.0)
+                } else {
+                    0.0
+                };
+                let offset = [start[0] + foot * edge[0] - x, start[1] + foot * edge[1] - y];
+                if offset[0].powi(2) + offset[1].powi(2) <= tolerance.powi(2) {
+                    return Ok(true);
+                }
+                start = *end;
+            }
+        }
         let mut winding_number = 0;
         let mut previous = *vertices.last().expect("at least two vertices");
         let mut start_over = previous[1] >= y;
@@ -1774,6 +1813,7 @@ impl PolygonPrimitive {
         &self,
         coordinates: [f64; 3],
         parameters: Option<&ParameterSet>,
+        tolerance: f64,
     ) -> Result<bool, ParameterError> {
         let axis_direction = self
             .rotation_axis_direction
@@ -1807,10 +1847,26 @@ impl PolygonPrimitive {
         let mut cross_section_point = [radial_distance; 3];
         cross_section_point[self.normal_direction] = 0.0;
         cross_section_point[axis_direction] = coordinates[axis_direction];
-        if angle < start_angle {
+        // The angle the tolerance covers at this distance from the axis.
+        let angle_tolerance = if radial_distance.abs() > tolerance {
+            tolerance / radial_distance.abs()
+        } else {
+            std::f64::consts::PI
+        };
+        let low = start_angle - angle_tolerance;
+        let in_range = |mut value: f64| {
+            while value < low {
+                value += 2.0 * std::f64::consts::PI;
+            }
+            while value >= low + 2.0 * std::f64::consts::PI {
+                value -= 2.0 * std::f64::consts::PI;
+            }
+            value <= stop_angle + angle_tolerance
+        };
+        if angle < low {
             angle += 2.0 * std::f64::consts::PI;
         }
-        if self.contains(cross_section_point, parameters)? && angle < stop_angle {
+        if in_range(angle) && self.contains(cross_section_point, parameters, tolerance)? {
             return Ok(true);
         }
         radial_distance *= -1.0;
@@ -1818,16 +1874,16 @@ impl PolygonPrimitive {
         if angle > 2.0 * std::f64::consts::PI {
             angle -= 2.0 * std::f64::consts::PI;
         }
-        if angle < start_angle {
+        if angle < low {
             angle += 2.0 * std::f64::consts::PI;
         }
-        if angle > stop_angle {
+        if !in_range(angle) {
             return Ok(false);
         }
         cross_section_point[first_radial_axis] = radial_distance;
         cross_section_point[second_radial_axis] = radial_distance;
         cross_section_point[axis_direction] = coordinates[axis_direction];
-        self.contains(cross_section_point, parameters)
+        self.contains(cross_section_point, parameters, tolerance)
     }
 }
 
@@ -2219,30 +2275,86 @@ impl PolyhedronPrimitive {
         bounds
     }
 
-    fn contains(&self, coordinates: [f64; 3]) -> bool {
+    fn contains(&self, coordinates: [f64; 3], tolerance: f64) -> bool {
         if self.dimension() < 3 {
             return false;
         }
         let bounds = self.bounding_box();
         if (0..3).any(|axis| {
-            coordinates[axis] < bounds[2 * axis] || coordinates[axis] > bounds[2 * axis + 1]
+            coordinates[axis] < bounds[2 * axis] - tolerance
+                || coordinates[axis] > bounds[2 * axis + 1] + tolerance
         }) {
             return false;
         }
-        let origin = coordinates;
-        let mut intersections = 0;
+        // Native: a point on the surface (within the tolerance) is inside. The
+        // relative epsilon also catches a point that is exactly on a face but
+        // not representable in floating point, where the solid angle below is
+        // only half of 4*pi.
+        let diagonal = {
+            let mut sum = 0.0;
+            for axis in 0..3 {
+                let extent = bounds[2 * axis + 1] - bounds[2 * axis];
+                sum += extent * extent;
+            }
+            sum.sqrt()
+        };
+        let surface_epsilon = tolerance.max(1.0e-9 * diagonal.max(1.0));
         for face in self.accepted_faces() {
-            let first = self.vertices[face[0] as usize].map(f64::from);
+            let first = self.vertices[face[0] as usize];
             for triangle in 1..(face.len() - 1) {
-                let second = self.vertices[face[triangle] as usize].map(f64::from);
-                let third = self.vertices[face[triangle + 1] as usize].map(f64::from);
-                if ray_intersects_triangle(origin, first, second, third) {
-                    intersections += 1;
+                let second = self.vertices[face[triangle] as usize];
+                let third = self.vertices[face[triangle + 1] as usize];
+                if point_triangle_distance(coordinates, first, second, third) <= surface_epsilon {
+                    return true;
                 }
             }
         }
-        intersections % 2 == 1
+        // Solid angle: robust for points on an edge, a cavity, touching or
+        // overlapping bodies; no face is dropped.
+        let mut solid_angle = 0.0;
+        for face in self.accepted_faces() {
+            let first = self.vertices[face[0] as usize];
+            for triangle in 1..(face.len() - 1) {
+                let second = self.vertices[face[triangle] as usize];
+                let third = self.vertices[face[triangle + 1] as usize];
+                solid_angle += triangle_solid_angle(coordinates, first, second, third);
+            }
+        }
+        solid_angle.abs() > 2.0 * std::f64::consts::PI
     }
+}
+
+/// Native `CoordInRange`: a point within `tolerance` of the range counts as
+/// inside. Along a cylindrical angle the tolerance is a length too, so it is
+/// divided by the radius (any angle counts close to the axis).
+fn coordinate_in_range(
+    coordinates: [f64; 3],
+    start: [f64; 3],
+    stop: [f64; 3],
+    system: CoordinateSystem,
+    tolerance: f64,
+) -> bool {
+    let mut point = coordinates;
+    let mut distance = [tolerance; 3];
+    if system == CoordinateSystem::Cylindrical {
+        distance[1] = if point[0].abs() > tolerance {
+            tolerance / point[0].abs()
+        } else {
+            std::f64::consts::PI
+        };
+        let low = start[1].min(stop[1]) - distance[1];
+        let high = start[1].max(stop[1]) + distance[1];
+        while point[1] < low {
+            point[1] += 2.0 * std::f64::consts::PI;
+        }
+        while point[1] > high {
+            point[1] -= 2.0 * std::f64::consts::PI;
+        }
+    }
+    (0..3).all(|axis| {
+        point[axis] >= start[axis].min(stop[axis]) - distance[axis]
+            && point[axis] <= start[axis].max(stop[axis]) + distance[axis]
+    })
 }
 
 fn ray_intersects_triangle(
@@ -2271,6 +2383,70 @@ fn ray_intersects_triangle(
         return false;
     }
     dot3(edge2, cross) * inverse > 1e-12
+}
+
+/// Distance from `point` to the triangle `a`-`b`-`c`.
+fn point_triangle_distance(point: [f64; 3], a: [f64; 3], b: [f64; 3], c: [f64; 3]) -> f64 {
+    // Project onto the triangle plane and clamp to its edges.
+    let ab = subtract3(b, a);
+    let ac = subtract3(c, a);
+    let normal = cross3(ab, ac);
+    let normal_length_squared = dot3(normal, normal);
+    let projected = if normal_length_squared > 0.0 {
+        let offset = subtract3(point, a);
+        let signed = dot3(offset, normal) / normal_length_squared;
+        subtract3(point, [normal[0] * signed, normal[1] * signed, normal[2] * signed])
+    } else {
+        point
+    };
+    // Inside the triangle (same side of all three edges)?
+    let inside = |edge_start: [f64; 3], edge_end: [f64; 3]| {
+        let edge = subtract3(edge_end, edge_start);
+        let to_point = subtract3(projected, edge_start);
+        dot3(cross3(edge, to_point), normal) >= 0.0
+    };
+    if inside(a, b) && inside(b, c) && inside(c, a) {
+        return subtract3(point, projected)
+            .iter()
+            .map(|value| value * value)
+            .sum::<f64>()
+            .sqrt();
+    }
+    let segment_distance = |start: [f64; 3], end: [f64; 3]| {
+        let segment = subtract3(end, start);
+        let length_squared = dot3(segment, segment);
+        let foot = if length_squared > 0.0 {
+            (dot3(subtract3(point, start), segment) / length_squared).clamp(0.0, 1.0)
+        } else {
+            0.0
+        };
+        subtract3(point, [
+            start[0] + foot * segment[0],
+            start[1] + foot * segment[1],
+            start[2] + foot * segment[2],
+        ])
+        .iter()
+        .map(|value| value * value)
+        .sum::<f64>()
+        .sqrt()
+    };
+    segment_distance(a, b)
+        .min(segment_distance(b, c))
+        .min(segment_distance(c, a))
+}
+
+/// Signed solid angle of the triangle `a`-`b`-`c` seen from `point`
+/// (Van Oosterom and Strackee). A closed surface sums to 4*pi inside.
+fn triangle_solid_angle(point: [f64; 3], a: [f64; 3], b: [f64; 3], c: [f64; 3]) -> f64 {
+    let a = subtract3(a, point);
+    let b = subtract3(b, point);
+    let c = subtract3(c, point);
+    let numerator = dot3(a, cross3(b, c));
+    let la = dot3(a, a).sqrt();
+    let lb = dot3(b, b).sqrt();
+    let lc = dot3(c, c).sqrt();
+    let denominator = la * lb * lc + dot3(a, b) * lc + dot3(a, c) * lb + dot3(b, c) * la;
+    2.0 * numerator.atan2(denominator)
 }
 
 fn subtract3(left: [f64; 3], right: [f64; 3]) -> [f64; 3] {
@@ -2428,9 +2604,11 @@ impl MultiBoxPrimitive {
         &self,
         coordinates: [f64; 3],
         parameters: Option<&ParameterSet>,
+        coordinate_system: CoordinateSystem,
+        tolerance: f64,
     ) -> Result<bool, ParameterError> {
         for shape in &self.boxes {
-            if shape.contains(coordinates, parameters)? {
+            if shape.contains(coordinates, parameters, coordinate_system, tolerance)? {
                 return Ok(true);
             }
         }
@@ -3223,6 +3401,25 @@ impl Primitive {
         coordinates: [f64; 3],
         parameters: Option<&ParameterSet>,
     ) -> Result<bool, ModelError> {
+        self.is_inside_with_tolerance(coordinates, parameters, 0.0)
+    }
+
+    /// Native `CSPrimitives::IsInside` with the drawing tolerance: the surface
+    /// counts as inside, and so does a point within `tolerance` (a length in
+    /// the global coordinates) of it. The tolerance is converted into the
+    /// primitive's own coordinates; user-defined primitives ignore it.
+    pub fn is_inside_with_tolerance(
+        &self,
+        coordinates: [f64; 3],
+        parameters: Option<&ParameterSet>,
+        tolerance: f64,
+    ) -> Result<bool, ModelError> {
+        // Native `LocalTolerance`: a global length in the primitive's
+        // coordinates before its transform.
+        let local_tolerance = match &self.transform {
+            Some(transform) => tolerance * transform.inverse_scale(),
+            None => tolerance,
+        };
         match &self.shape {
             PrimitiveShape::Point(_) => Ok(false),
             PrimitiveShape::Box(shape) => {
@@ -3247,7 +3444,7 @@ impl Primitive {
                 };
                 let local_coordinates =
                     transform_coordinates(local_coordinates, self.mesh_type, primitive_system);
-                Ok(shape.contains(local_coordinates, parameters)?)
+                Ok(shape.contains(local_coordinates, parameters, primitive_system, local_tolerance)?)
             }
             PrimitiveShape::Sphere(shape) => {
                 let mut local_coordinates =
@@ -3260,7 +3457,7 @@ impl Primitive {
                 } else {
                     self.coordinate_system
                 };
-                Ok(shape.contains(local_coordinates, center_system, parameters)?)
+                Ok(shape.contains(local_coordinates, center_system, parameters, local_tolerance)?)
             }
             PrimitiveShape::SphericalShell(shape) => {
                 let mut local_coordinates =
@@ -3273,7 +3470,7 @@ impl Primitive {
                 } else {
                     self.coordinate_system
                 };
-                Ok(shape.contains(local_coordinates, center_system, parameters)?)
+                Ok(shape.contains(local_coordinates, center_system, parameters, local_tolerance)?)
             }
             PrimitiveShape::Cylinder(shape) => {
                 let mut local_coordinates =
@@ -3286,7 +3483,7 @@ impl Primitive {
                 } else {
                     self.coordinate_system
                 };
-                Ok(shape.contains(local_coordinates, parameters, axis_system)?)
+                Ok(shape.contains(local_coordinates, parameters, axis_system, local_tolerance)?)
             }
             PrimitiveShape::Curve(shape) => {
                 let mut local_coordinates =
@@ -3299,7 +3496,7 @@ impl Primitive {
                 } else {
                     self.coordinate_system
                 };
-                Ok(shape.contains(local_coordinates, parameters, point_system)?)
+                Ok(shape.contains(local_coordinates, parameters, point_system, local_tolerance)?)
             }
             PrimitiveShape::Polygon(shape) => {
                 let mut local_coordinates =
@@ -3308,9 +3505,13 @@ impl Primitive {
                     local_coordinates = transform.inverse_transform(local_coordinates)?;
                 }
                 if shape.is_rotational() {
-                    Ok(shape.contains_rotational(local_coordinates, parameters)?)
+                    Ok(shape.contains_rotational(
+                        local_coordinates,
+                        parameters,
+                        local_tolerance,
+                    )?)
                 } else {
-                    Ok(shape.contains(local_coordinates, parameters)?)
+                    Ok(shape.contains(local_coordinates, parameters, local_tolerance)?)
                 }
             }
             PrimitiveShape::Polyhedron(shape) => {
@@ -3319,7 +3520,7 @@ impl Primitive {
                 if let Some(transform) = &self.transform {
                     local_coordinates = transform.inverse_transform(local_coordinates)?;
                 }
-                Ok(shape.contains(local_coordinates))
+                Ok(shape.contains(local_coordinates, local_tolerance))
             }
             PrimitiveShape::PolyhedronReader(shape) => {
                 let mut local_coordinates =
@@ -3327,7 +3528,7 @@ impl Primitive {
                 if let Some(transform) = &self.transform {
                     local_coordinates = transform.inverse_transform(local_coordinates)?;
                 }
-                Ok(shape.polyhedron().contains(local_coordinates))
+                Ok(shape.polyhedron().contains(local_coordinates, local_tolerance))
             }
             PrimitiveShape::MultiBox(shape) => {
                 let mut local_coordinates = coordinates;
@@ -3351,7 +3552,7 @@ impl Primitive {
                 };
                 let local_coordinates =
                     transform_coordinates(local_coordinates, self.mesh_type, primitive_system);
-                Ok(shape.contains(local_coordinates, parameters)?)
+                Ok(shape.contains(local_coordinates, parameters, primitive_system, local_tolerance)?)
             }
             PrimitiveShape::UserDefined(shape) => {
                 let mut local_coordinates =
@@ -3752,6 +3953,10 @@ impl Property {
 pub struct Structure {
     parameters: ParameterSet,
     grid: RectGrid,
+    /// Native `CSXCAD::SetDrawingTolerance`: a point within this distance of a
+    /// primitive's surface counts as inside. The operator sets it from the
+    /// smallest mesh step.
+    drawing_tolerance: f64,
     background_material: BackgroundMaterial,
     coordinate_system: CoordinateSystem,
     properties: Vec<Property>,
@@ -3770,6 +3975,7 @@ impl Structure {
         Self {
             parameters: ParameterSet::new(),
             grid: RectGrid::new(),
+            drawing_tolerance: 0.0,
             background_material: BackgroundMaterial::default(),
             coordinate_system: CoordinateSystem::Cartesian,
             properties: Vec::new(),
@@ -3804,6 +4010,16 @@ impl Structure {
 
     pub fn coordinate_system(&self) -> CoordinateSystem {
         self.coordinate_system
+    }
+
+    /// Native `CSXCAD::GetDrawingTolerance`.
+    pub fn drawing_tolerance(&self) -> f64 {
+        self.drawing_tolerance
+    }
+
+    /// Native `CSXCAD::SetDrawingTolerance`.
+    pub fn set_drawing_tolerance(&mut self, tolerance: f64) {
+        self.drawing_tolerance = tolerance.max(0.0);
     }
 
     pub fn set_coordinate_system(&mut self, coordinate_system: CoordinateSystem) {
@@ -4018,7 +4234,11 @@ impl Structure {
                     continue;
                 };
                 for primitive in property.primitives() {
-                    if primitive.is_inside(coordinates, Some(parameters))? {
+                    if primitive.is_inside_with_tolerance(
+                coordinates,
+                Some(parameters),
+                self.drawing_tolerance,
+            )? {
                         let primitive_id =
                             primitive.id().ok_or(ModelError::PrimitiveIdNotAssigned)?;
                         let replace_winner = match winner {
@@ -5770,14 +5990,16 @@ mod tests {
         assert!(primitive
             .is_inside([2.0, 0.0, 0.0], Some(structure.parameters()))
             .unwrap());
-        assert!(!primitive
+        // Native: the surface counts as inside.
+        assert!(primitive
             .is_inside([5.0, 0.0, 0.0], Some(structure.parameters()))
             .unwrap());
 
         let mut transformed = Primitive::sphere([0.0; 3], 1.0);
         transformed.transform_mut().translate([2.0, 0.0, 0.0], true);
         assert!(transformed.is_inside([2.0, 0.0, 0.0], None).unwrap());
-        assert!(!transformed.is_inside([3.0, 0.0, 0.0], None).unwrap());
+        // The translated sphere's surface is inside too.
+        assert!(transformed.is_inside([3.0, 0.0, 0.0], None).unwrap());
     }
 
     #[test]
@@ -5788,7 +6010,8 @@ mod tests {
             sphere.bounding_box(None, true).unwrap(),
             [1.0, 1.0, 2.0, 2.0, 3.0, 3.0]
         );
-        assert!(!sphere.is_inside([1.0, 2.0, 3.0], None).unwrap());
+        // A zero-radius sphere is its centre, and the surface is inside.
+        assert!(sphere.is_inside([1.0, 2.0, 3.0], None).unwrap());
 
         let sphere = Primitive::sphere([1.0, 2.0, 3.0], -2.0);
         assert_eq!(sphere.dimension(None).unwrap(), 0);
@@ -5808,8 +6031,9 @@ mod tests {
         );
         assert_eq!(shell.dimension(None).unwrap(), 3);
         assert!(shell.is_inside([1.0, 0.0, 0.0], None).unwrap());
-        assert!(!shell.is_inside([0.75, 0.0, 0.0], None).unwrap());
-        assert!(!shell.is_inside([1.25, 0.0, 0.0], None).unwrap());
+        // Native: the inner and outer surfaces count as inside.
+        assert!(shell.is_inside([0.75, 0.0, 0.0], None).unwrap());
+        assert!(shell.is_inside([1.25, 0.0, 0.0], None).unwrap());
 
         let mut parameters = crate::parameter::ParameterSet::new();
         parameters.add("width", 0.5);
@@ -5864,7 +6088,8 @@ mod tests {
             .zip(expected)
             .all(|(actual, expected)| (actual - expected).abs() < 1e-15));
         assert!(cylindrical_sphere.is_inside([0.0, 1.0, 0.0], None).unwrap());
-        assert!(!cylindrical_sphere.is_inside([0.0, 1.5, 0.0], None).unwrap());
+        // (0, 1.5, 0) lies on the sphere's surface in Cartesian coordinates.
+        assert!(cylindrical_sphere.is_inside([0.0, 1.5, 0.0], None).unwrap());
 
         let mut cylindrical_mesh_sphere = Primitive::sphere([2.0, 0.0, 1.0], 0.25);
         cylindrical_mesh_sphere.set_mesh_type(CoordinateSystem::Cylindrical);
@@ -6167,7 +6392,8 @@ mod tests {
 
             assert_eq!(polyhedron.dimension(None).unwrap(), 3);
             assert!(!polyhedron.is_inside([0.1, 0.1, -0.1], None).unwrap());
-            assert!(!polyhedron.is_inside([0.1, 0.1, 0.0], None).unwrap());
+            // Native: the face itself counts as inside.
+            assert!(polyhedron.is_inside([0.1, 0.1, 0.0], None).unwrap());
             assert!(!polyhedron.is_inside([0.1, 0.1, 0.1], None).unwrap());
         }
     }
@@ -6236,7 +6462,10 @@ mod tests {
 
         assert_eq!(shape.accepted_faces().len(), 8);
         assert_eq!(polyhedron.dimension(None).unwrap(), 3);
-        assert!(!polyhedron.is_inside([0.25, 0.25, 0.25], None).unwrap());
+        // The small tetrahedron is nested in the large one: the native
+        // robust test treats the union as inside (the old ray cast counted
+        // two crossings and reported outside).
+        assert!(polyhedron.is_inside([0.25, 0.25, 0.25], None).unwrap());
         assert!(polyhedron.is_inside([1.0, 0.5, 0.5], None).unwrap());
         assert!(!polyhedron.is_inside([4.1, 0.2, 0.2], None).unwrap());
     }
@@ -6273,7 +6502,8 @@ mod tests {
         assert_eq!(shape.accepted_faces().len(), 8);
         assert_eq!(polyhedron.dimension(None).unwrap(), 3);
         assert!(polyhedron.is_inside([0.2, 0.1, 0.1], None).unwrap());
-        assert!(!polyhedron.is_inside([0.6, 0.1, 0.1], None).unwrap());
+        // Inside both overlapping tetrahedra: the union is inside natively.
+        assert!(polyhedron.is_inside([0.6, 0.1, 0.1], None).unwrap());
         assert!(polyhedron.is_inside([1.2, 0.1, 0.1], None).unwrap());
         assert!(!polyhedron.is_inside([1.6, 0.1, 0.1], None).unwrap());
     }
@@ -6678,5 +6908,138 @@ mod polyhedron_precision_tests {
         // Native `CSPrimPolyhedron` stores double vertices; a 32-bit store
         // would round 1/3 to 0.33333334 and lose the 1e-12 coordinate.
         assert_eq!(stored, [1.0 / 3.0, 2.0e-12, 1.23456789012345]);
+    }
+}
+
+#[cfg(test)]
+mod drawing_tolerance_tests {
+    use super::*;
+
+    #[test]
+    fn a_box_obeys_the_drawing_tolerance() {
+        let primitive = Primitive::box_primitive([0.0; 3], [1.0; 3]);
+        assert!(!primitive
+            .is_inside_with_tolerance([1.0 + 5.0e-4, 0.5, 0.5], None, 0.0)
+            .unwrap());
+        assert!(primitive
+            .is_inside_with_tolerance([1.0 + 5.0e-4, 0.5, 0.5], None, 1.0e-3)
+            .unwrap());
+        // Twice the tolerance is outside again.
+        assert!(!primitive
+            .is_inside_with_tolerance([1.0 + 2.0e-3, 0.5, 0.5], None, 1.0e-3)
+            .unwrap());
+        // The surface itself counts as inside.
+        assert!(primitive
+            .is_inside_with_tolerance([1.0, 0.5, 0.5], None, 0.0)
+            .unwrap());
+    }
+
+    #[test]
+    fn spheres_shells_and_cylinders_obey_the_drawing_tolerance() {
+        let sphere = Primitive::sphere([0.0; 3], 1.0);
+        assert!(!sphere
+            .is_inside_with_tolerance([1.0 + 5.0e-4, 0.0, 0.0], None, 0.0)
+            .unwrap());
+        assert!(sphere
+            .is_inside_with_tolerance([1.0 + 5.0e-4, 0.0, 0.0], None, 1.0e-3)
+            .unwrap());
+
+        let shell = Primitive::spherical_shell([0.0; 3], 1.0, 0.2);
+        assert!(shell
+            .is_inside_with_tolerance([1.1 + 5.0e-4, 0.0, 0.0], None, 1.0e-3)
+            .unwrap());
+        assert!(!shell
+            .is_inside_with_tolerance([1.1 + 2.0e-3, 0.0, 0.0], None, 1.0e-3)
+            .unwrap());
+
+        let cylinder = Primitive::cylinder([0.0, 0.0, 0.0], [0.0, 0.0, 1.0], 1.0);
+        assert!(cylinder
+            .is_inside_with_tolerance([1.0 + 5.0e-4, 0.0, 0.5], None, 1.0e-3)
+            .unwrap());
+        // The tolerance extends the axis as well.
+        assert!(cylinder
+            .is_inside_with_tolerance([0.0, 0.0, 1.0 + 5.0e-4], None, 1.0e-3)
+            .unwrap());
+        assert!(!cylinder
+            .is_inside_with_tolerance([0.0, 0.0, 1.0 + 2.0e-3], None, 1.0e-3)
+            .unwrap());
+    }
+
+    #[test]
+    fn a_polyhedron_surface_and_vertices_are_inside() {
+        let mut primitive = Primitive::polyhedron();
+        let shape = primitive.polyhedron_shape_mut().expect("polyhedron");
+        let corners = [
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [1.0, 1.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [0.0, 0.0, 1.0],
+            [1.0, 0.0, 1.0],
+            [1.0, 1.0, 1.0],
+            [0.0, 1.0, 1.0],
+        ];
+        for corner in corners {
+            shape.add_vertex(corner);
+        }
+        for face in [
+            vec![0, 3, 2, 1],
+            vec![4, 5, 6, 7],
+            vec![0, 1, 5, 4],
+            vec![1, 2, 6, 5],
+            vec![2, 3, 7, 6],
+            vec![3, 0, 4, 7],
+        ] {
+            shape.add_face(face);
+        }
+        // A point on a face and on an edge counts as inside (native robust
+        // test; the ray cast alone is ambiguous there).
+        assert!(primitive
+            .is_inside_with_tolerance([1.0, 0.5, 0.5], None, 0.0)
+            .unwrap());
+        assert!(primitive
+            .is_inside_with_tolerance([1.0, 0.0, 0.5], None, 0.0)
+            .unwrap());
+        assert!(primitive
+            .is_inside_with_tolerance([1.0, 1.0, 1.0], None, 0.0)
+            .unwrap());
+        // Inside and outside.
+        assert!(primitive
+            .is_inside_with_tolerance([0.5, 0.5, 0.5], None, 0.0)
+            .unwrap());
+        assert!(!primitive
+            .is_inside_with_tolerance([1.5, 0.5, 0.5], None, 0.0)
+            .unwrap());
+        // Within the tolerance of the surface.
+        assert!(primitive
+            .is_inside_with_tolerance([1.0 + 5.0e-4, 0.5, 0.5], None, 1.0e-3)
+            .unwrap());
+        assert!(!primitive
+            .is_inside_with_tolerance([1.0 + 2.0e-3, 0.5, 0.5], None, 1.0e-3)
+            .unwrap());
+    }
+
+    #[test]
+    fn the_structure_carries_the_drawing_tolerance() {
+        let mut structure = Structure::new();
+        assert_eq!(structure.drawing_tolerance(), 0.0);
+        structure.set_drawing_tolerance(1.0e-3);
+        assert_eq!(structure.drawing_tolerance(), 1.0e-3);
+        let property = structure.add_property(Property::new("m", PropertyType::Material));
+        structure
+            .add_primitive(
+                property,
+                Primitive::box_primitive([0.0; 3], [1.0; 3]),
+            )
+            .expect("box");
+        let primitives = structure.all_primitives(false, PropertyType::Any);
+        let primitive = primitives.first().expect("primitive");
+        assert!(primitive
+            .is_inside_with_tolerance(
+                [1.0 + 5.0e-4, 0.5, 0.5],
+                Some(structure.parameters()),
+                structure.drawing_tolerance()
+            )
+            .unwrap());
     }
 }
