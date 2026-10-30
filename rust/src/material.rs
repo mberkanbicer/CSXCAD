@@ -1562,6 +1562,32 @@ impl fmt::Display for DiscreteMaterialGridError {
 
 impl Error for DiscreteMaterialGridError {}
 
+/// The boundary surface of a discrete material: points plus one index quad
+/// per face (native `GetPolyDataModel`).
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct DiscreteMaterialSurface {
+    pub points: Vec<[f64; 3]>,
+    pub quads: Vec<[u32; 4]>,
+}
+
+impl DiscreteMaterialSurface {
+    /// Flat `(x, y, z)` point list for VTK-style writers.
+    pub fn flat_points(&self) -> Vec<f64> {
+        self.points
+            .iter()
+            .flat_map(|point| point.iter().copied())
+            .collect()
+    }
+
+    /// Flat quad list (four point indices in a row) for VTK-style writers.
+    pub fn flat_quads(&self) -> Vec<i32> {
+        self.quads
+            .iter()
+            .flat_map(|quad| quad.iter().map(|index| *index as i32))
+            .collect()
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct DiscreteMaterialGrid {
     mesh: [Vec<f32>; 3],
@@ -1638,6 +1664,112 @@ impl DiscreteMaterialGrid {
         }
         self.database_values[field.index()] = values;
         Ok(())
+    }
+
+    /// Native `CSPropDiscMaterial::GetPolyDataModel`: the surface that
+    /// separates the discrete material from the background, as points and
+    /// quads in the mesh coordinates of the data file.
+    ///
+    /// Returns `None` when the data set is too small to hold a surface.
+    pub fn surface_poly_data(&self) -> Option<DiscreteMaterialSurface> {
+        let size = self.size();
+        if size.iter().any(|&count| count < 2) {
+            return None;
+        }
+        let cells = [size[0] - 1, size[1] - 1, size[2] - 1];
+        let cell_index = |pos: [usize; 3]| -> usize {
+            pos[0] + pos[1] * cells[0] + pos[2] * cells[0] * cells[1]
+        };
+        let material = |pos: [usize; 3]| -> u8 {
+            self.material_indices
+                .get(cell_index(pos))
+                .copied()
+                .unwrap_or(0)
+        };
+
+        let mut surface = DiscreteMaterialSurface::default();
+        // Point index of each node in the current (0) and next (1) xy-plane.
+        // The next plane is reused as the current one at the next z step.
+        let mut point_index = [
+            vec![u32::MAX; size[0] * size[1]],
+            vec![u32::MAX; size[0] * size[1]],
+        ];
+        let offsets_up = [(0usize, 0usize), (1, 0), (1, 1), (0, 1)];
+        let offsets_down = [(0usize, 0usize), (0, 1), (1, 1), (1, 0)];
+
+        for pos_z in 0..size[2] {
+            point_index.swap(0, 1);
+            point_index[1].fill(u32::MAX);
+            for pos_x in 0..size[0] {
+                for pos_y in 0..size[1] {
+                    let pos = [pos_x, pos_y, pos_z];
+                    for axis in 0..3 {
+                        if pos[(axis + 1) % 3] >= size[(axis + 1) % 3] - 1
+                            || pos[(axis + 2) % 3] >= size[(axis + 2) % 3] - 1
+                        {
+                            continue;
+                        }
+                        // Material of the cells above and below the face at
+                        // this node; everything outside the data is background.
+                        let up = if pos[axis] < size[axis] - 1 {
+                            material(pos)
+                        } else {
+                            0
+                        };
+                        let down = if pos[axis] > 0 {
+                            let mut below = pos;
+                            below[axis] -= 1;
+                            material(below)
+                        } else {
+                            0
+                        };
+                        let surface_up = up == 0 && down > 0;
+                        let surface_down = up > 0 && down == 0;
+                        if !surface_up && !surface_down {
+                            continue;
+                        }
+                        let first = (axis + 1) % 3;
+                        let second = (axis + 2) % 3;
+                        let offsets = if surface_up {
+                            offsets_up
+                        } else {
+                            offsets_down
+                        };
+                        let mut quad = [0u32; 4];
+                        for (corner, (first_offset, second_offset)) in
+                            offsets.into_iter().enumerate()
+                        {
+                            let mut node = [pos[0], pos[1], 0usize];
+                            node[first] += first_offset;
+                            node[second] += second_offset;
+                            // The z offset of this corner (0 or 1); a face
+                            // along x or y spans two z planes.
+                            let plane = if first == 2 {
+                                first_offset
+                            } else if second == 2 {
+                                second_offset
+                            } else {
+                                0
+                            };
+                            let mesh_index = node[0] + node[1] * size[0];
+                            let mut index = point_index[plane][mesh_index];
+                            if index == u32::MAX {
+                                index = surface.points.len() as u32;
+                                surface.points.push([
+                                    f64::from(self.mesh[0][node[0]]),
+                                    f64::from(self.mesh[1][node[1]]),
+                                    f64::from(self.mesh[2][pos_z + plane]),
+                                ]);
+                                point_index[plane][mesh_index] = index;
+                            }
+                            quad[corner] = index;
+                        }
+                        surface.quads.push(quad);
+                    }
+                }
+            }
+        }
+        Some(surface)
     }
 
     pub fn material_index(
@@ -2534,5 +2666,65 @@ mod tests {
         assert!(material
             .weighted_density(None, [0.0; 3], CoordinateSystem::Cartesian)
             .is_err());
+    }
+}
+
+#[cfg(test)]
+mod disc_surface_tests {
+    use super::*;
+
+    fn grid(sizes: [usize; 3], indices: Vec<u8>) -> DiscreteMaterialGrid {
+        let mesh = [
+            (0..sizes[0]).map(|value| value as f32).collect(),
+            (0..sizes[1]).map(|value| value as f32).collect(),
+            (0..sizes[2]).map(|value| value as f32).collect(),
+        ];
+        DiscreteMaterialGrid::new(mesh, indices, 2).expect("grid")
+    }
+
+    #[test]
+    fn one_voxel_has_the_six_boundary_faces() {
+        let surface = grid([2, 2, 2], vec![1])
+            .surface_poly_data()
+            .expect("surface");
+        assert_eq!(surface.points.len(), 8);
+        assert_eq!(surface.quads.len(), 6);
+        // Every quad has four distinct corners.
+        for quad in &surface.quads {
+            let mut sorted = *quad;
+            sorted.sort_unstable();
+            assert!(sorted.windows(2).all(|pair| pair[0] != pair[1]), "{quad:?}");
+        }
+        // The cube spans the unit cell.
+        let mut min = [f64::INFINITY; 3];
+        let mut max = [f64::NEG_INFINITY; 3];
+        for point in &surface.points {
+            for axis in 0..3 {
+                min[axis] = min[axis].min(point[axis]);
+                max[axis] = max[axis].max(point[axis]);
+            }
+        }
+        assert_eq!(min, [0.0; 3]);
+        assert_eq!(max, [1.0; 3]);
+    }
+
+    #[test]
+    fn a_taller_block_has_ten_faces_and_no_internal_one() {
+        let surface = grid([2, 2, 3], vec![1, 1])
+            .surface_poly_data()
+            .expect("surface");
+        // Four sides per cell, but the face between the two cells is not a
+        // boundary: 4 + 4 + top + bottom.
+        assert_eq!(surface.quads.len(), 10);
+        let flat = surface.flat_points();
+        assert_eq!(flat.len(), surface.points.len() * 3);
+        assert_eq!(surface.flat_quads().len(), surface.quads.len() * 4);
+    }
+
+    #[test]
+    fn a_grid_without_material_has_no_surface() {
+        let surface = grid([2, 2, 2], vec![0]).surface_poly_data().expect("surface");
+        assert!(surface.points.is_empty());
+        assert!(surface.quads.is_empty());
     }
 }
