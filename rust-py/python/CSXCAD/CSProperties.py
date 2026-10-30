@@ -1019,6 +1019,33 @@ class CSPropDebyeMaterial(CSPropDispersiveMaterial):
     _FIELDS = ("eps_delta", "eps_relax")
 
 
+class _LiveDiscreteTransform:
+    """Write transform mutations back to the owning property.
+
+    The Rust binding returns a value copy of the transform. Native
+    ``GetTransform()`` is live, so the façade forwards every call and then
+    stores the updated transform on the property.
+    """
+
+    def __init__(self, owner, transform):
+        object.__setattr__(self, "_owner", owner)
+        object.__setattr__(self, "_transform", transform)
+
+    def __getattr__(self, name):
+        target = getattr(object.__getattribute__(self, "_transform"), name)
+        if not callable(target):
+            return target
+
+        def forward(*args, **kwargs):
+            result = target(*args, **kwargs)
+            object.__getattribute__(self, "_owner").SetTransform(
+                object.__getattribute__(self, "_transform")
+            )
+            return result
+
+        return forward
+
+
 class CSPropDiscMaterial(CSPropMaterial):
     """Discrete material property loaded from an HDF5 file."""
 
@@ -1059,6 +1086,9 @@ class CSPropDiscMaterial(CSPropMaterial):
     def GetFileType(self):
         return self._live().int_field("file_type", 0)
 
+    def GetPolyDataModel(self, transform=True):
+        return self._live().poly_data_model(bool(transform))
+
     def SetScale(self, val):
         self._live().set_f64_field("scale", 0, float(val))
 
@@ -1073,7 +1103,9 @@ class CSPropDiscMaterial(CSPropMaterial):
 
     def GetTransform(self):
         if self._transform is None:
-            self._transform = self._live().discrete_transform()
+            self._transform = _LiveDiscreteTransform(
+                self, self._live().discrete_transform()
+            )
         return self._transform
 
     def SetTransform(self, transform):

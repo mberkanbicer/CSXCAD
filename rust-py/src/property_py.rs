@@ -721,21 +721,27 @@ impl PyProperty {
     /// Native `CSPropDiscMaterial::GetPolyDataModel`: the surface between
     /// the discrete material and the background, as `(points, quads)`.
     ///
-    /// Native returns numpy arrays; this binding returns a list of
-    /// `(x, y, z)` tuples and a list of four-index quads.
+    /// Returns numpy arrays with the native shapes `(n, 3)` and `(m, 4)`,
+    /// including `(0, 3)` / `(0, 4)` when the file has no surface.
     #[pyo3(signature = (transform = true))]
-    fn poly_data_model(
+    fn poly_data_model<'py>(
         &self,
-        py: Python<'_>,
+        py: Python<'py>,
         transform: bool,
-    ) -> PyResult<(Vec<(f64, f64, f64)>, Vec<(u32, u32, u32, u32)>)> {
-        self.with(py, |property, _parameters| {
+    ) -> PyResult<(Bound<'py, PyAny>, Bound<'py, PyAny>)> {
+        let (points, quads) = self.with(py, |property, _parameters| {
             let discrete = property
                 .discrete_material()
                 .ok_or_else(|| PyValueError::new_err("property is not a discrete material"))?;
-            let grid = discrete
-                .load_grid()
-                .map_err(|error| PyValueError::new_err(format!("ReadFile: {error}")))?;
+            // Native returns an empty model when the file cannot be read;
+            // report it but keep the call total so a viewer can still draw.
+            let grid = match discrete.load_grid() {
+                Ok(grid) => grid,
+                Err(error) => {
+                    eprintln!("GetPolyDataModel: {error}; returning an empty model");
+                    return Ok((Vec::new(), Vec::new()));
+                }
+            };
             let Some(surface) = grid.surface_poly_data() else {
                 return Ok((Vec::new(), Vec::new()));
             };
@@ -760,7 +766,15 @@ impl PyProperty {
                 .map(|quad| (quad[0], quad[1], quad[2], quad[3]))
                 .collect();
             Ok((points, quads))
-        })
+        })?;
+        let numpy = py.import("numpy")?;
+        let points = numpy
+            .call_method1("array", (points,))?
+            .call_method1("reshape", (-1, 3))?;
+        let quads = numpy
+            .call_method1("array", (quads,))?
+            .call_method1("reshape", (-1, 4))?;
+        Ok((points, quads))
     }
 
     /// Weighted excitation amplitude (native `GetWeightedExcitation`).
