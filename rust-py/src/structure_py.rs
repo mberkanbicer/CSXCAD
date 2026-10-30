@@ -93,6 +93,17 @@ impl PyStructure {
         self.inner.clear();
     }
 
+    /// Native `CSXCAD::GetDrawingTolerance`.
+    fn get_drawing_tolerance(&self) -> f64 {
+        self.inner.drawing_tolerance()
+    }
+
+    /// Native `CSXCAD::SetDrawingTolerance`: a point within this distance of a
+    /// primitive's surface counts as inside.
+    fn set_drawing_tolerance(&mut self, tolerance: f64) {
+        self.inner.set_drawing_tolerance(tolerance);
+    }
+
     /// Serialize the structure and write it to `path`; returns the success flag
     /// of the underlying file write (native `Write2XML` returns a bool).
     fn write_xml(&self, path: &str) -> PyResult<bool> {

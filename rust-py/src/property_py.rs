@@ -718,6 +718,51 @@ impl PyProperty {
         })
     }
 
+    /// Native `CSPropDiscMaterial::GetPolyDataModel`: the surface between
+    /// the discrete material and the background, as `(points, quads)`.
+    ///
+    /// Native returns numpy arrays; this binding returns a list of
+    /// `(x, y, z)` tuples and a list of four-index quads.
+    #[pyo3(signature = (transform = true))]
+    fn poly_data_model(
+        &self,
+        py: Python<'_>,
+        transform: bool,
+    ) -> PyResult<(Vec<(f64, f64, f64)>, Vec<(u32, u32, u32, u32)>)> {
+        self.with(py, |property, _parameters| {
+            let discrete = property
+                .discrete_material()
+                .ok_or_else(|| PyValueError::new_err("property is not a discrete material"))?;
+            let grid = discrete
+                .load_grid()
+                .map_err(|error| PyValueError::new_err(format!("ReadFile: {error}")))?;
+            let Some(surface) = grid.surface_poly_data() else {
+                return Ok((Vec::new(), Vec::new()));
+            };
+            let mut points: Vec<(f64, f64, f64)> = surface
+                .points
+                .iter()
+                .map(|point| (point[0], point[1], point[2]))
+                .collect();
+            if transform {
+                let scale = discrete.scale();
+                for point in &mut points {
+                    let mut coordinates = [point.0 * scale, point.1 * scale, point.2 * scale];
+                    if let Some(transform) = discrete.transform() {
+                        coordinates = transform.transform(coordinates);
+                    }
+                    *point = (coordinates[0], coordinates[1], coordinates[2]);
+                }
+            }
+            let quads = surface
+                .quads
+                .iter()
+                .map(|quad| (quad[0], quad[1], quad[2], quad[3]))
+                .collect();
+            Ok((points, quads))
+        })
+    }
+
     /// Weighted excitation amplitude (native `GetWeightedExcitation`).
     fn weighted_excitation(
         &mut self,
