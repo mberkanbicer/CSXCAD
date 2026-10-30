@@ -87,6 +87,48 @@ there are unreleased changes. It becomes the next release entry.
 - Rust XML imports accept both `User-Defined` and `UserDefined` primitive tags
   while writing the native writer's `User-Defined` form.
 
+- `CSPropDiscMaterial::GetPolyDataModel()` returns the discrete-material
+  surface as plain point and quad arrays, in structure coordinates or in the
+  mesh coordinates of the data file, and as numpy arrays in Python.
+
+### Changed
+
+- The Python bindings need Python 3.6 or newer (was 3.4), the oldest version
+  CI still tests; CentOS 7 and Ubuntu 14.04 are no longer tested.
+- C++: `CSPropDiscMaterial::CreatePolyDataModel()` is removed, use
+  `GetPolyDataModel()`.
+- Polyhedron vertices are double precision (were single), also when read
+  from an ASCII STL or a PLY file. C++: `CSPrimPolyhedron::AddVertex()` takes
+  and `GetVertex()` returns `double`.
+- The inside of a polyhedron (also one read from an STL or PLY file) is found
+  more robustly. Its surface counts as inside, as for a box, and so does a
+  point within the drawing tolerance of it (`SetDrawingTolerance()`, now also
+  in Python; openEMS sets it from the mesh). No face is dropped any more:
+  bodies that touch, overlap or lie inside each other, cavities, faces of more
+  than three corners and surfaces with small holes work. Results change for
+  models with mesh lines on a polyhedron's surface, which used to be metal or
+  not at random.
+- **All primitives obey the drawing tolerance:** a point within it of a box,
+  cylinder, sphere, shell, wire, polygon, linear or rotational polygon counts
+  as inside, so coordinates rounded in the XML or computed (e.g. `sin(pi)`
+  instead of 0) still meet the mesh lines they were meant for. The tolerance
+  is a length also along the angle of cylindrical coordinates and for scaled
+  primitives. The surface of spheres, spherical shells, wires and the stop
+  angle of a rotational polygon now count as inside too, as for boxes, and so
+  do the corners of polygons. User-defined primitives ignore the tolerance.
+
+### Fixed
+
+- A broken PLY file for a polyhedron could crash or give wrong faces; it now
+  fails, and the message says what is wrong. ASCII STL files with upper-case
+  keywords, facets of more than three corners, or no `endsolid` now load.
+
+### Build
+
+- C++17 is now required (was C++11), e.g. GCC 8 or newer, also for the
+  Python bindings.
+- VTK, CGAL and Boost (and with them GMP and MPFR) are no longer needed.
+
 ## 0.7.0 — 2026-10-09
 
 ### Added
