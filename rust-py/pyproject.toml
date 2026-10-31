@@ -15,4 +15,4 @@ module-name = "csxcad_py"
 # The wheel ships both the compiled `csxcad_py` extension and the pure-Python
 # `CSXCAD` package that wraps it, exactly like the native layout.
 python-packages = ["CSXCAD"]
-features = ["pyo3/extension-module"]
+features = ["pyo3/extension-module", "pyo3/abi3-py39"]
