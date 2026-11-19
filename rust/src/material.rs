@@ -1730,11 +1730,7 @@ impl DiscreteMaterialGrid {
                         }
                         let first = (axis + 1) % 3;
                         let second = (axis + 2) % 3;
-                        let offsets = if surface_up {
-                            offsets_up
-                        } else {
-                            offsets_down
-                        };
+                        let offsets = if surface_up { offsets_up } else { offsets_down };
                         let mut quad = [0u32; 4];
                         for (corner, (first_offset, second_offset)) in
                             offsets.into_iter().enumerate()
@@ -2723,7 +2719,9 @@ mod disc_surface_tests {
 
     #[test]
     fn a_grid_without_material_has_no_surface() {
-        let surface = grid([2, 2, 2], vec![0]).surface_poly_data().expect("surface");
+        let surface = grid([2, 2, 2], vec![0])
+            .surface_poly_data()
+            .expect("surface");
         assert!(surface.points.is_empty());
         assert!(surface.quads.is_empty());
     }

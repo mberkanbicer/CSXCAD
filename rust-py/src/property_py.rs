@@ -1386,7 +1386,6 @@ impl PyProperty {
         self.with_primitive(py, index, |primitive, _| {
             polyhedron_shape(primitive)?
                 .vertex(vertex)
-                .map(|[x, y, z]| [f64::from(x), f64::from(y), f64::from(z)])
                 .ok_or_else(|| PyIndexError::new_err("GetVertex: invalid vertex index"))
         })
     }

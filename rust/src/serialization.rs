@@ -121,19 +121,22 @@ impl Structure {
     }
 
     /// Depth-first search for the first element named `name` below `node`.
-fn find_descendant<'a>(node: &'a crate::xml::XmlNode, name: &str) -> Option<&'a crate::xml::XmlNode> {
-    for child in &node.children {
-        if child.name == name {
-            return Some(child);
+    fn find_descendant<'a>(
+        node: &'a crate::xml::XmlNode,
+        name: &str,
+    ) -> Option<&'a crate::xml::XmlNode> {
+        for child in &node.children {
+            if child.name == name {
+                return Some(child);
+            }
+            if let Some(found) = Self::find_descendant(child, name) {
+                return Some(found);
+            }
         }
-        if let Some(found) = Self::find_descendant(child, name) {
-            return Some(found);
-        }
+        None
     }
-    None
-}
 
-pub fn from_xml_str(input: &str) -> Result<Self, StructureXmlError> {
+    pub fn from_xml_str(input: &str) -> Result<Self, StructureXmlError> {
         Self::from_xml_str_with_policy(input, false).map(|(structure, _)| structure)
     }
 

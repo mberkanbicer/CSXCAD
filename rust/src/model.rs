@@ -2257,17 +2257,10 @@ impl PolyhedronPrimitive {
         let Some(first) = self.vertices.first() else {
             return [0.0; 6];
         };
-        let mut bounds = [
-            f64::from(first[0]),
-            f64::from(first[0]),
-            f64::from(first[1]),
-            f64::from(first[1]),
-            f64::from(first[2]),
-            f64::from(first[2]),
-        ];
+        let mut bounds = [first[0], first[0], first[1], first[1], first[2], first[2]];
         for vertex in self.vertices.iter().skip(1) {
             for axis in 0..3 {
-                let coordinate = f64::from(vertex[axis]);
+                let coordinate = vertex[axis];
                 bounds[2 * axis] = bounds[2 * axis].min(coordinate);
                 bounds[2 * axis + 1] = bounds[2 * axis + 1].max(coordinate);
             }
@@ -2395,7 +2388,10 @@ fn point_triangle_distance(point: [f64; 3], a: [f64; 3], b: [f64; 3], c: [f64; 3
     let projected = if normal_length_squared > 0.0 {
         let offset = subtract3(point, a);
         let signed = dot3(offset, normal) / normal_length_squared;
-        subtract3(point, [normal[0] * signed, normal[1] * signed, normal[2] * signed])
+        subtract3(
+            point,
+            [normal[0] * signed, normal[1] * signed, normal[2] * signed],
+        )
     } else {
         point
     };
@@ -2420,11 +2416,14 @@ fn point_triangle_distance(point: [f64; 3], a: [f64; 3], b: [f64; 3], c: [f64; 3
         } else {
             0.0
         };
-        subtract3(point, [
-            start[0] + foot * segment[0],
-            start[1] + foot * segment[1],
-            start[2] + foot * segment[2],
-        ])
+        subtract3(
+            point,
+            [
+                start[0] + foot * segment[0],
+                start[1] + foot * segment[1],
+                start[2] + foot * segment[2],
+            ],
+        )
         .iter()
         .map(|value| value * value)
         .sum::<f64>()
@@ -3444,7 +3443,12 @@ impl Primitive {
                 };
                 let local_coordinates =
                     transform_coordinates(local_coordinates, self.mesh_type, primitive_system);
-                Ok(shape.contains(local_coordinates, parameters, primitive_system, local_tolerance)?)
+                Ok(shape.contains(
+                    local_coordinates,
+                    parameters,
+                    primitive_system,
+                    local_tolerance,
+                )?)
             }
             PrimitiveShape::Sphere(shape) => {
                 let mut local_coordinates =
@@ -3457,7 +3461,12 @@ impl Primitive {
                 } else {
                     self.coordinate_system
                 };
-                Ok(shape.contains(local_coordinates, center_system, parameters, local_tolerance)?)
+                Ok(shape.contains(
+                    local_coordinates,
+                    center_system,
+                    parameters,
+                    local_tolerance,
+                )?)
             }
             PrimitiveShape::SphericalShell(shape) => {
                 let mut local_coordinates =
@@ -3470,7 +3479,12 @@ impl Primitive {
                 } else {
                     self.coordinate_system
                 };
-                Ok(shape.contains(local_coordinates, center_system, parameters, local_tolerance)?)
+                Ok(shape.contains(
+                    local_coordinates,
+                    center_system,
+                    parameters,
+                    local_tolerance,
+                )?)
             }
             PrimitiveShape::Cylinder(shape) => {
                 let mut local_coordinates =
@@ -3505,11 +3519,13 @@ impl Primitive {
                     local_coordinates = transform.inverse_transform(local_coordinates)?;
                 }
                 if shape.is_rotational() {
-                    Ok(shape.contains_rotational(
-                        local_coordinates,
-                        parameters,
-                        local_tolerance,
-                    )?)
+                    Ok(
+                        shape.contains_rotational(
+                            local_coordinates,
+                            parameters,
+                            local_tolerance,
+                        )?,
+                    )
                 } else {
                     Ok(shape.contains(local_coordinates, parameters, local_tolerance)?)
                 }
@@ -3528,7 +3544,9 @@ impl Primitive {
                 if let Some(transform) = &self.transform {
                     local_coordinates = transform.inverse_transform(local_coordinates)?;
                 }
-                Ok(shape.polyhedron().contains(local_coordinates, local_tolerance))
+                Ok(shape
+                    .polyhedron()
+                    .contains(local_coordinates, local_tolerance))
             }
             PrimitiveShape::MultiBox(shape) => {
                 let mut local_coordinates = coordinates;
@@ -3552,7 +3570,12 @@ impl Primitive {
                 };
                 let local_coordinates =
                     transform_coordinates(local_coordinates, self.mesh_type, primitive_system);
-                Ok(shape.contains(local_coordinates, parameters, primitive_system, local_tolerance)?)
+                Ok(shape.contains(
+                    local_coordinates,
+                    parameters,
+                    primitive_system,
+                    local_tolerance,
+                )?)
             }
             PrimitiveShape::UserDefined(shape) => {
                 let mut local_coordinates =
@@ -4235,10 +4258,10 @@ impl Structure {
                 };
                 for primitive in property.primitives() {
                     if primitive.is_inside_with_tolerance(
-                coordinates,
-                Some(parameters),
-                self.drawing_tolerance,
-            )? {
+                        coordinates,
+                        Some(parameters),
+                        self.drawing_tolerance,
+                    )? {
                         let primitive_id =
                             primitive.id().ok_or(ModelError::PrimitiveIdNotAssigned)?;
                         let replace_winner = match winner {
@@ -7027,10 +7050,7 @@ mod drawing_tolerance_tests {
         assert_eq!(structure.drawing_tolerance(), 1.0e-3);
         let property = structure.add_property(Property::new("m", PropertyType::Material));
         structure
-            .add_primitive(
-                property,
-                Primitive::box_primitive([0.0; 3], [1.0; 3]),
-            )
+            .add_primitive(property, Primitive::box_primitive([0.0; 3], [1.0; 3]))
             .expect("box");
         let primitives = structure.all_primitives(false, PropertyType::Any);
         let primitive = primitives.first().expect("primitive");

@@ -124,11 +124,7 @@ fn vertices(shape: &PolyhedronPrimitive) -> Vec<[f64; 3]> {
     (0..shape.vertex_count())
         .map(|index| {
             let vertex = shape.vertex(index).expect("vertex");
-            [
-                f64::from(vertex[0]),
-                f64::from(vertex[1]),
-                f64::from(vertex[2]),
-            ]
+            [vertex[0], vertex[1], vertex[2]]
         })
         .collect()
 }
